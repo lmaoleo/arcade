@@ -18,16 +18,16 @@ GPP = g++
 all: $(NAME)
 
 $(NAME): $(OBJ)
-        $(GPP) -o $(NAME) $(OBJ) $(GPPFLAGS)
+	$(GPP) -o $(NAME) $(OBJ) $(GPPFLAGS)
 
 %.o: %.cpp
-        $(GPP) -o $@ -c $< $(GPPFLAGS)
+	$(GPP) -o $@ -c $< $(GPPFLAGS)
 
 clean:
-        rm -f $(OBJ)
+	rm -f $(OBJ)
 
 fclean: clean
-        rm -f $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
 
