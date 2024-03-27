@@ -5,8 +5,7 @@
 ** Ncurses
 */
 
-#ifndef NCURSES_HPP_
-#define NCURSES_HPP_
+#pragma once
 
 #include "AGraphic.hpp"
 
@@ -17,6 +16,3 @@ namespace graphic {
         std::queue<state::Event> draw() final;
     };
 }; 
-
-
-#endif /* !NCURSES_HPP_ */
