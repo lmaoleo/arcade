@@ -39,17 +39,27 @@ namespace state {
 
     typedef union EventPacket {
         std::string str;
-        size_t nb;
+        std::size_t nb;
         double decimal;
         bool boolean;
+        EventPacket();
+        ~EventPacket();
     } EventPacket;
 
     class Event {
         public:
-            Event(EventType type, EventPacket data);
+            Event(EventType type, std::string data);
+            Event(EventType type, std::size_t data);
+            Event(EventType type, double data);
+            Event(EventType type, bool data);
             ~Event();
-            EventType getType();
-            EventPacket getPacket();
+
+            EventType getType() const;
+
+            std::string getPacketStr() const;
+            std::size_t getPacketNb() const;
+            double getPacketDecimal() const;
+            bool getPacketBool() const;
 
         private:
             EventType _type;

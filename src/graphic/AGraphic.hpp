@@ -8,6 +8,7 @@
 #ifndef AGRAPHIC_HPP_
     #define AGRAPHIC_HPP_
 
+    #include <tuple>
     #include "IGraphic.hpp"
     #include "Keybinds.hpp"
     #include "Event.hpp"
@@ -22,12 +23,12 @@ namespace graphic {
                 virtual std::queue<state::Event> draw() = 0;
                 virtual void readEvent(std::queue<state::Event> event) final;
 
-                virtual void readWin(std::queue<state::Event> &event) = 0;
-                virtual void readLose(std::queue<state::Event> &event) = 0;
-                virtual void readPause(std::queue<state::Event> &event) = 0;
-                virtual void readDraw(std::queue<state::Event> &event) = 0;
-                virtual void readSound(std::queue<state::Event> &event) = 0;
-                virtual void readTime(std::queue<state::Event> &event) = 0;
+                virtual void readWin(std::queue<state::Event> &event) final;
+                virtual void readLose(std::queue<state::Event> &event) final;
+                virtual void readPause(std::queue<state::Event> &event) final;
+                virtual void readDraw(std::queue<state::Event> &event) final;
+                virtual void readSound(std::queue<state::Event> &event) final;
+                virtual void readTime(std::queue<state::Event> &event) final;
                 virtual void packetError(std::queue<state::Event> &event) final;
             protected:
                 state::Keybinds _keys;
@@ -37,7 +38,6 @@ namespace graphic {
                 std::vector<std::tuple<int, int, std::string>> _draw;
                 std::vector<std::string> _sound;
                 double _time;
-            private:
         };
 };
 
