@@ -71,6 +71,45 @@ void graphic::AGraphic::readPause(std::queue<state::Event> &event)
 
 void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
 {
+    if (event.size() < 3)
+        return packetError(event);
     event.pop();
-    
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    std::size_t packetNb = event.front().getPacketNb();
+    event.pop();
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    std::size_t packetNb2 = event.front().getPacketNb();
+    event.pop();
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    std::string packetStr = event.front().getPacketStr();
+    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
+    _draw.push_back(draw);
+    event.pop();
+    event.pop();
+}
+
+void graphic::AGraphic::readSound(std::queue<state::Event> &event)
+{
+    event.pop();
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    _sound.push_back(event.front().getPacketStr());
+    event.pop();
+}
+
+void graphic::AGraphic::readTime(std::queue<state::Event> &event)
+{
+    event.pop();
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    _time = event.front().getPacketDecimal();
+    event.pop();
+}
+
+void graphic::AGraphic::packetError(std::queue<state::Event> &event)
+{
+    std::cerr << "Error: Packet error" << std::endl;
 }
