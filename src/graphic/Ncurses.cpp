@@ -66,5 +66,6 @@ void graphic::Ncurses::updateKeybinds()
 
 std::queue<state::Event> graphic::Ncurses::draw()
 {
-
+    //wchar_t wc = L'🍎';
+    //mvaddnwstr(0, 0, &wc, 1);
 }
