@@ -23,22 +23,30 @@ static const std::map<std::string, wchar_t> charmap = {
 
 graphic::Ncurses::Ncurses()
 {
+    std::string action;
+
     initscr();
     noecho();
     curs_set(0);
     setlocale(LC_ALL, "");
     keypad(stdscr, TRUE);
-    _keys.bindKey("UP", KEY_UP);
-    _keys.bindKey("DOWN", KEY_DOWN);
-    _keys.bindKey("LEFT", KEY_LEFT);
-    _keys.bindKey("RIGHT", KEY_RIGHT);
-    _keys.bindKey("ESC", 27);
+    action = "UP";
+    _keys.bindKey(action, KEY_UP);
+    action = "DOWN";
+    _keys.bindKey(action, KEY_DOWN);
+    action = "LEFT";
+    _keys.bindKey(action, KEY_LEFT);
+    action = "RIGHT";
+    _keys.bindKey(action, KEY_RIGHT);
+    action = "ESC";
+    _keys.bindKey(action, 27);
 }
 
 void graphic::Ncurses::updateKeybinds()
 {
     std::string action;
     int key = getch();
+
     if (key == KEY_UP)
         action = "UP";
         _keys.keyPressed(action, true);
