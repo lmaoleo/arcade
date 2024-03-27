@@ -24,10 +24,19 @@ graphic::Ncurses::Ncurses()
 void graphic::Ncurses::updateKeybinds()
 {
     int key = getch();
-    
+    if (key == KEY_UP)
+        _keys.keyPressed("UP", true);
+    if (key == KEY_DOWN)
+        _keys.keyPressed("DOWN", true);
+    if (key == KEY_LEFT)
+        _keys.keyPressed("LEFT", true);
+    if (key == KEY_RIGHT)
+        _keys.keyPressed("RIGHT", true);
+    if (key == 27)
+        _keys.keyPressed("ESC", true);
 }
 
 std::queue<state::Event> graphic::Ncurses::draw()
 {
-
+    
 }
