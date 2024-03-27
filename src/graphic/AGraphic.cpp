@@ -45,6 +45,32 @@ void graphic::AGraphic::readEvent(std::queue<state::Event> event)
             (this->*it->second)(event);
         else
             packetError(event);
-        event.pop();
     }
+}
+
+void graphic::AGraphic::readWin(std::queue<state::Event> &event)
+{
+    event.pop();
+    _win = event.front().getPacketBool();
+    event.pop();
+}
+
+void graphic::AGraphic::readLose(std::queue<state::Event> &event)
+{
+    event.pop();
+    _lose = event.front().getPacketBool();
+    event.pop();
+}
+
+void graphic::AGraphic::readPause(std::queue<state::Event> &event)
+{
+    event.pop();
+    _pause = event.front().getPacketBool();
+    event.pop();
+}
+
+void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
+{
+    event.pop();
+    
 }

@@ -29,8 +29,8 @@
 namespace state {
     enum EventType {
         DATA,           /*   packet  */
-        WIN,            /* 0 packet  */
-        LOSE,           /* 0 packet  */
+        WIN,            /* 1 packet  */
+        LOSE,           /* 1 packet  */
         PAUSE,          /* 1 packet  */
         DRAW,           /* 3 packets */
         PLAY_SOUND,     /* 1 packet  */
