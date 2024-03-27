@@ -9,6 +9,7 @@
     #define AGAME_HPP_
 
     #include "IGame.hpp"
+    #include "../Keybinds.hpp"
 
 namespace game {
     class AGame : public IGame {
