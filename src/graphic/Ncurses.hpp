@@ -12,6 +12,8 @@
 namespace graphic {
     class Ncurses : public graphic::AGraphic {
     public:
+        Ncurses();
+        ~Ncurses();
         void updateKeybinds() final;
         std::queue<state::Event> draw() final;
     };
