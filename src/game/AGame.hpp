@@ -15,9 +15,12 @@ namespace game {
     class AGame : public IGame {
         public:
             virtual ~AGame();
-            virtual std::queue<state::Event> tick() = 0;
+            virtual void tick() = 0;
+
+            virtual void transform_map_to_events(std::vector<std::string> map);
 
         private:
+            std::queue<state::Event> _events;
             state::Keybinds _keys;
             std::size_t _ticks;
     };

@@ -15,7 +15,9 @@ namespace game {
     class IGame {
         public:
             virtual ~IGame() = default;
-            virtual std::queue<state::Event> tick();
+            virtual void tick();
+
+            virtual void transform_map_to_events(std::vector<std::string> map);
     };
 }
 

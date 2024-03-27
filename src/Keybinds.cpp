@@ -1,0 +1,31 @@
+/*
+** EPITECH PROJECT, 2024
+** B-OOP-400-TLS-4-1-arcade-matthias.soual
+** File description:
+** Keybinds
+*/
+
+#include "Keybinds.hpp"
+
+state::Keybinds::Keybinds()
+{
+}
+
+state::Keybinds::~Keybinds()
+{
+}
+
+bool state::Keybinds::isKeyPressed(std::string &action)
+{
+    return _pressed[action];
+}
+
+void state::Keybinds::bindKey(std::string &action, unsigned short key)
+{
+    _binds[action] = key;
+}
+
+void state::Keybinds::keyPressed(std::string &action, bool pressed)
+{
+    _pressed[action] = pressed;
+}
