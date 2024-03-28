@@ -19,7 +19,7 @@ namespace graphic {
             public:
                 virtual void updateKeybinds() = 0;
                 virtual std::queue<state::Event> draw() = 0;
-                virtual void readEvent(std::queue<state::Event> event) final;
+                virtual void readEvent(std::queue<state::Event> &event) final;
 
                 virtual void readWin(std::queue<state::Event> &event) final;
                 virtual void readLose(std::queue<state::Event> &event) final;

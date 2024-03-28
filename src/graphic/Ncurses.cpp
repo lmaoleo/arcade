@@ -31,15 +31,15 @@ graphic::Ncurses::Ncurses()
     setlocale(LC_ALL, "");
     keypad(stdscr, TRUE);
     action = "UP";
-    _keys.bindKey(action, KEY_UP);
+    _keys.get()->bindKey(action, KEY_UP);
     action = "DOWN";
-    _keys.bindKey(action, KEY_DOWN);
+    _keys.get()->bindKey(action, KEY_DOWN);
     action = "LEFT";
-    _keys.bindKey(action, KEY_LEFT);
+    _keys.get()->bindKey(action, KEY_LEFT);
     action = "RIGHT";
-    _keys.bindKey(action, KEY_RIGHT);
+    _keys.get()->bindKey(action, KEY_RIGHT);
     action = "ESC";
-    _keys.bindKey(action, 27);
+    _keys.get()->bindKey(action, 27);
 }
 
 graphic::Ncurses::~Ncurses()
@@ -54,23 +54,23 @@ void graphic::Ncurses::updateKeybinds()
 
     if (key == KEY_UP) {
         action = "UP";
-        _keys.keyPressed(action, true);
+        _keys.get()->keyPressed(action, true);
     }
     if (key == KEY_DOWN) {
         action = "DOWN";
-        _keys.keyPressed(action, true);
+        _keys.get()->keyPressed(action, true);
     }
     if (key == KEY_LEFT) {
         action = "LEFT";
-        _keys.keyPressed(action, true);
+        _keys.get()->keyPressed(action, true);
     }
     if (key == KEY_RIGHT) {
         action = "RIGHT";
-        _keys.keyPressed(action, true);
+        _keys.get()->keyPressed(action, true);
     }
     if (key == 27) {
         action = "ESC";
-        _keys.keyPressed(action, true);
+        _keys.get()->keyPressed(action, true);
     }
 }
 

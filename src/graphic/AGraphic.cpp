@@ -16,7 +16,7 @@ static const std::map<state::EventType, void (graphic::AGraphic::*)(std::queue<s
     {state::DELTA_TIME, &graphic::AGraphic::readTime},
 };
 
-void graphic::AGraphic::readEvent(std::queue<state::Event> event)
+void graphic::AGraphic::readEvent(std::queue<state::Event> &event)
 {
     while (!event.empty()) {
         auto it = eventFuncs.find(event.front().getType());
