@@ -16,9 +16,6 @@
 namespace graphic {
     class AGraphic : public IGraphic {
             public:
-                AGraphic();
-                AGraphic(state::Keybinds &keys);
-                virtual ~AGraphic();
                 virtual void updateKeybinds() = 0;
                 virtual std::queue<state::Event> draw() = 0;
                 virtual void readEvent(std::queue<state::Event> event) final;

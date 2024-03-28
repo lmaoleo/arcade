@@ -16,27 +16,6 @@ static const std::map<state::EventType, void (graphic::AGraphic::*)(std::queue<s
     {state::DELTA_TIME, &graphic::AGraphic::readTime},
 };
 
-graphic::AGraphic::AGraphic()
-{
-    _win = false;
-    _lose = false;
-    _pause = false;
-    _time = 0;
-}
-
-graphic::AGraphic::AGraphic(state::Keybinds &keys)
-{
-    _keys = keys;
-    _win = false;
-    _lose = false;
-    _pause = false;
-    _time = 0;
-}
-
-graphic::AGraphic::~AGraphic()
-{
-}
-
 void graphic::AGraphic::readEvent(std::queue<state::Event> event)
 {
     while (!event.empty()) {
