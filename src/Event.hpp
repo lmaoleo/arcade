@@ -60,6 +60,7 @@ namespace state {
             std::size_t getPacketNb() const;
             double getPacketDecimal() const;
             bool getPacketBool() const;
+            void setEventType(EventType type);
 
         private:
             EventType _type;

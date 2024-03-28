@@ -71,3 +71,8 @@ bool state::Event::getPacketBool() const
 {
     return _packet.boolean;
 }
+
+void state::Event::setEventType(EventType type)
+{
+    _type = type;
+}

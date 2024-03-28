@@ -10,18 +10,16 @@
 
     #include "IGame.hpp"
     #include "../Keybinds.hpp"
+    #include "../Event.hpp"
     #include <memory>
 
 namespace game {
     class AGame : public IGame {
         public:
-            virtual ~AGame();
-            virtual void tick() = 0;
-
-            virtual void transform_map_to_events(std::vector<std::string> map);
+            virtual ~AGame() = default;
+            virtual std::queue<state::Event> tick() = 0;
 
         private:
-            std::queue<state::Event> _events;
             std::shared_ptr<state::Keybinds> _keys;
             std::size_t _ticks;
     };
