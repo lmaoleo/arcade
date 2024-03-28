@@ -9,7 +9,7 @@
     #define GRAPHIC_HPP_
 
     #include <queue>
-    #include "Event.hpp"
+    #include "../Event.hpp"
 
 namespace graphic {
     class IGraphic {

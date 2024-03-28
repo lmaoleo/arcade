@@ -17,4 +17,4 @@ namespace graphic {
         void updateKeybinds() final;
         std::queue<state::Event> draw() final;
     };
-}; 
+};

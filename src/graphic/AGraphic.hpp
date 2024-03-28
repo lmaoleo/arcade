@@ -10,8 +10,8 @@
 
     #include <tuple>
     #include "IGraphic.hpp"
-    #include "Keybinds.hpp"
-    #include "Event.hpp"
+    #include "../Keybinds.hpp"
+    #include "../Event.hpp"
 
 namespace graphic {
     class AGraphic : public IGraphic {

@@ -42,30 +42,54 @@ graphic::Ncurses::Ncurses()
     _keys.bindKey(action, 27);
 }
 
+graphic::Ncurses::~Ncurses()
+{
+    endwin();
+}
+
 void graphic::Ncurses::updateKeybinds()
 {
     std::string action;
     int key = getch();
 
-    if (key == KEY_UP)
+    if (key == KEY_UP) {
         action = "UP";
         _keys.keyPressed(action, true);
-    if (key == KEY_DOWN)
+    }
+    if (key == KEY_DOWN) {
         action = "DOWN";
         _keys.keyPressed(action, true);
-    if (key == KEY_LEFT)
+    }
+    if (key == KEY_LEFT) {
         action = "LEFT";
         _keys.keyPressed(action, true);
-    if (key == KEY_RIGHT)
+    }
+    if (key == KEY_RIGHT) {
         action = "RIGHT";
         _keys.keyPressed(action, true);
-    if (key == 27)
+    }
+    if (key == 27) {
         action = "ESC";
         _keys.keyPressed(action, true);
+    }
 }
 
-std::queue<state::Event> graphic::Ncurses::draw()
-{
-    //wchar_t wc = L'🍎';
-    //mvaddnwstr(0, 0, &wc, 1);
+std::queue<state::Event> graphic::Ncurses::draw() {
+    clear();
+
+    for (const auto& item : _draw) {
+        std::size_t x, y;
+        std::string type;
+        std::tie(x, y, type) = item;
+
+        auto charIt = charmap.find(type);
+        if (charIt != charmap.end()) {
+            wchar_t symbol = charIt->second;
+            mvaddwstr(y, x, &symbol);
+        }
+    }
+
+    refresh();
+    _draw.clear();
+    return std::queue<state::Event>();
 }

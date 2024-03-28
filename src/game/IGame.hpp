@@ -8,7 +8,7 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-    #include "Event.hpp"
+    #include "../Event.hpp"
     #include <queue>
 
 namespace game {
