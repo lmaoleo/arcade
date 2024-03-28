@@ -26,8 +26,8 @@ namespace arcade {
         private:
             int _score;
             state::Keybinds _keys;
-            game::IGame _game;
-            graphic::IGraphic _graphic;
+            game::IGame *_game;
+            graphic::IGraphic *_graphic;
     };
 }
 

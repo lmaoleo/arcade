@@ -19,8 +19,8 @@ namespace graphic {
                     const char *what(void) const noexcept;
             };
             virtual ~IGraphic() = default;
-            virtual void updateKeybinds();
-            virtual std::queue<state::Event> draw();
+            virtual void updateKeybinds() = 0;
+            virtual std::queue<state::Event> draw() = 0;
     };
 }
 
