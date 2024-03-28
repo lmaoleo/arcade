@@ -11,9 +11,9 @@
 arcade::CoreProgram::CoreProgram()
 {
     _score = 0;
-    _keys = state::Keybinds();
-    _game = std::unique_ptr<game::IGame>();
-    _graphic = std::unique_ptr<graphic::IGraphic>();
+    _keys = std::make_shared<state::Keybinds>();
+    _game = nullptr;
+    _graphic = nullptr;
 }
 
 arcade::CoreProgram::~CoreProgram()

@@ -12,6 +12,7 @@
     #include "IGraphic.hpp"
     #include "../Keybinds.hpp"
     #include "../Event.hpp"
+    #include <memory>
 
 namespace graphic {
     class AGraphic : public IGraphic {
@@ -28,7 +29,7 @@ namespace graphic {
                 virtual void readTime(std::queue<state::Event> &event) final;
                 virtual void packetError(std::queue<state::Event> &event) final;
             protected:
-                state::Keybinds _keys;
+                std::shared_ptr<state::Keybinds> _keys;
                 bool _win;
                 bool _lose;
                 bool _pause;

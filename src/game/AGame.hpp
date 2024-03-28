@@ -10,6 +10,7 @@
 
     #include "IGame.hpp"
     #include "../Keybinds.hpp"
+    #include <memory>
 
 namespace game {
     class AGame : public IGame {
@@ -21,7 +22,7 @@ namespace game {
 
         private:
             std::queue<state::Event> _events;
-            state::Keybinds _keys;
+            std::shared_ptr<state::Keybinds> _keys;
             std::size_t _ticks;
     };
 };

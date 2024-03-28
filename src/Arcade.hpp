@@ -8,10 +8,11 @@
 #ifndef ARCADE_HPP_
     #define ARCADE_HPP_
 
-    #include "IGraphic.hpp"
-    #include "IGame.hpp"
+    #include "graphic/IGraphic.hpp"
+    #include "game/IGame.hpp"
     #include "Event.hpp"
     #include "Keybinds.hpp"
+    #include <memory>
 
 namespace arcade {
     class CoreProgram {
@@ -25,7 +26,7 @@ namespace arcade {
 
         private:
             int _score;
-            state::Keybinds _keys;
+            std::shared_ptr<state::Keybinds> _keys;
             game::IGame *_game;
             graphic::IGraphic *_graphic;
     };
