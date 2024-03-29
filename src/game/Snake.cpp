@@ -17,7 +17,7 @@ static std::vector<std::string> map = {
     "#                  #",
     "#                  #",
     "#                  #",
-    "#                  #",
+    "#  bb>             #",
     "#                  #",
     "#                  #",
     "#                  #",
@@ -32,7 +32,7 @@ static const std::map<char, std::string> charmap = {
     {'d', "snake_head_down"},
     {'u', "snake_head_up"},
     {'l', "snake_head_left"},
-    {'r', "snake_head_right"},
+    {'>', "snake_head_right"},
     {'b', "snake_body"},
     {'f', "food"},
     {' ', "empty"},
@@ -54,7 +54,7 @@ static void create_draw_event(std::queue<state::Event> &events, std::size_t x, s
     state::Event packetY = state::Event(state::EventType::DATA, y);
     state::Event packetType = state::Event(state::EventType::DATA, type);
     state::Event event2;
-    event.setEventType(state::EventType::DRAW);
+    event2.setEventType(state::EventType::DRAW);
     events.push(event);
     events.push(packetX);
     events.push(packetY);
@@ -79,4 +79,20 @@ std::queue<state::Event> game::Snake::tick()
 {
     std::queue<state::Event> events = transform_map_to_events(map);
     return events;
+}
+
+static void print_events(std::queue<state::Event> events)
+{
+    while (!events.empty()) {
+        std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
+        events.pop();
+    }
+}
+
+int main ()
+{
+    game::Snake snake;
+    std::queue<state::Event> events = snake.tick();
+    print_events(events);
+    return 0;
 }

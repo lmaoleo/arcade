@@ -32,7 +32,7 @@ void arcade::CoreProgram::loadGame(std::string game)
     if (!handle) {
         std::cerr << "Failed to open " << game << ": " << dlerror() << std::endl;
     } else {
-        // You can now use dlsym to load symbols/functions from the library
+        //use dlsym to load symbols/functions
     }
 }
 
@@ -42,7 +42,7 @@ void arcade::CoreProgram::loadGraphic(std::string graphic)
     if (!handle) {
         std::cerr << "Failed to open " << graphic << ": " << dlerror() << std::endl;
     } else {
-        // You can now use dlsym to load symbols/functions from the library
+        //use dlsym to load symbols/functions
     }
 }
 
