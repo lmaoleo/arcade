@@ -56,26 +56,17 @@ void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
     if (event.front().getType() != state::DATA)
         return packetError(event);
 
-    const std::size_t* packetNbPtr = event.front().getPacketNb();
-    if (!packetNbPtr)
-        return packetError(event);
-    std::size_t packetNb = *packetNbPtr;
+    std::size_t packetNb = event.front().getPacketNb();
     event.pop();
 
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    const std::size_t* packetNb2Ptr = event.front().getPacketNb();
-    if (!packetNb2Ptr)
-        return packetError(event);
-    std::size_t packetNb2 = *packetNb2Ptr;
+    std::size_t packetNb2 = event.front().getPacketNb();
     event.pop();
 
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    const std::string *packetStrPtr = event.front().getPacketStr();
-    if (!packetStrPtr)
-        return packetError(event);
-    std::string packetStr = *packetStrPtr;
+    std::string packetStr = event.front().getPacketStr();
     event.pop();
 
     std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
@@ -88,10 +79,7 @@ void graphic::AGraphic::readSound(std::queue<state::Event> &event)
     event.pop();
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    const std::string *packetStrPtr = event.front().getPacketStr();
-    if (!packetStrPtr)
-        return packetError(event);
-    std::string packetStr = *packetStrPtr;
+    std::string packetStr = event.front().getPacketStr();
     _sound.push_back(packetStr);
     event.pop();
 }
@@ -101,10 +89,8 @@ void graphic::AGraphic::readTime(std::queue<state::Event> &event)
     event.pop();
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    const double *packetDecimalPtr = event.front().getPacketDecimal();
-    if (!packetDecimalPtr)
-        return packetError(event);
-    _time = *packetDecimalPtr;
+    double packetDecimalPtr = event.front().getPacketDecimal();
+    _time = packetDecimalPtr;
     event.pop();
 }
 

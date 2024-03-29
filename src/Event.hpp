@@ -52,10 +52,10 @@ namespace state {
 
         EventType getType() const;
 
-        const std::string* getPacketStr() const;
-        const std::size_t* getPacketNb() const;
-        const double* getPacketDecimal() const;
-        const bool* getPacketBool() const;
+        const std::string getPacketStr() const;
+        const std::size_t getPacketNb() const;
+        const double getPacketDecimal() const;
+        const bool getPacketBool() const;
 
         void setEventType(EventType type);
 
