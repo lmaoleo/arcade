@@ -80,12 +80,3 @@ std::queue<state::Event> game::Snake::tick()
     std::queue<state::Event> events = transform_map_to_events(map);
     return events;
 }
-
-int main ()
-{
-    game::Snake snake;
-    std::queue<state::Event> events = snake.tick();
-    std::cout << "events.size() = " << events.size() << std::endl;
-    std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
-    return 0;
-}
