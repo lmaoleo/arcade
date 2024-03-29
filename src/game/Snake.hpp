@@ -17,10 +17,19 @@ namespace game {
             Snake();
             ~Snake();
             std::queue<state::Event> tick();
+            std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
+            void changeDirection();
+            bool checkCollision();
+            void checkFood();
+            void generateFood();
 
         private:
-            std::shared_ptr<state::Keybinds> _keys;
             std::size_t _ticks;
+            std::size_t _score;
+            std::tuple<std::size_t, std::size_t> _lastTailPos;
+            std::tuple<std::size_t, std::size_t> _direction;
+            std::vector<std::tuple<std::size_t, std::size_t>> _snake;
+            std::tuple<std::size_t, std::size_t> _food;
     };
 };
 
