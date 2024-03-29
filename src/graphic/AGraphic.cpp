@@ -55,18 +55,31 @@ void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
     event.pop();
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    std::size_t packetNb = event.front().getPacketNb();
+
+    const std::size_t* packetNbPtr = event.front().getPacketNb();
+    if (!packetNbPtr)
+        return packetError(event);
+    std::size_t packetNb = *packetNbPtr;
     event.pop();
+
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    std::size_t packetNb2 = event.front().getPacketNb();
+    const std::size_t* packetNb2Ptr = event.front().getPacketNb();
+    if (!packetNb2Ptr)
+        return packetError(event);
+    std::size_t packetNb2 = *packetNb2Ptr;
     event.pop();
+
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    std::string packetStr = event.front().getPacketStr();
+    const std::string *packetStrPtr = event.front().getPacketStr();
+    if (!packetStrPtr)
+        return packetError(event);
+    std::string packetStr = *packetStrPtr;
+    event.pop();
+
     std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
     _draw.push_back(draw);
-    event.pop();
     event.pop();
 }
 
@@ -75,7 +88,11 @@ void graphic::AGraphic::readSound(std::queue<state::Event> &event)
     event.pop();
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    _sound.push_back(event.front().getPacketStr());
+    const std::string *packetStrPtr = event.front().getPacketStr();
+    if (!packetStrPtr)
+        return packetError(event);
+    std::string packetStr = *packetStrPtr;
+    _sound.push_back(packetStr);
     event.pop();
 }
 
@@ -84,7 +101,10 @@ void graphic::AGraphic::readTime(std::queue<state::Event> &event)
     event.pop();
     if (event.front().getType() != state::DATA)
         return packetError(event);
-    _time = event.front().getPacketDecimal();
+    const double *packetDecimalPtr = event.front().getPacketDecimal();
+    if (!packetDecimalPtr)
+        return packetError(event);
+    _time = *packetDecimalPtr;
     event.pop();
 }
 

@@ -18,8 +18,6 @@ namespace game {
             ~Snake();
             std::queue<state::Event> tick();
 
-            void transform_map_to_events(std::vector<std::string> map);
-
         private:
             std::shared_ptr<state::Keybinds> _keys;
             std::size_t _ticks;

@@ -10,6 +10,8 @@
 
     #include <iostream>
     #include <map>
+    #include <variant>
+    #include <optional>
 
 /*
     graphic_next
@@ -37,30 +39,25 @@ namespace state {
         DELTA_TIME,     /* 1 packet  */
     };
 
-    typedef union EventPacket {
-        std::string str;
-        std::size_t nb;
-        double decimal;
-        bool boolean;
-        EventPacket();
-        ~EventPacket();
-    } EventPacket;
-
     class Event {
         public:
-            Event(EventType type, std::string data);
-            Event(EventType type, std::size_t data);
-            Event(EventType type, double data);
-            Event(EventType type, bool data);
-            ~Event();
+        typedef std::variant<std::nullopt_t, std::string, std::size_t, double, bool> EventPacket;
 
-            EventType getType() const;
+        Event();
+        Event(EventType type, const std::string& data);
+        Event(EventType type, std::size_t data);
+        Event(EventType type, double data);
+        Event(EventType type, bool data);
+        virtual ~Event();
 
-            std::string getPacketStr() const;
-            std::size_t getPacketNb() const;
-            double getPacketDecimal() const;
-            bool getPacketBool() const;
-            void setEventType(EventType type);
+        EventType getType() const;
+
+        const std::string* getPacketStr() const;
+        const std::size_t* getPacketNb() const;
+        const double* getPacketDecimal() const;
+        const bool* getPacketBool() const;
+
+        void setEventType(EventType type);
 
         private:
             EventType _type;
