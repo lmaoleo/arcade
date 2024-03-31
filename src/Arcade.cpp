@@ -99,9 +99,14 @@ int arcade::CoreProgram::loop()
     return 0;
 }
 
-int main ()
+int main(int ac, char **av)
 {
+    if (ac != 2) {
+        std::cerr << "Usage: ./arcade path_to_graphic_lib" << std::endl;
+        return 84;
+    }
     arcade::CoreProgram core;
+    // core.loadGraphic(av[1]);
     core.loop();
     return 0;
 }
