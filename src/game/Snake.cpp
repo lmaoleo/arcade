@@ -10,6 +10,7 @@
 #include <queue>
 #include <map>
 #include <ncurses.h>
+#include <string>
 
 static std::vector<std::string> map = {
     "##################################",
@@ -100,6 +101,22 @@ static void create_draw_event(std::queue<state::Event> &events, std::size_t x, s
     events.push(event2);
 }
 
+static void create_draw_string_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string score)
+{
+    state::Event event;
+    event.setEventType(state::EventType::DRAW_STRING);
+    state::Event packetX = state::Event(state::EventType::DATA, x);
+    state::Event packetY = state::Event(state::EventType::DATA, y);
+    state::Event packetType = state::Event(state::EventType::DATA, score);
+    state::Event event2;
+    event2.setEventType(state::EventType::DRAW_STRING);
+    events.push(event);
+    events.push(packetX);
+    events.push(packetY);
+    events.push(packetType);
+    events.push(event2);
+}
+
 std::queue<state::Event> game::Snake::transform_map_to_events(std::vector<std::string> map)
 {
     std::queue<state::Event> events;
@@ -122,7 +139,7 @@ void game::Snake::changeDirection()
         _headDirection = "snake_head_up";
         _keys->keyPressed("UP", false);
     }
-    if (_keys->isKeyPressed("DOWN") && std::get<1>(_direction) != -1) {
+    if (_keys->isKeyPressed("DOWN") && std::get<1>(_direction) !=   static_cast<unsigned long>(-1)) {
         _direction = {0, 1};
         _headDirection = "snake_head_down";
         _keys->keyPressed("DOWN", false);
@@ -132,11 +149,15 @@ void game::Snake::changeDirection()
         _headDirection = "snake_head_left";
         _keys->keyPressed("LEFT", false);
     }
-    if (_keys->isKeyPressed("RIGHT") && std::get<0>(_direction) != -1) {
+    if (_keys->isKeyPressed("RIGHT") && std::get<0>(_direction) != static_cast<unsigned long>(-1)) {
         _direction = {1, 0};
         _headDirection = "snake_head_right";
         _keys->keyPressed("RIGHT", false);
     }
+    _keys->keyPressed("UP", false);
+    _keys->keyPressed("DOWN", false);
+    _keys->keyPressed("LEFT", false);
+    _keys->keyPressed("RIGHT", false);
 }
 
 void game::Snake::generateFood()
@@ -189,6 +210,11 @@ void game::Snake::add_snake_to_events(std::queue<state::Event> &event)
     }
 }
 
+void game::Snake::add_score_to_events(std::queue<state::Event> &events)
+{
+    create_draw_string_event(events, 0, 20, std::to_string(_score));
+}
+
 void game::Snake::add_food_to_events(std::queue<state::Event> &events)
 {
     create_draw_event(events, std::get<0>(_food), std::get<1>(_food), "food");
@@ -209,6 +235,7 @@ std::queue<state::Event> game::Snake::tick()
         std::cout << "You lost" << std::endl;
         return events;
     }
+    add_score_to_events(events);
     checkFood();
     _ticks++;
     return events;

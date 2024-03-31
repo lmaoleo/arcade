@@ -17,13 +17,8 @@ namespace game {
             ~Menu();
             std::queue<state::Event> tick();
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
-            void add_food_to_events(std::queue<state::Event> &events);
-            void add_snake_to_events(std::queue<state::Event> &event);
-            void changeDirection();
-            bool checkCollision();
-            void checkFood();
-            void generateFood();
-            std::queue<state::Event> transform_map_to_events(std::vector<std::string> map);
+            void changeGame();
+            std::queue<state::Event> transform_libs_to_events(std::vector<std::string> map);
 
         private:
             std::shared_ptr<state::Keybinds> _keys;

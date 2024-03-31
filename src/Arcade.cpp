@@ -46,7 +46,7 @@ template<typename T>
 std::shared_ptr<T> loadComponent(const std::string& path, const std::string& creatorFunction, std::shared_ptr<state::Keybinds>& keybinds) {
     void* handle = dlopen(path.c_str(), RTLD_LAZY);
     if (!handle) {
-        std::cerr << "Failed to open library: " << path << ", error: " << dlerror() << std::endl;
+        std::cerr << dlerror() << std::endl;
         return nullptr;
     }
 
@@ -56,21 +56,16 @@ std::shared_ptr<T> loadComponent(const std::string& path, const std::string& cre
 
     const char* dlsym_error = dlerror();
     if (dlsym_error) {
-        std::cerr << "Failed to load symbol: " << creatorFunction << ", error: " << dlsym_error << std::endl;
         dlclose(handle);
         return nullptr;
     }
 
     if (!create) {
-        std::cerr << "Function pointer for " << creatorFunction << " is null after dlsym." << std::endl;
         dlclose(handle);
         return nullptr;
     }
 
     std::shared_ptr<T> component(create(keybinds));
-    if (!component) {
-        std::cerr << "Component creation failed for " << creatorFunction << std::endl;
-    }
     return component;
 }
 
@@ -84,7 +79,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 int arcade::CoreProgram::loop()
 {
     loadGame("lib/arcade_snake.so");
-    loadGraphic("lib/arcade_ncurses.so");
+    loadGraphic("lib/arcade_sdl2.so");
     if (!_game || !_graphic) {
         return -1;
     }

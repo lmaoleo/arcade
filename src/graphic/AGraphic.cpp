@@ -12,6 +12,7 @@ static const std::map<state::EventType, void (graphic::AGraphic::*)(std::queue<s
     {state::LOSE, &graphic::AGraphic::readLose},
     {state::PAUSE, &graphic::AGraphic::readPause},
     {state::DRAW, &graphic::AGraphic::readDraw},
+    {state::DRAW_STRING, &graphic::AGraphic::readDrawString},
     {state::PLAY_SOUND, &graphic::AGraphic::readSound},
     {state::DELTA_TIME, &graphic::AGraphic::readTime},
 };

@@ -90,9 +90,9 @@ std::queue<state::Event> graphic::Ncurses::draw(std::queue<state::Event> &event)
         if (charIt != charmap.end()) {
             wchar_t symbol = charIt->second;
             mvaddwstr(y, x, &symbol);
+        } else {
+            wprintw(stdscr, "Score: %s", type.c_str());
         }
-        //if end of list display score
-        // wprintw(stdscr, "Score: %d", type);
     }
 
     refresh();
