@@ -17,15 +17,16 @@ state::Keybinds::~Keybinds()
 
 bool state::Keybinds::isKeyPressed(const std::string &action) const
 {
-    return _pressed.at(action);
-}
-
-void state::Keybinds::bindKey(const std::string &action, unsigned short key)
-{
-    _binds[action] = key;
+    auto it = _pressed.find(action);
+    return (it != _pressed.end()) ? it->second : false;
 }
 
 void state::Keybinds::keyPressed(const std::string &action, bool pressed)
 {
     _pressed[action] = pressed;
+}
+
+void state::Keybinds::bindKey(const std::string &action, int key)
+{
+    _binds[action] = key;
 }

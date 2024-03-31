@@ -16,7 +16,7 @@ namespace state {
             Keybinds();
             ~Keybinds();
             bool isKeyPressed(const std::string &action) const;
-            void bindKey(const std::string &action, unsigned short key);
+            void bindKey(const std::string &action, int key);
             void keyPressed(const std::string &action, bool pressed);
 
             std::map<std::string, std::size_t> getBinds(void) const;

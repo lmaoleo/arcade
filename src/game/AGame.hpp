@@ -18,7 +18,6 @@ namespace game {
         public:
             virtual ~AGame() = default;
             virtual std::queue<state::Event> tick() = 0;
-            virtual state::Keybinds getKeys() const;
 
         private:
             std::shared_ptr<state::Keybinds> _keys;

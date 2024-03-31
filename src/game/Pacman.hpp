@@ -2,24 +2,24 @@
 ** EPITECH PROJECT, 2024
 ** B-OOP-400-TLS-4-1-arcade-matthias.soual
 ** File description:
-** Snake
+** Pacman
 */
 
-#ifndef SNAKE_HPP_
-#define SNAKE_HPP_
+#ifndef PACMAN_HPP_
+#define PACMAN_HPP_
 
 #include "AGame.hpp"
 #include <queue>
 
 namespace game {
-    class Snake : public AGame {
+    class Pacman : public AGame {
         public:
-            Snake(std::shared_ptr<state::Keybinds> &key);
-            ~Snake();
+            Pacman(std::shared_ptr<state::Keybinds> &key);
+            ~Pacman();
             std::queue<state::Event> tick();
-            std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
+            std::vector<std::tuple<std::size_t, std::size_t>> changePacmanPos();
             void add_food_to_events(std::queue<state::Event> &events);
-            void add_snake_to_events(std::queue<state::Event> &event);
+            void add_Pacman_to_events(std::queue<state::Event> &event);
             void changeDirection();
             bool checkCollision();
             void checkFood();
@@ -33,9 +33,9 @@ namespace game {
             std::tuple<std::size_t, std::size_t> _lastTailPos;
             std::tuple<std::size_t, std::size_t> _direction;
             std::string _headDirection;
-            std::vector<std::tuple<std::size_t, std::size_t>> _snake;
+            std::vector<std::tuple<std::size_t, std::size_t>> _Pacman;
             std::tuple<std::size_t, std::size_t> _food;
     };
 };
 
-#endif /* !SNAKE_HPP_ */
+#endif /* !Pacman_HPP_ */

@@ -2,26 +2,27 @@
 ** EPITECH PROJECT, 2024
 ** Arcade
 ** File description:
-** Ncurses
+** SDL2
 */
 
 #pragma once
 
-
-#include <ncurses.h>
 #include <wchar.h>
 #include <locale.h>
+#include <SDL2/SDL.h>
 #include "AGraphic.hpp"
 
 namespace graphic {
-    class Ncurses : public graphic::AGraphic {
+    class Sdl : public graphic::AGraphic {
     public:
-        Ncurses(std::shared_ptr<state::Keybinds> &key);
-        ~Ncurses();
+        Sdl(std::shared_ptr<state::Keybinds> &key);
+        ~Sdl();
         void updateKeybinds() final;
         std::queue<state::Event> draw(std::queue<state::Event> &event) final;
 
     private:
         std::shared_ptr<state::Keybinds> _keys;
+        SDL_Window *_window;
+        SDL_Renderer *_renderer;
     };
 };

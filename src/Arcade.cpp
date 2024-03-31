@@ -6,7 +6,23 @@
 */
 
 #include "Arcade.hpp"
+#include "graphic/IGraphic.hpp"
+#include "game/IGame.hpp"
+#include "graphic/Ncurses.hpp"
+#include "game/Snake.hpp"
+#include "graphic/Sdl.hpp"
+#include <chrono>
+#include <thread>
 #include <dlfcn.h>
+
+
+static void print_events(std::queue<state::Event> events)
+{
+    while (!events.empty()) {
+        std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
+        events.pop();
+    }
+}
 
 arcade::CoreProgram::CoreProgram()
 {
@@ -48,8 +64,28 @@ void arcade::CoreProgram::loadGraphic(std::string graphic)
 
 int arcade::CoreProgram::loop()
 {
+    _game = new game::Snake(_keys);
+    // _graphic = new graphic::Ncurses(_keys);
+    _graphic = new graphic::Sdl(_keys);
+    std::queue<state::Event> events;
+
+    using clock = std::chrono::steady_clock;
+    std::chrono::milliseconds timestep(1000 / 5);
+    auto next_tick = clock::now() + timestep;
+
     while (1) {
-        // Here you can call the update functions of the game and the graphic
-        // You can also call the event functions
+        _graphic->updateKeybinds();
+        events = _game->tick();
+        _graphic->draw(events);
+        std::this_thread::sleep_until(next_tick);
+        next_tick += timestep;
     }
+    return 0;
+}
+
+int main ()
+{
+    arcade::CoreProgram core;
+    core.loop();
+    return 0;
 }

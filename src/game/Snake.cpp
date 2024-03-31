@@ -38,18 +38,27 @@ static const std::map<char, std::string> charmap = {
     {' ', "empty"},
 };
 
-game::Snake::Snake()
+game::Snake::Snake(std::shared_ptr<state::Keybinds> &keybinds)
 {
     _ticks = 0;
     _score = 0;
-    _direction = {0, 1};
+    _direction = {1, 0};
     _snake = {{5, 7}, {4, 7}, {3, 7}};
     _food = {15, 7};
     _lastTailPos = {2, 7};
+    _headDirection = "snake_head_right";
+    _keys = keybinds;
 }
 
 game::Snake::~Snake()
 {
+}
+
+extern "C" {
+    game::Snake *createGame(std::shared_ptr<state::Keybinds> &keybinds)
+    {
+        return new game::Snake(keybinds);
+    }
 }
 
 static void print_map(std::vector<std::string> map)
@@ -64,8 +73,6 @@ static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tup
     for (std::size_t i = 0; i < snake.size(); i++) {
         std::size_t x = std::get<0>(snake[i]);
         std::size_t y = std::get<1>(snake[i]);
-        std::cout << "x = " << x << std::endl;
-        std::cout << "y = " << y << std::endl;
         map[y][x] = 'b';
     }
 }
@@ -93,31 +100,42 @@ static void create_draw_event(std::queue<state::Event> &events, std::size_t x, s
     events.push(event2);
 }
 
-static std::queue<state::Event> transform_map_to_events(std::vector<std::string> map)
+std::queue<state::Event> game::Snake::transform_map_to_events(std::vector<std::string> map)
 {
     std::queue<state::Event> events;
     for (std::size_t y = 0; y < map.size(); y++) {
         for (std::size_t x = 0; x < map[y].size(); x++) {
+            if (std::get<0>(_snake[0]) == x && std::get<1>(_snake[0]) == y) {
+                create_draw_event(events, x, y, _headDirection);
+                continue;
+            }
             create_draw_event(events, x, y, charmap.at(map[y][x]));
         }
     }
-    std::cout << "events.size() = " << events.size() << std::endl;
-    std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
     return events;
 }
 
 void game::Snake::changeDirection()
 {
-    state::Keybinds keys = getKeys();
-
-    if (keys.isKeyPressed("UP")) {
+    if (_keys->isKeyPressed("UP") && std::get<1>(_direction) != 1) {
         _direction = {0, -1};
-    } else if (keys.isKeyPressed("DOWN")) {
+        _headDirection = "snake_head_up";
+        _keys->keyPressed("UP", false);
+    }
+    if (_keys->isKeyPressed("DOWN") && std::get<1>(_direction) != -1) {
         _direction = {0, 1};
-    } else if (keys.isKeyPressed("LEFT")) {
+        _headDirection = "snake_head_down";
+        _keys->keyPressed("DOWN", false);
+    }
+    if (_keys->isKeyPressed("LEFT") && std::get<0>(_direction) != 1) {
         _direction = {-1, 0};
-    } else if (keys.isKeyPressed("RIGHT")) {
+        _headDirection = "snake_head_left";
+        _keys->keyPressed("LEFT", false);
+    }
+    if (_keys->isKeyPressed("RIGHT") && std::get<0>(_direction) != -1) {
         _direction = {1, 0};
+        _headDirection = "snake_head_right";
+        _keys->keyPressed("RIGHT", false);
     }
 }
 
@@ -163,13 +181,27 @@ std::vector<std::tuple<std::size_t, std::size_t>> game::Snake::changeSnakePos()
     return _snake;
 }
 
+void game::Snake::add_snake_to_events(std::queue<state::Event> &event)
+{
+    create_draw_event(event, std::get<0>(_snake[0]), std::get<1>(_snake[0]), _headDirection);
+    for (std::size_t i = 1; i < _snake.size(); i++) {
+        create_draw_event(event, std::get<0>(_snake[i]), std::get<1>(_snake[i]), "snake_body");
+    }
+}
+
+void game::Snake::add_food_to_events(std::queue<state::Event> &events)
+{
+    create_draw_event(events, std::get<0>(_food), std::get<1>(_food), "food");
+}
+
 std::queue<state::Event> game::Snake::tick()
 {
-    std::queue<state::Event> events = transform_map_to_events(map);
+    changeDirection();
     std::vector<std::string> newMap = map;
+    changeSnakePos();
     add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);
-    std::vector<std::tuple<std::size_t, std::size_t>> newSnake = changeSnakePos();
+    std::queue<state::Event> events = transform_map_to_events(newMap);
     if (checkCollision()) {
         state::Event event;
         event.setEventType(state::EventType::LOSE);
@@ -179,24 +211,12 @@ std::queue<state::Event> game::Snake::tick()
     }
     checkFood();
     _ticks++;
-    print_map(newMap);
     return events;
 }
 
 static void print_events(std::queue<state::Event> events)
 {
     while (!events.empty()) {
-        std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
         events.pop();
     }
-}
-
-int main ()
-{
-    game::Snake snake;
-    std::queue<state::Event> events = snake.tick();
-    for (int i = 0; i < 30; i++) {
-        snake.tick();
-    }
-    return 0;
 }
