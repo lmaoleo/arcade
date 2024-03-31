@@ -59,7 +59,7 @@ ncurses: $(NCURSES_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lncursesw -o $(PUT_LIB)arcade_ncurses.so $(GRAPHIC_LIB_FILES) $(NCURSES_FILES)
 
 sdl: $(SDL_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) `sdl2-config --ERRORS_FLAGS --libs` -o $(PUT_LIB)arcade_sdl2.so $(GRAPHIC_LIB_FILES) $(SDL_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) `sdl2-config --ERRORS_FLAGS --libs` -lSDL2 -o $(PUT_LIB)arcade_sdl2.so $(GRAPHIC_LIB_FILES) $(SDL_FILES)
 
 sfml: $(SFML_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lsfml-graphics -lsfml-window -lsfml-system -o $(PUT_LIB)$@.so $(GRAPHIC_LIB_FILES) $(SFML_FILES)
