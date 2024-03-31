@@ -24,15 +24,15 @@ const std::string state::Event::getPacketStr() const {
     return *std::get_if<std::string>(&_packet);
 }
 
-const std::size_t state::Event::getPacketNb() const {
+std::size_t state::Event::getPacketNb() const {
     return *std::get_if<std::size_t>(&_packet);
 }
 
-const double state::Event::getPacketDecimal() const {
+double state::Event::getPacketDecimal() const {
     return *std::get_if<double>(&_packet);
 }
 
-const bool state::Event::getPacketBool() const {
+bool state::Event::getPacketBool() const {
     return *std::get_if<bool>(&_packet);
 }
 

@@ -16,13 +16,13 @@
 #include <dlfcn.h>
 
 
-static void print_events(std::queue<state::Event> events)
-{
-    while (!events.empty()) {
-        std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
-        events.pop();
-    }
-}
+// static void print_events(std::queue<state::Event> events)
+// {
+//     while (!events.empty()) {
+//         std::cout << "events.front().getType() = " << events.front().getType() << std::endl;
+//         events.pop();
+//     }
+// }
 
 arcade::CoreProgram::CoreProgram()
 {
@@ -42,31 +42,56 @@ int &arcade::CoreProgram::getScore()
 }
 
 
-void arcade::CoreProgram::loadGame(std::string game)
-{
-    void *handle = dlopen(game.c_str(), RTLD_LAZY);
+template<typename T>
+std::shared_ptr<T> loadComponent(const std::string& path, const std::string& creatorFunction, std::shared_ptr<state::Keybinds>& keybinds) {
+    void* handle = dlopen(path.c_str(), RTLD_LAZY);
     if (!handle) {
-        std::cerr << "Failed to open " << game << ": " << dlerror() << std::endl;
-    } else {
-        //use dlsym to load symbols/functions
+        std::cerr << "Failed to open library: " << path << ", error: " << dlerror() << std::endl;
+        return nullptr;
     }
+
+    dlerror();
+    using CreatorFunc = T* (*)(std::shared_ptr<state::Keybinds>&);
+    CreatorFunc create = (CreatorFunc)dlsym(handle, creatorFunction.c_str());
+
+    const char* dlsym_error = dlerror();
+    if (dlsym_error) {
+        std::cerr << "Failed to load symbol: " << creatorFunction << ", error: " << dlsym_error << std::endl;
+        dlclose(handle);
+        return nullptr;
+    }
+
+    if (!create) {
+        std::cerr << "Function pointer for " << creatorFunction << " is null after dlsym." << std::endl;
+        dlclose(handle);
+        return nullptr;
+    }
+
+    std::shared_ptr<T> component(create(keybinds));
+    if (!component) {
+        std::cerr << "Component creation failed for " << creatorFunction << std::endl;
+    }
+    return component;
 }
 
-void arcade::CoreProgram::loadGraphic(std::string graphic)
-{
-    void *handle = dlopen(graphic.c_str(), RTLD_LAZY);
-    if (!handle) {
-        std::cerr << "Failed to open " << graphic << ": " << dlerror() << std::endl;
-    } else {
-        //use dlsym to load symbols/functions
-    }
+void arcade::CoreProgram::loadGame(const std::string& game) {
+    _game = loadComponent<game::AGame>(game, "createGame", _keys);
 }
 
+void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
+    _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphix", _keys);
+}
 int arcade::CoreProgram::loop()
 {
-    _game = new game::Snake(_keys);
+    loadGame("lib/arcade_snake.so");
+    loadGraphic("lib/arcade_ncurses.so");
+    if (!_game || !_graphic) {
+        std::cerr << "Game or graphic component failed to load correctly." << std::endl;
+        return -1; // or handle error appropriately
+    }
+    // _game = new game::Snake(_keys);
     // _graphic = new graphic::Ncurses(_keys);
-    _graphic = new graphic::Sdl(_keys);
+    // _graphic = new graphic::Sdl(_keys);
     std::queue<state::Event> events;
 
     using clock = std::chrono::steady_clock;

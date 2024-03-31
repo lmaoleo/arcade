@@ -35,7 +35,7 @@ namespace state {
         LOSE,           /* 1 packet  */
         PAUSE,          /* 1 packet  */
         DRAW,           /* 3 packets */
-        DRAW_SCORE,     /* 3 packets */
+        DRAW_STRING,    /* 3 packets */
         PLAY_SOUND,     /* 1 packet  */
         DELTA_TIME,     /* 1 packet  */
     };
@@ -54,9 +54,9 @@ namespace state {
         EventType getType() const;
 
         const std::string getPacketStr() const;
-        const std::size_t getPacketNb() const;
-        const double getPacketDecimal() const;
-        const bool getPacketBool() const;
+        std::size_t getPacketNb() const;
+        double getPacketDecimal() const;
+        bool getPacketBool() const;
 
         void setEventType(EventType type);
 

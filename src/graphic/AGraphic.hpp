@@ -25,6 +25,7 @@ namespace graphic {
                 virtual void readLose(std::queue<state::Event> &event) final;
                 virtual void readPause(std::queue<state::Event> &event) final;
                 virtual void readDraw(std::queue<state::Event> &event) final;
+                virtual void readDrawString(std::queue<state::Event> &event) final;
                 virtual void readSound(std::queue<state::Event> &event) final;
                 virtual void readTime(std::queue<state::Event> &event) final;
                 virtual void packetError(std::queue<state::Event> &event) final;

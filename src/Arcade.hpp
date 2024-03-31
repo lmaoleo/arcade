@@ -20,15 +20,15 @@ namespace arcade {
             CoreProgram();
             ~CoreProgram();
             int &getScore();
-            void loadGame(std::string game);
-            void loadGraphic(std::string graphic);
+            void loadGame(const std::string& game);
+            void loadGraphic(const std::string& graphic);
             int loop();
 
         private:
             int _score;
             std::shared_ptr<state::Keybinds> _keys;
-            game::IGame *_game;
-            graphic::IGraphic *_graphic;
+            std::shared_ptr<game::IGame> _game;
+            std::shared_ptr<graphic::IGraphic> _graphic;
     };
 }
 

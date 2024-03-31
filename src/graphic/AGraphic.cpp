@@ -74,6 +74,32 @@ void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
     event.pop();
 }
 
+void graphic::AGraphic::readDrawString(std::queue<state::Event> &event)
+{
+    if (event.size() < 3)
+        return packetError(event);
+    event.pop();
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+
+    std::size_t packetNb = event.front().getPacketNb();
+    event.pop();
+
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    std::size_t packetNb2 = event.front().getPacketNb();
+    event.pop();
+
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    std::string packetStr = event.front().getPacketStr();
+    event.pop();
+
+    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
+    _draw.push_back(draw);
+    event.pop();
+}
+
 void graphic::AGraphic::readSound(std::queue<state::Event> &event)
 {
     event.pop();

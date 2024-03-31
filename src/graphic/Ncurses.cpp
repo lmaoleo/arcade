@@ -19,6 +19,13 @@ static const std::map<std::string, wchar_t> charmap = {
     {"empty", L'🧱'},
 };
 
+extern "C" {
+    graphic::Ncurses *createGraphix(std::shared_ptr<state::Keybinds> &keybinds)
+    {
+        return new graphic::Ncurses(keybinds);
+    }
+};
+
 graphic::Ncurses::Ncurses(std::shared_ptr<state::Keybinds> &key)
 {
     std::string action;
@@ -84,6 +91,8 @@ std::queue<state::Event> graphic::Ncurses::draw(std::queue<state::Event> &event)
             wchar_t symbol = charIt->second;
             mvaddwstr(y, x, &symbol);
         }
+        //if end of list display score
+        // wprintw(stdscr, "Score: %d", type);
     }
 
     refresh();

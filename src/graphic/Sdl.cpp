@@ -11,6 +11,12 @@ std::map<std::string, SDL_Color> colorMap = {
     {"food", {255, 255, 0, 255}}
 };
 
+extern "C" {
+    graphic::Sdl *createGraphix(std::shared_ptr<state::Keybinds> &keybinds)
+    {
+        return new graphic::Sdl(keybinds);
+    }
+};
 
 static void drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType) {
     auto colorIt = colorMap.find(elementType);

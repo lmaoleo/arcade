@@ -61,12 +61,12 @@ extern "C" {
     }
 }
 
-static void print_map(std::vector<std::string> map)
-{
-    for (std::size_t i = 0; i < map.size(); i++) {
-        std::cout << map[i] << std::endl;
-    }
-}
+// static void print_map(std::vector<std::string> map)
+// {
+//     for (std::size_t i = 0; i < map.size(); i++) {
+//         std::cout << map[i] << std::endl;
+//     }
+// }
 
 static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake)
 {
@@ -214,9 +214,9 @@ std::queue<state::Event> game::Snake::tick()
     return events;
 }
 
-static void print_events(std::queue<state::Event> events)
-{
-    while (!events.empty()) {
-        events.pop();
-    }
-}
+// static void print_events(std::queue<state::Event> events)
+// {
+//     while (!events.empty()) {
+//         events.pop();
+//     }
+// }
