@@ -86,12 +86,8 @@ int arcade::CoreProgram::loop()
     loadGame("lib/arcade_snake.so");
     loadGraphic("lib/arcade_ncurses.so");
     if (!_game || !_graphic) {
-        std::cerr << "Game or graphic component failed to load correctly." << std::endl;
-        return -1; // or handle error appropriately
+        return -1;
     }
-    // _game = new game::Snake(_keys);
-    // _graphic = new graphic::Ncurses(_keys);
-    // _graphic = new graphic::Sdl(_keys);
     std::queue<state::Event> events;
 
     using clock = std::chrono::steady_clock;
