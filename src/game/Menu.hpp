@@ -24,6 +24,7 @@ namespace game {
         private:
             std::shared_ptr<state::Keybinds> _keys;
             std::vector<std::string> _lib_files;
+            std::vector<std::string> _game_files;
             std::size_t _ticks;
             std::string _selected_game;
             std::string _selected_graphic;

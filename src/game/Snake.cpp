@@ -108,12 +108,14 @@ static void create_draw_string_event(std::queue<state::Event> &events, std::size
     state::Event packetX = state::Event(state::EventType::DATA, x);
     state::Event packetY = state::Event(state::EventType::DATA, y);
     state::Event packetType = state::Event(state::EventType::DATA, score);
+    state::Event selected = state::Event(state::EventType::DATA, false);
     state::Event event2;
     event2.setEventType(state::EventType::DRAW_STRING);
     events.push(event);
     events.push(packetX);
     events.push(packetY);
     events.push(packetType);
+    events.push(selected);
     events.push(event2);
 }
 

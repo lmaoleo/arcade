@@ -90,8 +90,20 @@ std::queue<state::Event> graphic::Ncurses::draw(std::queue<state::Event> &event)
         if (charIt != charmap.end()) {
             wchar_t symbol = charIt->second;
             mvaddwstr(y, x, &symbol);
+        }
+    }
+    for (const auto& item : _draw_str) {
+        std::size_t x, y;
+        std::string str;
+        bool selected;
+        std::tie(x, y, str, selected) = item;
+
+        if (selected) {
+            attron(A_REVERSE);
+            mvprintw(y, x, str.c_str());
+            attroff(A_REVERSE);
         } else {
-            wprintw(stdscr, "%s", type.c_str());
+            mvprintw(y, x, str.c_str());
         }
     }
 

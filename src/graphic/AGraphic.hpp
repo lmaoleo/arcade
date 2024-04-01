@@ -35,6 +35,7 @@ namespace graphic {
                 bool _lose;
                 bool _pause;
                 std::vector<std::tuple<std::size_t, std::size_t, std::string>> _draw;
+                std::vector<std::tuple<std::size_t, std::size_t, std::string, bool >> _draw_str;
                 std::vector<std::string> _sound;
                 double _time;
         };

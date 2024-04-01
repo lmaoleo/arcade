@@ -35,19 +35,21 @@ std::vector<std::string> getFilesInDirectory(const std::string &directory)
     return files;
 }
 
-static void create_draw_string_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string score)
+static void create_draw_string_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string score, bool selected = false)
 {
     state::Event event;
     event.setEventType(state::EventType::DRAW_STRING);
     state::Event packetX = state::Event(state::EventType::DATA, x);
     state::Event packetY = state::Event(state::EventType::DATA, y);
     state::Event packetType = state::Event(state::EventType::DATA, score);
+    state::Event packetselected = state::Event(state::EventType::DATA, selected);
     state::Event event2;
     event2.setEventType(state::EventType::DRAW_STRING);
     events.push(event);
     events.push(packetX);
     events.push(packetY);
     events.push(packetType);
+    events.push(packetselected);
     events.push(event2);
 }
 
@@ -63,16 +65,15 @@ game::Menu::~Menu()
 
 void game::Menu::display_menu(std::queue<state::Event> &events)
 {
-    create_draw_string_event(events, 0, 0, "Menu\n");
+    create_draw_string_event(events, 0, 0, "Menu\n", true);
     for (std::size_t i = 0; i < _lib_files.size(); i++) {
-        create_draw_string_event(events, i + 1, 0, _lib_files[i] + "\n");
+        create_draw_string_event(events, 10, i * 4, _lib_files[i] + "\n");
     }
 }
 
 std::queue<state::Event> game::Menu::tick()
 {
     std::queue<state::Event> events;
-    std::cout << "Menu::tick()" << std::endl;
     display_menu(events);
     return events;
 }

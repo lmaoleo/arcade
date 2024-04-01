@@ -96,8 +96,13 @@ void graphic::AGraphic::readDrawString(std::queue<state::Event> &event)
     std::string packetStr = event.front().getPacketStr();
     event.pop();
 
-    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
-    _draw.push_back(draw);
+    if (event.front().getType() != state::DATA)
+        return packetError(event);
+    bool packetBool = event.front().getPacketBool();
+    event.pop();
+
+    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr, packetBool);
+    _draw_str.push_back(draw);
     event.pop();
 }
 

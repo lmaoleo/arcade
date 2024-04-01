@@ -20,7 +20,7 @@ namespace graphic {
         ~Sdl();
         void updateKeybinds() final;
         void drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType);
-        void drawText(const std::string &text, const int &x, const int &y);
+        void drawText(const std::string &text, const int &x, const int &y, bool selected);
         std::queue<state::Event> draw(std::queue<state::Event> &event) final;
 
     private:

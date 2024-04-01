@@ -31,8 +31,6 @@ void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect,
         const SDL_Color& color = colorIt->second;
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(renderer, &rect);
-    } else {
-        drawText(elementType, rect.x, rect.y);
     }
 }
 
@@ -85,10 +83,13 @@ graphic::Sdl::~Sdl() {
     SDL_Quit();
 }
 
-void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y) {
+void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y, bool selected) {
     if (text == "empty")
         return;
     std::string textp = text;
+    if (selected) {
+        textp = ">> " + textp + " <<";
+    }
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(_font, textp.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
@@ -128,6 +129,17 @@ std::queue<state::Event> graphic::Sdl::draw(std::queue<state::Event> &event) {
         type = std::get<2>(item);
         SDL_Rect rect = {static_cast<int>(x * 40),static_cast<int>(y * 40), 40, 40};
         drawGameElement(_renderer, rect, type);
+    }
+
+    for (const auto& item : _draw_str) {
+        std::size_t x, y;
+        std::string str;
+        bool selected;
+        x = std::get<0>(item);
+        y = std::get<1>(item);
+        str = std::get<2>(item);
+        selected = std::get<3>(item);
+        drawText(str, static_cast<int>(x * 40), static_cast<int>(y * 40), selected);
     }
 
     SDL_RenderPresent(_renderer);

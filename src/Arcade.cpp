@@ -82,14 +82,12 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 int arcade::CoreProgram::loop()
 {
     loadGame("lib/arcade_menu.so");
-    loadGraphic("lib/arcade_sdl2.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
     }
     std::queue<state::Event> events;
 
-    std::cout << "CoreProgram::loop()" << std::endl;
     using clock = std::chrono::steady_clock;
     std::chrono::milliseconds timestep(1000 / 5);
     auto next_tick = clock::now() + timestep;
@@ -111,8 +109,9 @@ int main(int ac, char **av)
         return 84;
     }
     arcade::CoreProgram core;
-    // core.loadGraphic(av[1]);
-    core.loop();
+    core.loadGraphic(av[1]);
+    if (core.loop() == -1)
+        return 84;
     std::cout << "Hello, World!" << std::endl;
     return 0;
 }
