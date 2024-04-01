@@ -25,6 +25,8 @@ namespace game {
             bool checkCollision();
             void checkFood();
             void generateFood();
+            std::string determine_body_orientation(int i);
+            std::string determine_tail_orientation(int i);
             std::queue<state::Event> transform_map_to_events(std::vector<std::string> map);
 
         private:

@@ -15,6 +15,23 @@ std::map<std::string, SDL_Color> colorMap = {
     {"snake_head_left", {0, 255, 255, 255}},
     {"snake_head_right", {0, 255, 255, 255}},
     {"snake_body", {0, 255, 0, 255}},
+    {"horizontal_snake_body", {0, 255, 0, 255}},
+    {"vertical_snake_body", {0, 255, 0, 255}},
+    {"angle_left_down_snake_body", {0, 255, 0, 255}},
+    {"angle_right_down_snake_body", {0, 255, 0, 255}},
+    {"angle_left_up_snake_body", {0, 255, 0, 255}},
+    {"angle_right_up_snake_body", {0, 255, 0, 255}},
+    {"snake_tail_down", {0, 255, 255, 255}},
+    {"snake_tail_up", {0, 255, 255, 255}},
+    {"snake_tail_left", {0, 255, 255, 255}},
+    {"snake_tail_right", {0, 255, 255, 255}},
+    {"pac_wall", {15, 46, 215, 255}},
+    {"pac_down", {255, 255, 0, 255}},
+    {"pac_up", {255, 255, 0, 255}},
+    {"pac_left", {255, 255, 0, 255}},
+    {"pac_right", {255, 255, 0, 255}},
+    {"ghost", {255, 0, 0, 255}},
+    {"pac_food", {231, 154, 149, 255}},
     {"food", {255, 255, 0, 255}}
 };
 
@@ -37,12 +54,12 @@ void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect,
 graphic::Sdl::Sdl(std::shared_ptr<state::Keybinds> &key) : _keys(key) {
     std::string action;
     if (TTF_Init() == -1) {
-        std::cerr << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        std::cerr << TTF_GetError() << std::endl;
     }
 
     _font = TTF_OpenFont("src/graphic/ARCADE_I.ttf", 24);
     if (_font == nullptr) {
-        std::cerr << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        std::cerr << TTF_GetError() << std::endl;
     }
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -90,7 +107,7 @@ void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y,
     if (selected) {
         textp = ">> " + textp + " <<";
     }
-    SDL_Color color = {0, 0, 0, 255};
+    SDL_Color color = {255, 255, 255, 255}; // white
     SDL_Surface* surface = TTF_RenderText_Solid(_font, textp.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
     SDL_Rect rect = {x, y, surface->w, surface->h};
@@ -117,7 +134,7 @@ void graphic::Sdl::updateKeybinds() {
 }
 
 std::queue<state::Event> graphic::Sdl::draw(std::queue<state::Event> &event) {
-    SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     SDL_RenderClear(_renderer);
 
     readEvent(event);
@@ -144,6 +161,7 @@ std::queue<state::Event> graphic::Sdl::draw(std::queue<state::Event> &event) {
 
     SDL_RenderPresent(_renderer);
 
+    _draw_str.clear();
     _draw.clear();
     event = std::queue<state::Event>();
     return event;
