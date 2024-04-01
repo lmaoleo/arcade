@@ -16,6 +16,13 @@ static const std::map<std::string, wchar_t> charmap = {
     {"snake_head_right", L'💃'},
     {"snake_body", L'🟩'},
     {"food", L'🍔'},
+    {"pac_wall", L'🧱'},
+    {"pac_down", L'👇'},
+    {"pac_up", L'👆'},
+    {"pac_left", L'👈'},
+    {"pac_right", L'👉'},
+    {"ghost", L'👻'},
+    {"pac_food", L'🍔'},
     {"empty", L' '},
 };
 

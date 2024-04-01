@@ -12,16 +12,6 @@
 #include <queue>
 
 namespace game {
-    class Ghost {
-        public:
-            Ghost(std::size_t x, std::size_t y);
-            ~Ghost();
-            std::tuple<std::size_t, std::size_t> getPos();
-            void setPos(std::size_t x, std::size_t y);
-            void move();
-        private:
-            std::tuple<std::size_t, std::size_t> _pos;
-    };
     class Pacman : public AGame {
         public:
             Pacman(std::shared_ptr<state::Keybinds> &key);
@@ -43,7 +33,7 @@ namespace game {
             std::string _headDirection;
             std::tuple<std::size_t, std::size_t> _Pacman;
             std::vector<std::tuple<std::size_t, std::size_t, bool>> _food;
-            std::vector<std::shared_ptr<game::Ghost>> _ghosts;
+            std::vector<std::tuple<std::size_t, std::size_t>> _ghosts;
     };
 };
 

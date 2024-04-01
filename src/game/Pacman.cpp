@@ -17,7 +17,7 @@ static std::vector<std::string> PacManFoodMap = {
     "####.###.#.###.####",
     "   #.#.......#.#   ",
     "####.#.#####.#.####",
-    "    .#.......#.    ",
+    "    ...#   #...    ",
     "####.#.#####.#.####",
     "   #.#.......#.#   ",
     "####.#.#####.#.####",
@@ -93,14 +93,11 @@ game::Pacman::Pacman(std::shared_ptr<state::Keybinds> &key)
     _keys = key;
     _score = 0;
     _direction = std::make_tuple(1, 0);
-    _headDirection = "right";
-    _Pacman = std::make_tuple(10, 10);
+    _headDirection = "pac_right";
+    _Pacman = std::make_tuple(9, 15);
     generateFood();
     _ticks = 0;
-    _ghosts.push_back(std::make_shared<game::Ghost>(18, 18));
-    _ghosts.push_back(std::make_shared<game::Ghost>(1, 18));
-    _ghosts.push_back(std::make_shared<game::Ghost>(18, 1));
-    _ghosts.push_back(std::make_shared<game::Ghost>(1, 1));
+    _ghosts = {{8, 9}, {9, 9}, {10, 9}};
 }
 
 game::Pacman::~Pacman()
@@ -153,7 +150,17 @@ void game::Pacman::changePacmanPos()
 {
     std::tuple newPacmanPos = std::make_tuple(std::get<0>(_Pacman) + std::get<0>(_direction), std::get<1>(_Pacman) + std::get<1>(_direction));
     if (checkCollision(newPacmanPos)) {
-        _Pacman = newPacmanPos;
+        if (std::get<0>(newPacmanPos) == 0 && std::get<1>(newPacmanPos) == 9 && std::get<0>(_direction) == static_cast<unsigned long>(-1)) {
+            _Pacman = std::make_tuple(19, 9);
+            _direction = std::make_tuple(-1, 0);
+            _headDirection = "pac_left";
+        } else if (std::get<0>(newPacmanPos) == 19 && std::get<1>(newPacmanPos) == 9 && std::get<0>(_direction) == 1) {
+            _Pacman = std::make_tuple (0, 9);
+            _direction = std::make_tuple(1, 0);
+            _headDirection = "pac_right";
+        } else {
+            _Pacman = newPacmanPos;
+        }
     }
 }
 
@@ -162,10 +169,10 @@ void add_Pacman_to_map(std::vector<std::string> &map, std::tuple<std::size_t, st
     map[std::get<1>(Pacman)][std::get<0>(Pacman)] = 'P';
 }
 
-void add_ghosts_to_map(std::vector<std::string> &map, std::vector<std::shared_ptr<game::Ghost>> ghosts)
+void add_ghosts_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> ghosts)
 {
     for (std::size_t i = 0; i < ghosts.size(); i++) {
-        map[std::get<1>(ghosts[i]->getPos())][std::get<0>(ghosts[i]->getPos())] = 'G';
+        map[std::get<1>(ghosts[i])][std::get<0>(ghosts[i])] = 'G';
     }
 }
 
@@ -230,17 +237,17 @@ std::queue<state::Event> game::Pacman::transform_map_to_events(std::vector<std::
 void game::Pacman::add_score_to_events(std::queue<state::Event> &events)
 {
     std::string score = "Score: " + std::to_string(_score);
-    create_draw_string_event(events, 0, 20, score);
+    create_draw_string_event(events, 0, 22, score);
 }
 
 std::queue<state::Event> game::Pacman::tick()
 {
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
-    std::queue<state::Event> events;
-    add_Pacman_to_map(newMap, _Pacman);
-    add_ghosts_to_map(newMap, _ghosts);
+    changePacmanPos();
     add_food_to_map(newMap, _food);
+    add_ghosts_to_map(newMap, _ghosts);
+    add_Pacman_to_map(newMap, _Pacman);
     std::queue<state::Event> events = transform_map_to_events(newMap);
     add_score_to_events(events);
     checkFood();
