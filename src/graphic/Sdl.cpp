@@ -32,7 +32,7 @@ void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect,
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(renderer, &rect);
     } else {
-        drawText(elementType, 200, 600);
+        drawText(elementType, rect.x, rect.y);
     }
 }
 
@@ -88,7 +88,7 @@ graphic::Sdl::~Sdl() {
 void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y) {
     if (text == "empty")
         return;
-    std::string textp = "Score: " + text;
+    std::string textp = text;
     SDL_Color color = {0, 0, 0, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(_font, textp.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);

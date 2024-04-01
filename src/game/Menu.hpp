@@ -18,10 +18,12 @@ namespace game {
             std::queue<state::Event> tick();
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
             void changeGame();
+            void display_menu(std::queue<state::Event> &events);
             std::queue<state::Event> transform_libs_to_events(std::vector<std::string> map);
 
         private:
             std::shared_ptr<state::Keybinds> _keys;
+            std::vector<std::string> _lib_files;
             std::size_t _ticks;
             std::string _selected_game;
             std::string _selected_graphic;

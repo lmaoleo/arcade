@@ -14,6 +14,7 @@ NAMES = core \
 		ncurses \
 		sdl \
 		snake \
+		menu \
 
 SRC_FILES =	Event.cpp \
 			Keybinds.cpp \
@@ -33,6 +34,8 @@ SNAKE_FILES = Snake.cpp \
 
 SDL_FILES = Sdl.cpp \
 
+MENU_FILES = Menu.cpp \
+
 # SFML_FILES = SFML.cpp \
 
 SRC_FILES := $(addprefix src/, $(SRC_FILES))
@@ -43,6 +46,7 @@ NCURSES_FILES := $(addprefix src/graphic/, $(NCURSES_FILES))
 SDL_FILES := $(addprefix src/graphic/, $(SDL_FILES))
 SFML_FILES := $(addprefix src/graphic/, $(SFML_FILES))
 SNAKE_FILES := $(addprefix src/game/, $(SNAKE_FILES))
+MENU_FILES := $(addprefix src/game/, $(MENU_FILES))
 
 GRAPHIC_LIB_FILES = $(SRC_FILES) $(GRAPHIC_FILES)
 GAME_LIB_FILES = $(SRC_FILES) $(GAME_FILES)
@@ -66,6 +70,9 @@ sfml: $(SFML_FILES)
 
 snake: $(SNAKE_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(SRC_FILES)
+
+menu: $(MENU_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_menu.so -Iinclude $(MENU_FILES) $(SRC_FILES)
 
 clean:
 	rm -f $(addsuffix .o, $(NAMES))

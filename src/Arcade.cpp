@@ -10,6 +10,7 @@
 #include "game/IGame.hpp"
 #include "graphic/Ncurses.hpp"
 #include "game/Snake.hpp"
+#include "game/Menu.hpp"
 #include "graphic/Sdl.hpp"
 #include <chrono>
 #include <thread>
@@ -56,11 +57,13 @@ std::shared_ptr<T> loadComponent(const std::string& path, const std::string& cre
 
     const char* dlsym_error = dlerror();
     if (dlsym_error) {
+        std::cerr << dlsym_error << std::endl;
         dlclose(handle);
         return nullptr;
     }
 
     if (!create) {
+        std::cerr << "Failed to load symbol" << std::endl;
         dlclose(handle);
         return nullptr;
     }
@@ -78,13 +81,15 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 }
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_snake.so");
+    loadGame("lib/arcade_menu.so");
     loadGraphic("lib/arcade_sdl2.so");
     if (!_game || !_graphic) {
+        std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
     }
     std::queue<state::Event> events;
 
+    std::cout << "CoreProgram::loop()" << std::endl;
     using clock = std::chrono::steady_clock;
     std::chrono::milliseconds timestep(1000 / 5);
     auto next_tick = clock::now() + timestep;
@@ -108,5 +113,6 @@ int main(int ac, char **av)
     arcade::CoreProgram core;
     // core.loadGraphic(av[1]);
     core.loop();
+    std::cout << "Hello, World!" << std::endl;
     return 0;
 }

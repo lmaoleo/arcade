@@ -212,7 +212,8 @@ void game::Snake::add_snake_to_events(std::queue<state::Event> &event)
 
 void game::Snake::add_score_to_events(std::queue<state::Event> &events)
 {
-    create_draw_string_event(events, 0, 20, std::to_string(_score));
+    std::string score = "Score: " + std::to_string(_score);
+    create_draw_string_event(events, 0, 20, score);
 }
 
 void game::Snake::add_food_to_events(std::queue<state::Event> &events)

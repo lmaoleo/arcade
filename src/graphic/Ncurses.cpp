@@ -91,7 +91,7 @@ std::queue<state::Event> graphic::Ncurses::draw(std::queue<state::Event> &event)
             wchar_t symbol = charIt->second;
             mvaddwstr(y, x, &symbol);
         } else {
-            wprintw(stdscr, "Score: %s", type.c_str());
+            wprintw(stdscr, "%s", type.c_str());
         }
     }
 
