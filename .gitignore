@@ -1,3 +1,5 @@
 .vscode
 arcade
 main_test.cpp
+lib
+core
