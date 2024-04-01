@@ -7,3 +7,17 @@
 
 #include "Menu.hpp"
 
+game::Menu::Menu(std::shared_ptr<state::Keybinds> &key)
+{
+    _keys = key;
+}
+
+game::Menu::~Menu()
+{
+}
+
+std::queue<state::Event> game::Menu::tick()
+{
+    std::queue<state::Event> events;
+    return events;
+}

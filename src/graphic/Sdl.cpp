@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** B-OOP-400-TLS-4-1-arcade-matthias.soual
+** File description:
+** Sdl
+*/
+
 #include "Sdl.hpp"
 #include <iostream>
 
@@ -18,17 +25,27 @@ extern "C" {
     }
 };
 
-static void drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType) {
+void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType) {
     auto colorIt = colorMap.find(elementType);
     if (colorIt != colorMap.end()) {
         const SDL_Color& color = colorIt->second;
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(renderer, &rect);
+    } else {
+        drawText(elementType, 200, 600);
     }
 }
 
 graphic::Sdl::Sdl(std::shared_ptr<state::Keybinds> &key) : _keys(key) {
     std::string action;
+    if (TTF_Init() == -1) {
+        std::cerr << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+    }
+
+    _font = TTF_OpenFont("src/graphic/ARCADE_I.ttf", 24);
+    if (_font == nullptr) {
+        std::cerr << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
+    }
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << SDL_GetError() << std::endl;
@@ -58,9 +75,27 @@ graphic::Sdl::Sdl(std::shared_ptr<state::Keybinds> &key) : _keys(key) {
 }
 
 graphic::Sdl::~Sdl() {
+    if (_font != nullptr) {
+        TTF_CloseFont(_font);
+        _font = nullptr;
+    }
+    TTF_Quit();
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
     SDL_Quit();
+}
+
+void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y) {
+    if (text == "empty")
+        return;
+    std::string textp = "Score: " + text;
+    SDL_Color color = {0, 0, 0, 255};
+    SDL_Surface* surface = TTF_RenderText_Solid(_font, textp.c_str(), color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+    SDL_Rect rect = {x, y, surface->w, surface->h};
+    SDL_RenderCopy(_renderer, texture, nullptr, &rect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 }
 
 void graphic::Sdl::updateKeybinds() {
