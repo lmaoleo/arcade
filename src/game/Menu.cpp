@@ -11,6 +11,18 @@
 #include <queue>
 #include "Menu.hpp"
 
+static const std::vector<std::string> lib_files = {
+    "lib_arcade_ncurses.so",
+    "lib_arcade_sfml.so",
+    "lib_arcade_sdl.so"
+    };
+
+static const std::vector<std::string> game_files = {
+    "lib_arcade_nibbler.so",
+    "lib_arcade_pacman.so",
+    "lib_arcade_qix.so"
+    };
+
 extern "C" {
     game::Menu *createGame(std::shared_ptr<state::Keybinds> &keybinds)
     {
@@ -61,6 +73,16 @@ game::Menu::Menu(std::shared_ptr<state::Keybinds> &key)
 
 game::Menu::~Menu()
 {
+}
+
+void game::Menu::handle_key_events(std::queue<state::Event> &events)
+{
+    if (_keys->isKeyPressed("UP")) {
+    }
+    if (_keys->isKeyPressed("DOWN")) {
+    }
+    if (_keys->isKeyPressed("ENTER")) {
+    }
 }
 
 void game::Menu::display_menu(std::queue<state::Event> &events)

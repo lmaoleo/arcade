@@ -19,6 +19,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
             void changeGame();
             void display_menu(std::queue<state::Event> &events);
+            void handle_key_events(std::queue<state::Event> &events);
             std::queue<state::Event> transform_libs_to_events(std::vector<std::string> map);
 
         private:

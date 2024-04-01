@@ -81,7 +81,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 }
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_menu.so");
+    loadGame("lib/arcade_snake.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;

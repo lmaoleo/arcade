@@ -9,14 +9,14 @@
 
 
 static const std::map<std::string, wchar_t> charmap = {
-    {"wall", L'🛑'},
+    {"wall", L'🧱'},
     {"snake_head_down", L'🦯'},
     {"snake_head_up", L'🦺'},
     {"snake_head_left", L'🕺'},
     {"snake_head_right", L'💃'},
     {"snake_body", L'🟩'},
     {"food", L'🍔'},
-    {"empty", L'🧱'},
+    {"empty", L' '},
 };
 
 extern "C" {
@@ -31,6 +31,8 @@ graphic::Ncurses::Ncurses(std::shared_ptr<state::Keybinds> &key)
     std::string action;
     _keys = key;
     initscr();
+    start_color();
+    init_pair(1, COLOR_BLACK, COLOR_BLACK);
     noecho();
     nodelay(stdscr, TRUE);
     curs_set(0);
@@ -82,16 +84,23 @@ std::queue<state::Event> graphic::Ncurses::draw(std::queue<state::Event> &event)
 
     readEvent(event);
     for (const auto& item : _draw) {
-        std::size_t x, y;
-        std::string type;
-        std::tie(x, y, type) = item;
+    std::size_t x, y;
+    std::string type;
+    std::tie(x, y, type) = item;
 
-        auto charIt = charmap.find(type);
-        if (charIt != charmap.end()) {
-            wchar_t symbol = charIt->second;
-            mvaddwstr(y, x, &symbol);
+    auto charIt = charmap.find(type);
+    if (charIt != charmap.end()) {
+        wchar_t symbol = charIt->second;
+        if (type == "empty") {
+            attron(COLOR_PAIR(1));
+            mvaddch(y, x * 2, ' ');
+            mvaddch(y, x * 2 + 1, ' ');
+            attroff(COLOR_PAIR(1));
+        } else {
+            mvaddwstr(y, x * 2, &symbol);
         }
     }
+}
     for (const auto& item : _draw_str) {
         std::size_t x, y;
         std::string str;
