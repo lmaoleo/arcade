@@ -1,4 +1,4 @@
-# Arcade : Un Cadre Multi-Jeux
+# Arcade : A Retro Platform
 
 ## Vue d'ensemble
 
