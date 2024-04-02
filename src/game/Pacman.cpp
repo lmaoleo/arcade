@@ -144,6 +144,9 @@ void game::Pacman::checkFood()
             _food[i] = std::make_tuple(std::get<0>(_food[i]), std::get<1>(_food[i]), true);
         }
     }
+    if (_score % 177 == 0 && _score != 0) {
+        generateFood();
+    }
 }
 
 void game::Pacman::changePacmanPos()

@@ -89,7 +89,7 @@ int arcade::CoreProgram::loop()
     std::queue<state::Event> events;
 
     using clock = std::chrono::steady_clock;
-    std::chrono::milliseconds timestep(1000 / 5);
+    std::chrono::milliseconds timestep(1000 / 8);
     auto next_tick = clock::now() + timestep;
 
     while (1) {
