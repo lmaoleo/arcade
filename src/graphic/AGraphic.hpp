@@ -18,7 +18,7 @@ namespace graphic {
     class AGraphic : public IGraphic {
             public:
                 virtual void updateKeybinds() = 0;
-                virtual std::queue<state::Event> draw(std::queue<state::Event> &event) = 0;
+                virtual std::queue<state::Event> draw() = 0;
                 virtual void readEvent(std::queue<state::Event> &event) final;
 
                 virtual void readWin(std::queue<state::Event> &event) final;
@@ -29,6 +29,13 @@ namespace graphic {
                 virtual void readSound(std::queue<state::Event> &event) final;
                 virtual void readTime(std::queue<state::Event> &event) final;
                 virtual void packetError(std::queue<state::Event> &event) final;
+                virtual void setWin(bool win) { _win = win; };
+                virtual void setLose(bool lose) { _lose = lose; };
+                virtual void setPause(bool pause) { _pause = pause; };
+                virtual void setDraw(std::tuple<std::size_t, std::size_t, std::string> draw) { _draw.push_back(draw); };
+                virtual void setDrawStr(std::tuple<std::size_t, std::size_t, std::string, bool > draw_str) {_draw_str.push_back(draw_str);};
+                virtual void setSound(std::string sound) { _sound.push_back(sound); };
+                virtual void setTime(double time) { _time = time; };
             protected:
                 std::shared_ptr<state::Keybinds> _keys;
                 bool _win;

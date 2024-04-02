@@ -22,7 +22,7 @@ namespace arcade {
             int &getScore();
             void loadGame(const std::string& game);
             void loadGraphic(const std::string& graphic);
-            int loop();
+            int loop(void);
 
         private:
             int _score;

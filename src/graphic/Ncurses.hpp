@@ -19,7 +19,7 @@ namespace graphic {
         Ncurses(std::shared_ptr<state::Keybinds> &key);
         ~Ncurses();
         void updateKeybinds() final;
-        std::queue<state::Event> draw(std::queue<state::Event> &event) final;
+        std::queue<state::Event> draw() final;
 
     private:
         std::shared_ptr<state::Keybinds> _keys;

@@ -295,15 +295,8 @@ std::queue<state::Event> game::Snake::tick()
         std::cout << "You lost" << std::endl;
         return events;
     }
-    add_score_to_events(events);
+    // add_score_to_events(events);
     checkFood();
     _ticks++;
     return events;
 }
-
-// static void print_events(std::queue<state::Event> events)
-// {
-//     while (!events.empty()) {
-//         events.pop();
-//     }
-// }

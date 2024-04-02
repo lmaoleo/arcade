@@ -38,6 +38,8 @@ namespace state {
         DRAW_STRING,    /* 4 packets */
         PLAY_SOUND,     /* 1 packet  */
         DELTA_TIME,     /* 1 packet  */
+        SET_GAME,       /* 1 packet  */
+        SET_GRAPHIC,    /* 1 packet  */
     };
 
     class Event {

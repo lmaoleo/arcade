@@ -36,7 +36,7 @@ std::map<std::string, SDL_Color> colorMap = {
 };
 
 extern "C" {
-    graphic::Sdl *createGraphix(std::shared_ptr<state::Keybinds> &keybinds)
+    graphic::Sdl *createGraphic(std::shared_ptr<state::Keybinds> &keybinds)
     {
         return new graphic::Sdl(keybinds);
     }
@@ -133,11 +133,10 @@ void graphic::Sdl::updateKeybinds() {
     }
 }
 
-std::queue<state::Event> graphic::Sdl::draw(std::queue<state::Event> &event) {
+std::queue<state::Event> graphic::Sdl::draw() {
     SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     SDL_RenderClear(_renderer);
 
-    readEvent(event);
     for (const auto& item : _draw) {
         std::size_t x, y;
         std::string type;
@@ -163,6 +162,5 @@ std::queue<state::Event> graphic::Sdl::draw(std::queue<state::Event> &event) {
 
     _draw_str.clear();
     _draw.clear();
-    event = std::queue<state::Event>();
-    return event;
+    return std::queue<state::Event>();
 }

@@ -77,11 +77,11 @@ void arcade::CoreProgram::loadGame(const std::string& game) {
 }
 
 void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
-    _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphix", _keys);
+    _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys);
 }
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_menu.so");
+    loadGame("lib/arcade_pacman.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
@@ -95,7 +95,8 @@ int arcade::CoreProgram::loop()
     while (1) {
         _graphic->updateKeybinds();
         events = _game->tick();
-        _graphic->draw(events);
+        _graphic->readEvent(events);
+        events = _graphic->draw();
         std::this_thread::sleep_until(next_tick);
         next_tick += timestep;
     }
