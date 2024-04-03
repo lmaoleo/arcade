@@ -7,6 +7,8 @@
 
 #include "Sfml.hpp"
 
+std::map<std::string, std::pair<sf::Texture *, sf::IntRect>> spriteMap;
+
 std::map<std::string, sf::Color> colorMap = {
     {"wall", {255, 0, 0, 255}},
     {"snake_head_down", {0, 255, 255, 255}},
@@ -46,7 +48,7 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     _keys = key;
     _window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade DE ZINZIN");
     _font = new sf::Font();
-    if (!_font->loadFromFile("src/graphic/ARCADE_I.ttf")) {
+    if (!_font->loadFromFile("assets/ARCADE_I.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
     }
     if (!_window->isOpen()) {
@@ -59,6 +61,62 @@ graphic::Sfml::~Sfml()
     _window->close();
     delete _window;
     delete _font;
+}
+
+void graphic::Sfml::loadSprites() {
+    sf::Texture *spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png");
+    sf::Texture *spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png");
+
+    sf::Rect<int> wallRect(26, 219, 21, 20);
+    sf::Rect<int> snakeHeadDownRect(256, 64, 64, 64);
+    sf::Rect<int> snakeHeadUpRect(192, 0, 64, 64);
+    sf::Rect<int> snakeHeadLeftRect(192, 64, 64, 64);
+    sf::Rect<int> snakeHeadRightRect(256, 0, 64, 64);
+    sf::Rect<int> snakeHorizontalRect(64, 0, 64, 64);
+    sf::Rect<int> snakeVerticalRect(128, 64, 64, 64);
+    sf::Rect<int> snakeAngleLeftDownRect(0, 0, 64, 64);
+    sf::Rect<int> snakeAngleRightDownRect(128, 0, 64, 64);
+    sf::Rect<int> snakeAngleLeftUpRect(128, 128, 64, 64);
+    sf::Rect<int> snakeAngleRightUpRect(0, 64, 64, 64);
+    sf::Rect<int> snakeTailDownRect(256, 128, 64, 64);
+    sf::Rect<int> snakeTailUpRect(192, 128, 64, 64);
+    sf::Rect<int> snakeTailLeftRect(192, 192, 64, 64);
+    sf::Rect<int> snakeTailRightRect(256, 128, 64, 64);
+    sf::Rect<int> foodRect(0, 192, 64, 64);
+    sf::Rect<int> pacWallRect(0, 96, 24, 24);
+    sf::Rect<int> pacDownRect(120, 71, 24, 24);
+    sf::Rect<int> pacUpRect(71, 71, 24, 24);
+    sf::Rect<int> pacLeftRect(0, 71, 24, 24);
+    sf::Rect<int> pacRightRect(96, 71, 24, 24);
+    sf::Rect<int> ghostRect(0, 143, 24, 24);
+    sf::Rect<int> pacFoodRect(192, 0, 12, 12);
+    sf::Rect<int> emptyRect(303, 136, 24, 24);
+
+    spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
+    spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
+    spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
+    spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
+    spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+    spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+    spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
+    spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
+    spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
+    spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
+    spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
+    spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
+    spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
+    spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
+    spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
+    spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
+    spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
+    spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
+    spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
+    spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
+    spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
+    spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
+    spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
+    spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
+    spriteMap["wall"] = std::make_pair(spriteSheetTextureSnake, wallRect);
 }
 
 void graphic::Sfml::updateKeybinds()
@@ -97,15 +155,24 @@ void graphic::Sfml::updateKeybinds()
 
 void graphic::Sfml::drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType)
 {
-    auto colorIt = colorMap.find(elementType);
-
-    if (colorIt != colorMap.end()) {
-        const sf::Color &color = colorIt->second;
-        sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
-        rectangle.setPosition(rect.left, rect.top);
-        rectangle.setFillColor(color);
-        window.draw(rectangle);
+    auto spriteIt = spriteMap.find(elementType);
+    if (spriteIt != spriteMap.end()) {
+        std::cout << "Draw..." << std::endl;
+        sf::Texture *spriteTexture = spriteIt->second.first;
+        sf::IntRect &spriteSourceRect = spriteIt->second.second;
+        sf::Sprite sprite(*spriteTexture, spriteSourceRect);
+        sprite.setPosition(rect.left, rect.top);
+        window.draw(sprite);
     }
+}
+
+sf::Texture *graphic::Sfml::loadSprite(const std::string &filePath)
+{
+    sf::Texture *texture = new sf::Texture();
+    if (!texture->loadFromFile(filePath)) {
+        std::cerr << "Failed to load sprite!" << std::endl;
+    }
+    return texture;
 }
 
 void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y, bool selected)
