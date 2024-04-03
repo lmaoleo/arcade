@@ -68,7 +68,7 @@ static const std::map<char, std::string> charmap = {
 };
 
 extern "C" {
-    game::Pacman *createGame(std::shared_ptr<state::Keybinds> &keybinds)
+    game::Pacman *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
         return new game::Pacman(keybinds);
     }
@@ -88,7 +88,7 @@ std::vector<std::tuple<std::size_t, std::size_t, bool>> game::Pacman::generateFo
     return food;
 }
 
-game::Pacman::Pacman(std::shared_ptr<state::Keybinds> &key)
+game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key)
 {
     _keys = key;
     _score = 0;
@@ -106,26 +106,26 @@ game::Pacman::~Pacman()
 
 void game::Pacman::changeDirection()
 {
-    if (_keys->isKeyPressed("UP")) {
+    if (_keys->at("UP") == true) {
         _direction = std::make_tuple(0, -1);
         _headDirection = "pac_up";
     }
-    if (_keys->isKeyPressed("DOWN")) {
+    if (_keys->at("DOWN") == true) {
         _direction = std::make_tuple(0, 1);
         _headDirection = "pac_down";
     }
-    if (_keys->isKeyPressed("LEFT")) {
+    if (_keys->at("LEFT") == true ) {
         _direction = std::make_tuple(-1, 0);
         _headDirection = "pac_left";
     }
-    if (_keys->isKeyPressed("RIGHT")) {
+    if (_keys->at("RIGHT") == true) {
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
-    _keys->keyPressed("UP", false);
-    _keys->keyPressed("DOWN", false);
-    _keys->keyPressed("LEFT", false);
-    _keys->keyPressed("RIGHT", false);
+    _keys->at("UP") = false;
+    _keys->at("DOWN") = false;
+    _keys->at("LEFT") = false;
+    _keys->at("RIGHT") = false;
 }
 
 bool game::Pacman::checkCollision(std::tuple<std::size_t, std::size_t> pos)
@@ -188,15 +188,13 @@ void add_food_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::
     }
 }
 
-static void create_draw_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string type)
+static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string type)
 {
-    state::Event event;
-    event.setEventType(state::EventType::DRAW);
-    state::Event packetX = state::Event(state::EventType::DATA, x);
-    state::Event packetY = state::Event(state::EventType::DATA, y);
-    state::Event packetType = state::Event(state::EventType::DATA, type);
-    state::Event event2;
-    event2.setEventType(state::EventType::DRAW);
+    std::tuple<EventType, eventData> event = {EventType::DRAW, false};
+    std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
+    std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
+    std::tuple<EventType, eventData> packetType = {EventType::DATA, type};
+    std::tuple<EventType, eventData> event2 = {EventType::DRAW, false};
     events.push(event);
     events.push(packetX);
     events.push(packetY);
@@ -204,27 +202,25 @@ static void create_draw_event(std::queue<state::Event> &events, std::size_t x, s
     events.push(event2);
 }
 
-static void create_draw_string_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string score)
+static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string score)
 {
-    state::Event event;
-    event.setEventType(state::EventType::DRAW_STRING);
-    state::Event packetX = state::Event(state::EventType::DATA, x);
-    state::Event packetY = state::Event(state::EventType::DATA, y);
-    state::Event packetType = state::Event(state::EventType::DATA, score);
-    state::Event selected = state::Event(state::EventType::DATA, false);
-    state::Event event2;
-    event2.setEventType(state::EventType::DRAW_STRING);
+    std::tuple<EventType, eventData> event = {EventType::DRAW_STRING, false};
+    std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
+    std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
+    std::tuple<EventType, eventData> packetScore = {EventType::DATA, score};
+    std::tuple<EventType, eventData> eventselect = {EventType::DATA, false};
+    std::tuple<EventType, eventData> event2 = {EventType::DRAW_STRING, false};
     events.push(event);
     events.push(packetX);
     events.push(packetY);
-    events.push(packetType);
-    events.push(selected);
+    events.push(packetScore);
+    events.push(eventselect);
     events.push(event2);
 }
 
-std::queue<state::Event> game::Pacman::transform_map_to_events(std::vector<std::string> map)
+std::queue<std::tuple<EventType, eventData>> game::Pacman::transform_map_to_events(std::vector<std::string> map)
 {
-    std::queue<state::Event> events;
+    std::queue<std::tuple<EventType, eventData>> events;
     for (std::size_t y = 0; y < map.size(); y++) {
         for (std::size_t x = 0; x < map[y].size(); x++) {
             if (std::get<0>(_Pacman) == x && std::get<1>(_Pacman) == y) {
@@ -237,13 +233,13 @@ std::queue<state::Event> game::Pacman::transform_map_to_events(std::vector<std::
     return events;
 }
 
-void game::Pacman::add_score_to_events(std::queue<state::Event> &events)
+void game::Pacman::add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
     std::string score = "Score: " + std::to_string(_score);
     create_draw_string_event(events, 0, 22, score);
 }
 
-std::queue<state::Event> game::Pacman::tick()
+std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
 {
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
@@ -251,7 +247,7 @@ std::queue<state::Event> game::Pacman::tick()
     add_food_to_map(newMap, _food);
     add_ghosts_to_map(newMap, _ghosts);
     add_Pacman_to_map(newMap, _Pacman);
-    std::queue<state::Event> events = transform_map_to_events(newMap);
+    std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
     add_score_to_events(events);
     checkFood();
     _ticks++;

@@ -24,7 +24,7 @@ static const std::vector<std::string> game_files = {
     };
 
 extern "C" {
-    game::Menu *createGame(std::shared_ptr<state::Keybinds> &keybinds)
+    game::Menu *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
         return new game::Menu(keybinds);
     }
@@ -47,25 +47,23 @@ std::vector<std::string> getFilesInDirectory(const std::string &directory)
     return files;
 }
 
-static void create_draw_string_event(std::queue<state::Event> &events, std::size_t x, std::size_t y, std::string score, bool selected = false)
+static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string score, bool selected = false)
 {
-    state::Event event;
-    event.setEventType(state::EventType::DRAW_STRING);
-    state::Event packetX = state::Event(state::EventType::DATA, x);
-    state::Event packetY = state::Event(state::EventType::DATA, y);
-    state::Event packetType = state::Event(state::EventType::DATA, score);
-    state::Event packetselected = state::Event(state::EventType::DATA, selected);
-    state::Event event2;
-    event2.setEventType(state::EventType::DRAW_STRING);
+    std::tuple<EventType, eventData> event = {EventType::DRAW, nullptr};
+    std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
+    std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
+    std::tuple<EventType, eventData> packetScore = {EventType::DATA, score};
+    std::tuple<EventType, eventData> eventselect = {EventType::DATA, false};
+    std::tuple<EventType, eventData> event2 = {EventType::DRAW, selected};
     events.push(event);
     events.push(packetX);
     events.push(packetY);
-    events.push(packetType);
-    events.push(packetselected);
+    events.push(packetScore);
+    events.push(eventselect);
     events.push(event2);
 }
 
-game::Menu::Menu(std::shared_ptr<state::Keybinds> &key)
+game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
 {
     _keys = key;
     _lib_files = getFilesInDirectory("lib");
@@ -75,17 +73,17 @@ game::Menu::~Menu()
 {
 }
 
-void game::Menu::handle_key_events(std::queue<state::Event> &events)
+void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
-    if (_keys->isKeyPressed("UP")) {
+    if (_keys->at("UP") == true) {
     }
-    if (_keys->isKeyPressed("DOWN")) {
+    if (_keys->at("DOWN") == true) {
     }
-    if (_keys->isKeyPressed("ENTER")) {
+    if (_keys->at("LEFT") == true) {
     }
 }
 
-void game::Menu::display_menu(std::queue<state::Event> &events)
+void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &events)
 {
     create_draw_string_event(events, 0, 0, "Menu\n", true);
     for (std::size_t i = 0; i < _lib_files.size(); i++) {
@@ -93,9 +91,9 @@ void game::Menu::display_menu(std::queue<state::Event> &events)
     }
 }
 
-std::queue<state::Event> game::Menu::tick()
+std::queue<std::tuple<EventType, eventData>> game::Menu::tick()
 {
-    std::queue<state::Event> events;
+    std::queue<std::tuple<EventType, eventData>> events;
     display_menu(events);
     return events;
 }

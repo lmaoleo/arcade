@@ -10,12 +10,13 @@
 
     #include "../Event.hpp"
     #include <queue>
+    #include <map>
 
 namespace game {
     class IGame {
         public:
             virtual ~IGame() = default;
-            virtual std::queue<state::Event> tick() = 0;
+            virtual std::queue<std::tuple<EventType, eventData>> tick() = 0;
     };
 }
 

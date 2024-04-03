@@ -16,12 +16,12 @@
 namespace graphic {
     class Ncurses : public graphic::AGraphic {
     public:
-        Ncurses(std::shared_ptr<state::Keybinds> &key);
+        Ncurses(std::shared_ptr<std::map<std::string, bool>> &key);
         ~Ncurses();
         void updateKeybinds() final;
-        std::queue<state::Event> draw() final;
+        std::queue<std::tuple<EventType, eventData>> draw() final;
 
     private:
-        std::shared_ptr<state::Keybinds> _keys;
+        std::shared_ptr<std::map<std::string, bool>> _keys;
     };
 };

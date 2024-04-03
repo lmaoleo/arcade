@@ -11,7 +11,6 @@
     #include "graphic/IGraphic.hpp"
     #include "game/IGame.hpp"
     #include "Event.hpp"
-    #include "Keybinds.hpp"
     #include <memory>
 
 namespace arcade {
@@ -26,7 +25,8 @@ namespace arcade {
 
         private:
             int _score;
-            std::shared_ptr<state::Keybinds> _keys;
+            std::queue<std::tuple<EventType, eventData>> _events;
+            std::shared_ptr<std::map<std::string, bool>> _keys;
             std::shared_ptr<game::IGame> _game;
             std::shared_ptr<graphic::IGraphic> _graphic;
     };
