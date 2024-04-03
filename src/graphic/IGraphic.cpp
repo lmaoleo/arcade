@@ -6,3 +6,8 @@
 */
 
 #include "IGraphic.hpp"
+
+const char *graphic::IGraphic::packetError::what(void) const noexcept
+{
+    return "Packet error";
+}

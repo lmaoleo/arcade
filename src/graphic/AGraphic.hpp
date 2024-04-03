@@ -10,34 +10,28 @@
 
     #include <tuple>
     #include "IGraphic.hpp"
-    #include "../Keybinds.hpp"
     #include "../Event.hpp"
     #include <memory>
+    #include <iostream>
 
 namespace graphic {
     class AGraphic : public IGraphic {
             public:
                 virtual void updateKeybinds() = 0;
-                virtual std::queue<state::Event> draw() = 0;
-                virtual void readEvent(std::queue<state::Event> &event) final;
+                virtual std::queue<std::tuple<EventType, eventData>> draw() = 0;
 
-                virtual void readWin(std::queue<state::Event> &event) final;
-                virtual void readLose(std::queue<state::Event> &event) final;
-                virtual void readPause(std::queue<state::Event> &event) final;
-                virtual void readDraw(std::queue<state::Event> &event) final;
-                virtual void readDrawString(std::queue<state::Event> &event) final;
-                virtual void readSound(std::queue<state::Event> &event) final;
-                virtual void readTime(std::queue<state::Event> &event) final;
-                virtual void packetError(std::queue<state::Event> &event) final;
-                virtual void setWin(bool win) { _win = win; };
-                virtual void setLose(bool lose) { _lose = lose; };
-                virtual void setPause(bool pause) { _pause = pause; };
-                virtual void setDraw(std::tuple<std::size_t, std::size_t, std::string> draw) { _draw.push_back(draw); };
-                virtual void setDrawStr(std::tuple<std::size_t, std::size_t, std::string, bool > draw_str) {_draw_str.push_back(draw_str);};
-                virtual void setSound(std::string sound) { _sound.push_back(sound); };
-                virtual void setTime(double time) { _time = time; };
+                virtual void readEvent(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readWin(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readLose(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readPause(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readDraw(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readDrawString(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readSound(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readTime(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void packetError(std::queue<std::tuple<EventType, eventData>> &event) final;
+
             protected:
-                std::shared_ptr<state::Keybinds> _keys;
+                std::shared_ptr<std::map<std::string, bool>> _keys;
                 bool _win;
                 bool _lose;
                 bool _pause;

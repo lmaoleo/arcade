@@ -10,6 +10,10 @@
 
     #include <queue>
     #include "../Event.hpp"
+    #include <map>
+    #include <queue>
+    #include <tuple>
+    #include <iostream>
 
 namespace graphic {
     class IGraphic {
@@ -20,8 +24,8 @@ namespace graphic {
             };
             virtual ~IGraphic() = default;
             virtual void updateKeybinds() = 0;
-            virtual void readEvent(std::queue<state::Event> &event) = 0;
-            virtual std::queue<state::Event> draw() = 0;
+            virtual std::queue<std::tuple<EventType, eventData>> draw() = 0;
+            virtual void readEvent(std::queue<std::tuple<EventType, eventData>> &event) = 0;
     };
 }
 

@@ -7,67 +7,73 @@
 
 #include "AGraphic.hpp"
 
-static const std::map<state::EventType, void (graphic::AGraphic::*)(std::queue<state::Event> &)> eventFuncs = {
-    {state::WIN, &graphic::AGraphic::readWin},
-    {state::LOSE, &graphic::AGraphic::readLose},
-    {state::PAUSE, &graphic::AGraphic::readPause},
-    {state::DRAW, &graphic::AGraphic::readDraw},
-    {state::DRAW_STRING, &graphic::AGraphic::readDrawString},
-    {state::PLAY_SOUND, &graphic::AGraphic::readSound},
-    {state::DELTA_TIME, &graphic::AGraphic::readTime},
+
+static const std::map<EventType, void (graphic::AGraphic::*)(std::queue<std::tuple<EventType, eventData>> &)> eventFuncs = {
+    {DATA, &graphic::AGraphic::packetError},
+    {WIN, &graphic::AGraphic::readWin},
+    {LOSE, &graphic::AGraphic::readLose},
+    {PAUSE, &graphic::AGraphic::readPause},
+    {DRAW, &graphic::AGraphic::readDraw},
+    {DRAW_STRING, &graphic::AGraphic::readDrawString},
+    {PLAY_SOUND, &graphic::AGraphic::readSound},
+    {DELTA_TIME, &graphic::AGraphic::readTime}
 };
 
-void graphic::AGraphic::readEvent(std::queue<state::Event> &event)
+void graphic::AGraphic::readEvent(std::queue<std::tuple<EventType, eventData>> &event)
 {
     while (!event.empty()) {
-        auto it = eventFuncs.find(event.front().getType());
-        if (it != eventFuncs.end())
+        auto it = eventFuncs.find(std::get<EventType>(event.front()));
+        if (it != eventFuncs.end()) {
             (this->*it->second)(event);
-        else
+        } else {
             packetError(event);
+        }
     }
 }
 
-void graphic::AGraphic::readWin(std::queue<state::Event> &event)
+void graphic::AGraphic::readWin(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
-    _win = event.front().getPacketBool();
+    _win = std::get<bool>(std::get<1>(event.front()));
+    event.pop();
     event.pop();
 }
 
-void graphic::AGraphic::readLose(std::queue<state::Event> &event)
+void graphic::AGraphic::readLose(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
-    _lose = event.front().getPacketBool();
+    _lose = std::get<bool>(std::get<1>(event.front()));
+    event.pop();
     event.pop();
 }
 
-void graphic::AGraphic::readPause(std::queue<state::Event> &event)
+void graphic::AGraphic::readPause(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
-    _pause = event.front().getPacketBool();
+    _pause = std::get<bool>(std::get<1>(event.front()));
+    event.pop();
     event.pop();
 }
 
-void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
+void graphic::AGraphic::readDraw(std::queue<std::tuple<EventType, eventData>> &event)
 {
     if (event.size() < 3)
         return packetError(event);
     event.pop();
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
 
-    std::size_t packetNb = event.front().getPacketNb();
+    std::size_t packetNb = std::get<std::size_t>(std::get<1>(event.front()));
     event.pop();
 
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    std::size_t packetNb2 = event.front().getPacketNb();
+    std::size_t packetNb2 = std::get<std::size_t>(std::get<1>(event.front()));
     event.pop();
 
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    std::string packetStr = event.front().getPacketStr();
+    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
     event.pop();
 
     std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
@@ -75,30 +81,30 @@ void graphic::AGraphic::readDraw(std::queue<state::Event> &event)
     event.pop();
 }
 
-void graphic::AGraphic::readDrawString(std::queue<state::Event> &event)
+void graphic::AGraphic::readDrawString(std::queue<std::tuple<EventType, eventData>> &event)
 {
     if (event.size() < 3)
         return packetError(event);
     event.pop();
-    if (event.front().getType() != state::DATA)
+    if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
 
-    std::size_t packetNb = event.front().getPacketNb();
+    std::size_t packetNb = std::get<std::size_t>(std::get<1>(event.front()));
     event.pop();
 
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    std::size_t packetNb2 = event.front().getPacketNb();
+    std::size_t packetNb2 = std::get<std::size_t>(std::get<1>(event.front()));
     event.pop();
 
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    std::string packetStr = event.front().getPacketStr();
+    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
     event.pop();
 
-    if (event.front().getType() != state::DATA)
+    if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    bool packetBool = event.front().getPacketBool();
+    bool packetBool = std::get<bool>(std::get<1>(event.front()));
     event.pop();
 
     std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr, packetBool);
@@ -106,27 +112,29 @@ void graphic::AGraphic::readDrawString(std::queue<state::Event> &event)
     event.pop();
 }
 
-void graphic::AGraphic::readSound(std::queue<state::Event> &event)
+void graphic::AGraphic::readSound(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
-    if (event.front().getType() != state::DATA)
+    if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
-    std::string packetStr = event.front().getPacketStr();
+    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
     _sound.push_back(packetStr);
     event.pop();
+    event.pop();
 }
 
-void graphic::AGraphic::readTime(std::queue<state::Event> &event)
+void graphic::AGraphic::readTime(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
-    if (event.front().getType() != state::DATA)
+    if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
-    double packetDecimalPtr = event.front().getPacketDecimal();
+    double packetDecimalPtr = std::get<double>(std::get<1>(event.front()));
     _time = packetDecimalPtr;
     event.pop();
+    event.pop();
 }
 
-void graphic::AGraphic::packetError(std::queue<state::Event> &event)
+void graphic::AGraphic::packetError(std::queue<std::tuple<EventType, eventData>> &event)
 {
-    std::cerr << "Error: Packet error" << std::endl;
+    std::cerr << "Packet error" << std::endl;
 }

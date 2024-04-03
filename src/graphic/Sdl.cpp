@@ -8,6 +8,8 @@
 #include "Sdl.hpp"
 #include <iostream>
 
+std::map<std::string, std::pair<SDL_Texture *, SDL_Rect>> spriteMap;
+
 std::map<std::string, SDL_Color> colorMap = {
     {"wall", {255, 0, 0, 255}},
     {"snake_head_down", {0, 255, 255, 255}},
@@ -36,11 +38,88 @@ std::map<std::string, SDL_Color> colorMap = {
 };
 
 extern "C" {
-    graphic::Sdl *createGraphic(std::shared_ptr<state::Keybinds> &keybinds)
+    graphic::Sdl *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
         return new graphic::Sdl(keybinds);
     }
 };
+
+// void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& destRect, const std::string& elementType) {
+//     auto spriteIt = spriteMap.find(elementType);
+//     if (spriteIt != spriteMap.end()) {
+//         SDL_Texture* spriteTexture = spriteIt->second.first;
+//         SDL_Rect& spriteSourceRect = spriteIt->second.second;
+//         SDL_RenderCopy(renderer, spriteTexture, &spriteSourceRect, &destRect);
+//     }
+// }
+
+// SDL_Texture* graphic::Sdl::loadSprite(const std::string& filePath) {
+//     SDL_Surface* surface = IMG_Load(filePath.c_str());
+//     if (!surface) {
+//         std::cerr << "Error loading sprite: " << IMG_GetError() << std::endl;
+//         return nullptr;
+//     }
+//     SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+//     SDL_FreeSurface(surface);
+//     if (!texture) {
+//         std::cerr << "Error creating texture from surface: " << SDL_GetError() << std::endl;
+//     }
+//     return texture;
+// }
+
+// void graphic::Sdl::loadSprites() {
+//     SDL_Texture* spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png.png");
+//     SDL_Texture* spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png.png");
+//     SDL_Rect wallRect = {0, 96, 24, 24};
+//     SDL_Rect snakeHeadDownRect = {256, 64, 64, 64};
+//     SDL_Rect snakeHeadUpRect = {192, 0, 64, 64};
+//     SDL_Rect snakeHeadLeftRect = {192, 64, 64, 64};
+//     SDL_Rect snakeHeadRightRect = {256, 0, 64, 64};
+//     SDL_Rect snakeHorizontalRect = {64, 0, 64, 64};
+//     SDL_Rect snakeVerticalRect = {128, 64, 64, 64};
+//     SDL_Rect snakeAngleLeftDownRect = {0, 0, 64, 64};
+//     SDL_Rect snakeAngleRightDownRect = {128, 0, 64, 64};
+//     SDL_Rect snakeAngleLeftUpRect = {128, 128, 64, 64};
+//     SDL_Rect snakeAngleRightUpRect = {0, 64, 64, 64};
+//     SDL_Rect snakeTailDownRect = {192, 128, 64, 64};
+//     SDL_Rect snakeTailUpRect = {192, 128, 64, 64};
+//     SDL_Rect snakeTailLeftRect = {192, 192, 64, 64};
+//     SDL_Rect snakeTailRightRect = {256, 128, 64, 64};
+//     SDL_Rect foodRect = {0, 192, 64, 64};
+//     SDL_Rect pacWallRect = {0, 96, 24, 24};
+//     SDL_Rect pacDownRect = {120, 71, 24, 24};
+//     SDL_Rect pacUpRect = {71, 71, 24, 24};
+//     SDL_Rect pacLeftRect = {0, 71, 24, 24};
+//     SDL_Rect pacRightRect = {96, 71, 24, 24};
+//     SDL_Rect ghostRect = {0, 143, 24, 24};
+//     SDL_Rect pacFoodRect = {192, 0, 12, 12};
+//     SDL_Rect emptyRect = {303, 136};
+
+//     spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
+//     spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
+//     spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
+//     spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
+//     spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+//     spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+//     spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
+//     spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
+//     spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
+//     spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
+//     spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
+//     spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
+//     spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
+//     spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
+//     spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
+//     spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
+//     spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
+//     spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
+//     spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
+//     spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
+//     spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
+//     spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
+//     spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
+//     spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
+// }
 
 void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType) {
     auto colorIt = colorMap.find(elementType);
@@ -51,7 +130,7 @@ void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect,
     }
 }
 
-graphic::Sdl::Sdl(std::shared_ptr<state::Keybinds> &key) : _keys(key) {
+graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key) {
     std::string action;
     if (TTF_Init() == -1) {
         std::cerr << TTF_GetError() << std::endl;
@@ -77,16 +156,6 @@ graphic::Sdl::Sdl(std::shared_ptr<state::Keybinds> &key) : _keys(key) {
             }
         }
     }
-    action = "UP";
-    _keys.get()->bindKey(action, SDLK_UP);
-    action = "DOWN";
-    _keys.get()->bindKey(action, SDLK_DOWN);
-    action = "LEFT";
-    _keys.get()->bindKey(action, SDLK_LEFT);
-    action = "RIGHT";
-    _keys.get()->bindKey(action, SDLK_RIGHT);
-    action = "ESC";
-    _keys.get()->bindKey(action, SDL_QUIT);
 }
 
 graphic::Sdl::~Sdl() {
@@ -118,22 +187,41 @@ void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y,
 
 void graphic::Sdl::updateKeybinds() {
     SDL_Event e;
+    _keys->at("UP") = false;
+    _keys->at("DOWN") = false;
+    _keys->at("LEFT") = false;
+    _keys->at("RIGHT") = false;
+    _keys->at("ESC") = false;
+
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
-            _keys->keyPressed("ESC", true);
+            if (_keys->find("ESC") != _keys->end())
+                _keys->at("ESC") = true;
         }
         else if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
-                case SDLK_UP:    _keys->keyPressed("UP", true); break;
-                case SDLK_DOWN:  _keys->keyPressed("DOWN", true); break;
-                case SDLK_LEFT:  _keys->keyPressed("LEFT", true); break;
-                case SDLK_RIGHT: _keys->keyPressed("RIGHT", true); break;
+                case SDLK_UP:
+                    if (_keys->find("UP") != _keys->end())
+                        _keys->at("UP") = true;
+                    break;
+                case SDLK_DOWN:
+                    if (_keys->find("DOWN") != _keys->end())
+                        _keys->at("DOWN") = true;
+                    break;
+                case SDLK_LEFT:
+                    if (_keys->find("LEFT") != _keys->end())
+                        _keys->at("LEFT") = true;
+                    break;
+                case SDLK_RIGHT:
+                    if (_keys->find("RIGHT") != _keys->end())
+                        _keys->at("RIGHT") = true;
+                    break;
             }
         }
     }
 }
 
-std::queue<state::Event> graphic::Sdl::draw() {
+std::queue<std::tuple<EventType, eventData>> graphic::Sdl::draw() {
     SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     SDL_RenderClear(_renderer);
 
@@ -162,5 +250,5 @@ std::queue<state::Event> graphic::Sdl::draw() {
 
     _draw_str.clear();
     _draw.clear();
-    return std::queue<state::Event>();
+    return std::queue<std::tuple<EventType, eventData>>();
 }

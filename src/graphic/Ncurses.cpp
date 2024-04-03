@@ -37,13 +37,13 @@ static const std::map<std::string, wchar_t> charmap = {
 };
 
 extern "C" {
-    graphic::Ncurses *createGraphic(std::shared_ptr<state::Keybinds> &keybinds)
+    graphic::Ncurses *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
         return new graphic::Ncurses(keybinds);
     }
 };
 
-graphic::Ncurses::Ncurses(std::shared_ptr<state::Keybinds> &key)
+graphic::Ncurses::Ncurses(std::shared_ptr<std::map<std::string, bool>> &key)
 {
     std::string action;
     _keys = key;
@@ -55,16 +55,6 @@ graphic::Ncurses::Ncurses(std::shared_ptr<state::Keybinds> &key)
     curs_set(0);
     setlocale(LC_ALL, "");
     keypad(stdscr, TRUE);
-    action = "UP";
-    _keys.get()->bindKey(action, KEY_UP);
-    action = "DOWN";
-    _keys.get()->bindKey(action, KEY_DOWN);
-    action = "LEFT";
-    _keys.get()->bindKey(action, KEY_LEFT);
-    action = "RIGHT";
-    _keys.get()->bindKey(action, KEY_RIGHT);
-    action = "ESC";
-    _keys.get()->bindKey(action, 27);
 }
 
 graphic::Ncurses::~Ncurses()
@@ -77,26 +67,24 @@ void graphic::Ncurses::updateKeybinds()
     int key = getch();
 
     if (key == KEY_UP) {
-        _keys->keyPressed("UP", true);
+        if (_keys->find("UP") != _keys->end())
+            _keys->at("UP") = true;
     } else if (key == KEY_DOWN) {
-        _keys->keyPressed("DOWN", true);
+        if (_keys->find("DOWN") != _keys->end())
+            _keys->at("DOWN") = true;
     } else if (key == KEY_LEFT) {
-        _keys->keyPressed("LEFT", true);
+        if (_keys->find("LEFT") != _keys->end())
+            _keys->at("LEFT") = true;
     } else if (key == KEY_RIGHT) {
-        _keys->keyPressed("RIGHT", true);
+        if (_keys->find("RIGHT") != _keys->end())
+                _keys->at("RIGHT") = true;
     } else if (key == 27) {
-        _keys->keyPressed("ESC", true);
-    }
-    if (key == ERR) {
-        _keys->keyPressed("UP", false);
-        _keys->keyPressed("DOWN", false);
-        _keys->keyPressed("LEFT", false);
-        _keys->keyPressed("RIGHT", false);
-        _keys->keyPressed("ESC", false);
+        if (_keys->find("ESC") != _keys->end())
+            _keys->at("ESC") = true;
     }
 }
 
-std::queue<state::Event> graphic::Ncurses::draw() {
+std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     clear();
 
     for (const auto& item : _draw) {
@@ -134,5 +122,5 @@ std::queue<state::Event> graphic::Ncurses::draw() {
 
     refresh();
     _draw.clear();
-    return std::queue<state::Event>();
+    return std::queue<std::tuple<EventType, eventData>>();
 }
