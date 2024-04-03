@@ -20,7 +20,7 @@ static const std::vector<std::string> lib_files = {
 static const std::vector<std::string> game_files = {
     "lib_arcade_nibbler.so",
     "lib_arcade_pacman.so",
-    "lib_arcade_qix.so"
+    "lib_arcade_snake.so"
     };
 
 extern "C" {
@@ -49,12 +49,12 @@ std::vector<std::string> getFilesInDirectory(const std::string &directory)
 
 static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string score, bool selected = false)
 {
-    std::tuple<EventType, eventData> event = {EventType::DRAW, nullptr};
+    std::tuple<EventType, eventData> event = {EventType::DRAW_STRING, false};
     std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
     std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
     std::tuple<EventType, eventData> packetScore = {EventType::DATA, score};
-    std::tuple<EventType, eventData> eventselect = {EventType::DATA, false};
-    std::tuple<EventType, eventData> event2 = {EventType::DRAW, selected};
+    std::tuple<EventType, eventData> eventselect = {EventType::DATA, selected};
+    std::tuple<EventType, eventData> event2 = {EventType::DRAW_STRING, false};
     events.push(event);
     events.push(packetX);
     events.push(packetY);
@@ -85,9 +85,9 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
 
 void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &events)
 {
-    create_draw_string_event(events, 0, 0, "Menu\n", true);
+    create_draw_string_event(events, 0, 0, "Menu", true);
     for (std::size_t i = 0; i < _lib_files.size(); i++) {
-        create_draw_string_event(events, 10, i * 4, _lib_files[i] + "\n");
+        create_draw_string_event(events, 10, i * 4, _lib_files[i]);
     }
 }
 
