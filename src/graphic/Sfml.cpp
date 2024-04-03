@@ -54,6 +54,7 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     if (!_window->isOpen()) {
         std::cerr << "Failed to create window!" << std::endl;
     }
+    loadSprites();
 }
 
 graphic::Sfml::~Sfml()
@@ -157,11 +158,11 @@ void graphic::Sfml::drawGameElement(sf::RenderWindow &window, const sf::IntRect 
 {
     auto spriteIt = spriteMap.find(elementType);
     if (spriteIt != spriteMap.end()) {
-        std::cout << "Draw..." << std::endl;
         sf::Texture *spriteTexture = spriteIt->second.first;
         sf::IntRect &spriteSourceRect = spriteIt->second.second;
         sf::Sprite sprite(*spriteTexture, spriteSourceRect);
         sprite.setPosition(rect.left, rect.top);
+        sprite.setScale(rect.width / 64.0, rect.height / 64.0);
         window.draw(sprite);
     }
 }
