@@ -122,10 +122,6 @@ void game::Pacman::changeDirection()
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
-    _keys->at("UP") = false;
-    _keys->at("DOWN") = false;
-    _keys->at("LEFT") = false;
-    _keys->at("RIGHT") = false;
 }
 
 bool game::Pacman::checkCollision(std::tuple<std::size_t, std::size_t> pos)

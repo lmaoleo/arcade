@@ -187,6 +187,12 @@ void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y,
 
 void graphic::Sdl::updateKeybinds() {
     SDL_Event e;
+    _keys->at("UP") = false;
+    _keys->at("DOWN") = false;
+    _keys->at("LEFT") = false;
+    _keys->at("RIGHT") = false;
+    _keys->at("ESC") = false;
+
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
             if (_keys->find("ESC") != _keys->end())
