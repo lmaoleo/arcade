@@ -38,7 +38,7 @@ MENU_FILES = Menu.cpp \
 
 PACMAN_FILES = Pacman.cpp \
 
-# SFML_FILES = SFML.cpp \
+SFML_FILES = Sfml.cpp \
 
 SRC_FILES := $(addprefix src/, $(SRC_FILES))
 CORE_FILES := $(addprefix src/, $(CORE_FILES))
@@ -69,7 +69,7 @@ sdl: $(SDL_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) `sdl2-config --ERRORS_FLAGS --libs` -lSDL2 -lSDL2_ttf -o $(PUT_LIB)arcade_sdl2.so $(GRAPHIC_LIB_FILES) $(SDL_FILES)
 
 sfml: $(SFML_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lsfml-graphics -lsfml-window -lsfml-system -o $(PUT_LIB)$@.so $(GRAPHIC_LIB_FILES) $(SFML_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lsfml-graphics -lsfml-window -lsfml-system -o $(PUT_LIB)arcade_sfml.so $(GRAPHIC_LIB_FILES) $(SFML_FILES)
 
 snake: $(SNAKE_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(SRC_FILES)

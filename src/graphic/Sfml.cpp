@@ -34,6 +34,13 @@ std::map<std::string, sf::Color> colorMap = {
     {"food", {255, 255, 0, 255}}
 };
 
+extern "C" {
+    graphic::Sfml *createGraphic(std::shared_ptr<state::Keybinds> &keybinds)
+    {
+        return new graphic::Sfml(keybinds);
+    }
+};
+
 graphic::Sfml::Sfml(std::shared_ptr<state::Keybinds> &key) : _keys(key)
 {
     _keys = key;
@@ -54,6 +61,7 @@ graphic::Sfml::Sfml(std::shared_ptr<state::Keybinds> &key) : _keys(key)
 
 graphic::Sfml::~Sfml()
 {
+    _window->close();
     delete _window;
     delete _font;
 }
@@ -79,11 +87,52 @@ void graphic::Sfml::updateKeybinds()
     }
 }
 
+void graphic::Sfml::drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType)
+{
+    auto colorIt = colorMap.find(elementType);
+
+    if (colorIt != colorMap.end()) {
+        const sf::Color &color = colorIt->second;
+        sf::RectangleShape rectangle(sf::Vector2f(rect.width, rect.height));
+        rectangle.setPosition(rect.left, rect.top);
+        rectangle.setFillColor(color);
+        window.draw(rectangle);
+    }
+}
+
+void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y, bool selected)
+{
+    sf::Text textToDraw = sf::Text(text, *_font, 24);
+
+    textToDraw.setPosition(x, y);
+    if (selected) {
+        textToDraw.setFillColor(sf::Color::Red);
+    }
+    _window->draw(textToDraw);
+}
+
 std::queue<state::Event> graphic::Sfml::draw()
 {
+    std::size_t x, y = 0;
+    std::string type = "";
+
     _window->clear();
-
-
-
+    for (auto &item : _draw) {
+        x = std::get<0>(item);
+        y = std::get<1>(item);
+        type = std::get<2>(item);
+        sf::IntRect rect(x * 40, y * 40, 40, 40);
+        drawGameElement(*_window, rect, type);
+    }
+    for (auto &item : _draw_str) {
+        x = std::get<0>(item);
+        y = std::get<1>(item);
+        std::string str = std::get<2>(item);
+        bool selected = std::get<3>(item);
+        drawText(str, x, y, selected);
+    }
+    _window->display();
+    _draw.clear();
+    _draw_str.clear();
     return std::queue<state::Event>();
 }
