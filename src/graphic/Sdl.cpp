@@ -45,11 +45,20 @@ extern "C" {
 };
 
 void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& destRect, const std::string& elementType) {
-    auto spriteIt = spriteMap.find(elementType);
-    if (spriteIt != spriteMap.end()) {
-        SDL_Texture* spriteTexture = spriteIt->second.first;
-        SDL_Rect& spriteSourceRect = spriteIt->second.second;
-        SDL_RenderCopy(renderer, spriteTexture, &spriteSourceRect, &destRect);
+    if (_spriteLoaded == false) {
+        auto colorIt = colorMap.find(elementType);
+        if (colorIt != colorMap.end()) {
+            const SDL_Color& color = colorIt->second;
+            SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+            SDL_RenderFillRect(renderer, &destRect);
+            }
+    } else  {
+        auto spriteIt = spriteMap.find(elementType);
+        if (spriteIt != spriteMap.end()) {
+            SDL_Texture* spriteTexture = spriteIt->second.first;
+            SDL_Rect& spriteSourceRect = spriteIt->second.second;
+            SDL_RenderCopy(renderer, spriteTexture, &spriteSourceRect, &destRect);
+        }
     }
 }
 
@@ -149,6 +158,11 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
         }
     }
     loadSprites();
+    if (spriteMap.empty()) {
+        _spriteLoaded = false;
+    } else {
+        _spriteLoaded = true;
+    }
 }
 
 graphic::Sdl::~Sdl() {

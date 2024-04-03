@@ -239,14 +239,14 @@ std::string game::Snake::determine_tail_orientation(int i)
     std::size_t current_x = std::get<0>(current_snake);
     std::size_t current_y = std::get<1>(current_snake);
 
-    if (past_y > current_y) {
-        return "snake_tail_up";
-    } else if (past_y < current_y) {
-        return "snake_tail_down";
+    if (past_x < current_x) {
+        return "snake_tail_right";
     } else if (past_x > current_x) {
         return "snake_tail_left";
-    } else if (past_x < current_x) {
-        return "snake_tail_right";
+    } else if (past_y < current_y) {
+        return "snake_tail_down";
+    } else if (past_y > current_y) {
+        return "snake_tail_up";
     }
     return "snake_body";
 }
@@ -256,7 +256,6 @@ void game::Snake::add_snake_to_events(std::queue<std::tuple<EventType, eventData
     std::string body_orientation;
     std::string tail_orientation = determine_tail_orientation(_snake.size() - 1);
 
-    std::cout << "tail_orientation: " << tail_orientation << std::endl;
     create_draw_event(event, std::get<0>(_snake[0]), std::get<1>(_snake[0]), _headDirection);
     for (std::size_t i = 1; i < _snake.size() - 1; i++) {
         body_orientation = determine_body_orientation(i);

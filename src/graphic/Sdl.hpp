@@ -31,5 +31,6 @@ namespace graphic {
         SDL_Window *_window;
         SDL_Renderer *_renderer;
         TTF_Font* _font;
+        bool _spriteLoaded;
     };
 };
