@@ -51,3 +51,9 @@ void graphic::Sfml::updateKeybinds()
         _keys.get()->keyPressed("ESCAPE", false);
     }
 }
+
+std::queue<state::Event> graphic::Sfml::draw()
+{
+
+    return std::queue<state::Event>();
+}
