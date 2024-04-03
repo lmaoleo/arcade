@@ -239,13 +239,13 @@ std::string game::Snake::determine_tail_orientation(int i)
     std::size_t current_x = std::get<0>(current_snake);
     std::size_t current_y = std::get<1>(current_snake);
 
-    if (past_y < current_y) {
+    if (past_y > current_y) {
         return "snake_tail_up";
-    } else if (past_y > current_y) {
+    } else if (past_y < current_y) {
         return "snake_tail_down";
-    } else if (past_x < current_x) {
-        return "snake_tail_left";
     } else if (past_x > current_x) {
+        return "snake_tail_left";
+    } else if (past_x < current_x) {
         return "snake_tail_right";
     }
     return "snake_body";
@@ -254,9 +254,9 @@ std::string game::Snake::determine_tail_orientation(int i)
 void game::Snake::add_snake_to_events(std::queue<std::tuple<EventType, eventData>> &event)
 {
     std::string body_orientation;
-    std::string tail_orientation;
+    std::string tail_orientation = determine_tail_orientation(_snake.size() - 1);
 
-    tail_orientation = determine_tail_orientation(_snake.size() - 1);
+    std::cout << "tail_orientation: " << tail_orientation << std::endl;
     create_draw_event(event, std::get<0>(_snake[0]), std::get<1>(_snake[0]), _headDirection);
     for (std::size_t i = 1; i < _snake.size() - 1; i++) {
         body_orientation = determine_body_orientation(i);
@@ -283,7 +283,6 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
     if (_lose != true) {
         changeSnakePos();
     }
-    add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);
     std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
     if (checkCollision()) {
@@ -297,6 +296,7 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
         _lose = true;
         return events;
     }
+    add_snake_to_events(events);
     add_score_to_events(events);
     checkFood();
     _ticks++;

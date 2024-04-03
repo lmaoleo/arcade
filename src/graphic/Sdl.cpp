@@ -44,90 +44,82 @@ extern "C" {
     }
 };
 
-// void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& destRect, const std::string& elementType) {
-//     auto spriteIt = spriteMap.find(elementType);
-//     if (spriteIt != spriteMap.end()) {
-//         SDL_Texture* spriteTexture = spriteIt->second.first;
-//         SDL_Rect& spriteSourceRect = spriteIt->second.second;
-//         SDL_RenderCopy(renderer, spriteTexture, &spriteSourceRect, &destRect);
-//     }
-// }
-
-// SDL_Texture* graphic::Sdl::loadSprite(const std::string& filePath) {
-//     SDL_Surface* surface = IMG_Load(filePath.c_str());
-//     if (!surface) {
-//         std::cerr << "Error loading sprite: " << IMG_GetError() << std::endl;
-//         return nullptr;
-//     }
-//     SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
-//     SDL_FreeSurface(surface);
-//     if (!texture) {
-//         std::cerr << "Error creating texture from surface: " << SDL_GetError() << std::endl;
-//     }
-//     return texture;
-// }
-
-// void graphic::Sdl::loadSprites() {
-//     SDL_Texture* spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png.png");
-//     SDL_Texture* spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png.png");
-//     SDL_Rect wallRect = {0, 96, 24, 24};
-//     SDL_Rect snakeHeadDownRect = {256, 64, 64, 64};
-//     SDL_Rect snakeHeadUpRect = {192, 0, 64, 64};
-//     SDL_Rect snakeHeadLeftRect = {192, 64, 64, 64};
-//     SDL_Rect snakeHeadRightRect = {256, 0, 64, 64};
-//     SDL_Rect snakeHorizontalRect = {64, 0, 64, 64};
-//     SDL_Rect snakeVerticalRect = {128, 64, 64, 64};
-//     SDL_Rect snakeAngleLeftDownRect = {0, 0, 64, 64};
-//     SDL_Rect snakeAngleRightDownRect = {128, 0, 64, 64};
-//     SDL_Rect snakeAngleLeftUpRect = {128, 128, 64, 64};
-//     SDL_Rect snakeAngleRightUpRect = {0, 64, 64, 64};
-//     SDL_Rect snakeTailDownRect = {192, 128, 64, 64};
-//     SDL_Rect snakeTailUpRect = {192, 128, 64, 64};
-//     SDL_Rect snakeTailLeftRect = {192, 192, 64, 64};
-//     SDL_Rect snakeTailRightRect = {256, 128, 64, 64};
-//     SDL_Rect foodRect = {0, 192, 64, 64};
-//     SDL_Rect pacWallRect = {0, 96, 24, 24};
-//     SDL_Rect pacDownRect = {120, 71, 24, 24};
-//     SDL_Rect pacUpRect = {71, 71, 24, 24};
-//     SDL_Rect pacLeftRect = {0, 71, 24, 24};
-//     SDL_Rect pacRightRect = {96, 71, 24, 24};
-//     SDL_Rect ghostRect = {0, 143, 24, 24};
-//     SDL_Rect pacFoodRect = {192, 0, 12, 12};
-//     SDL_Rect emptyRect = {303, 136};
-
-//     spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
-//     spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
-//     spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
-//     spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
-//     spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-//     spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-//     spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
-//     spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
-//     spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
-//     spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
-//     spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
-//     spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
-//     spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
-//     spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
-//     spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
-//     spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
-//     spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
-//     spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
-//     spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
-//     spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
-//     spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
-//     spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
-//     spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
-//     spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
-// }
-
-void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType) {
-    auto colorIt = colorMap.find(elementType);
-    if (colorIt != colorMap.end()) {
-        const SDL_Color& color = colorIt->second;
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-        SDL_RenderFillRect(renderer, &rect);
+void graphic::Sdl::drawGameElement(SDL_Renderer* renderer, const SDL_Rect& destRect, const std::string& elementType) {
+    auto spriteIt = spriteMap.find(elementType);
+    if (spriteIt != spriteMap.end()) {
+        SDL_Texture* spriteTexture = spriteIt->second.first;
+        SDL_Rect& spriteSourceRect = spriteIt->second.second;
+        SDL_RenderCopy(renderer, spriteTexture, &spriteSourceRect, &destRect);
     }
+}
+
+SDL_Texture* graphic::Sdl::loadSprite(const std::string& filePath) {
+    SDL_Surface* surface = IMG_Load(filePath.c_str());
+    if (!surface) {
+        std::cerr << "Error loading sprite: " << IMG_GetError() << std::endl;
+        return nullptr;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+    SDL_FreeSurface(surface);
+    if (!texture) {
+        std::cerr << "Error creating texture from surface: " << SDL_GetError() << std::endl;
+    }
+    return texture;
+}
+
+void graphic::Sdl::loadSprites() {
+    SDL_Texture* spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png");
+    SDL_Texture* spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png");
+    SDL_Rect wallRect = {26, 219, 21, 20};
+    SDL_Rect snakeHeadDownRect = {256, 64, 64, 64};
+    SDL_Rect snakeHeadUpRect = {192, 0, 64, 64};
+    SDL_Rect snakeHeadLeftRect = {192, 64, 64, 64};
+    SDL_Rect snakeHeadRightRect = {256, 0, 64, 64};
+    SDL_Rect snakeHorizontalRect = {64, 0, 64, 64};
+    SDL_Rect snakeVerticalRect = {128, 64, 64, 64};
+    SDL_Rect snakeAngleLeftDownRect = {0, 0, 64, 64};
+    SDL_Rect snakeAngleRightDownRect = {128, 0, 64, 64};
+    SDL_Rect snakeAngleLeftUpRect = {128, 128, 64, 64};
+    SDL_Rect snakeAngleRightUpRect = {0, 64, 64, 64};
+    SDL_Rect snakeTailDownRect = {256, 128, 64, 64};
+    SDL_Rect snakeTailUpRect = {192, 128, 64, 64};
+    SDL_Rect snakeTailLeftRect = {192, 192, 64, 64};
+    SDL_Rect snakeTailRightRect = {256, 128, 64, 64};
+    SDL_Rect foodRect = {0, 192, 64, 64};
+    SDL_Rect pacWallRect = {0, 96, 24, 24};
+    SDL_Rect pacDownRect = {120, 71, 24, 24};
+    SDL_Rect pacUpRect = {71, 71, 24, 24};
+    SDL_Rect pacLeftRect = {0, 71, 24, 24};
+    SDL_Rect pacRightRect = {96, 71, 24, 24};
+    SDL_Rect ghostRect = {0, 143, 24, 24};
+    SDL_Rect pacFoodRect = {192, 0, 12, 12};
+    SDL_Rect emptyRect = {303, 136, 24, 24};
+
+    spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
+    spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
+    spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
+    spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
+    spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+    spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
+    spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
+    spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
+    spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
+    spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
+    spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
+    spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
+    spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
+    spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
+    spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
+    spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
+    spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
+    spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
+    spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
+    spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
+    spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
+    spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
+    spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
+    spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
+    spriteMap["wall"] = std::make_pair(spriteSheetTextureSnake, wallRect);
 }
 
 graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key) {
@@ -136,7 +128,7 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
         std::cerr << TTF_GetError() << std::endl;
     }
 
-    _font = TTF_OpenFont("src/graphic/ARCADE_I.ttf", 24);
+    _font = TTF_OpenFont("assets/ARCADE_I.ttf", 24);
     if (_font == nullptr) {
         std::cerr << TTF_GetError() << std::endl;
     }
@@ -156,6 +148,7 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
             }
         }
     }
+    loadSprites();
 }
 
 graphic::Sdl::~Sdl() {
@@ -234,18 +227,16 @@ std::queue<std::tuple<EventType, eventData>> graphic::Sdl::draw() {
         SDL_Rect rect = {static_cast<int>(x * 40),static_cast<int>(y * 40), 40, 40};
         drawGameElement(_renderer, rect, type);
     }
-
-    for (const auto& item : _draw_str) {
-        std::size_t x, y;
-        std::string str;
-        bool selected;
-        x = std::get<0>(item);
-        y = std::get<1>(item);
-        str = std::get<2>(item);
-        selected = std::get<3>(item);
-        drawText(str, static_cast<int>(x * 40), static_cast<int>(y * 40), selected);
-    }
-
+        for (const auto& item : _draw_str) {
+            std::size_t x, y;
+            std::string str;
+            bool selected;
+            x = std::get<0>(item);
+            y = std::get<1>(item);
+            str = std::get<2>(item);
+            selected = std::get<3>(item);
+            drawText(str, static_cast<int>(x * 40), static_cast<int>(y * 40), selected);
+        }
     SDL_RenderPresent(_renderer);
 
     _draw_str.clear();

@@ -66,6 +66,10 @@ void graphic::Ncurses::updateKeybinds()
 {
     int key = getch();
 
+    _keys->at("UP") = false;
+    _keys->at("DOWN") = false;
+    _keys->at("LEFT") = false;
+    _keys->at("RIGHT") = false;
     if (key == KEY_UP) {
         if (_keys->find("UP") != _keys->end())
             _keys->at("UP") = true;
