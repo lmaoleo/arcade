@@ -7,6 +7,33 @@
 
 #include "Sfml.hpp"
 
+std::map<std::string, sf::Color> colorMap = {
+    {"wall", {255, 0, 0, 255}},
+    {"snake_head_down", {0, 255, 255, 255}},
+    {"snake_head_up", {0, 255, 255, 255}},
+    {"snake_head_left", {0, 255, 255, 255}},
+    {"snake_head_right", {0, 255, 255, 255}},
+    {"snake_body", {0, 255, 0, 255}},
+    {"horizontal_snake_body", {0, 255, 0, 255}},
+    {"vertical_snake_body", {0, 255, 0, 255}},
+    {"angle_left_down_snake_body", {0, 255, 0, 255}},
+    {"angle_right_down_snake_body", {0, 255, 0, 255}},
+    {"angle_left_up_snake_body", {0, 255, 0, 255}},
+    {"angle_right_up_snake_body", {0, 255, 0, 255}},
+    {"snake_tail_down", {0, 255, 255, 255}},
+    {"snake_tail_up", {0, 255, 255, 255}},
+    {"snake_tail_left", {0, 255, 255, 255}},
+    {"snake_tail_right", {0, 255, 255, 255}},
+    {"pac_wall", {15, 46, 215, 255}},
+    {"pac_down", {255, 255, 0, 255}},
+    {"pac_up", {255, 255, 0, 255}},
+    {"pac_left", {255, 255, 0, 255}},
+    {"pac_right", {255, 255, 0, 255}},
+    {"ghost", {255, 0, 0, 255}},
+    {"pac_food", {231, 154, 149, 255}},
+    {"food", {255, 255, 0, 255}}
+};
+
 graphic::Sfml::Sfml(std::shared_ptr<state::Keybinds> &key) : _keys(key)
 {
     _keys = key;
@@ -54,6 +81,9 @@ void graphic::Sfml::updateKeybinds()
 
 std::queue<state::Event> graphic::Sfml::draw()
 {
+    _window->clear();
+
+
 
     return std::queue<state::Event>();
 }
