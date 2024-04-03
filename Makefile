@@ -13,6 +13,7 @@ SHARED_FLAGS = -fPIC -shared
 NAMES = core \
 		ncurses \
 		sdl \
+		sfml \
 		snake \
 		menu \
 
