@@ -121,6 +121,7 @@ int arcade::CoreProgram::loop()
     while (1) {
         _graphic->updateKeybinds();
         _events = _game->tick();
+        std::cout << _events.size() << std::endl;
         _graphic->readEvent(_events);
         _events = _graphic->draw();
         std::this_thread::sleep_until(next_tick);

@@ -70,6 +70,8 @@ void graphic::Ncurses::updateKeybinds()
     _keys->at("DOWN") = false;
     _keys->at("LEFT") = false;
     _keys->at("RIGHT") = false;
+    _keys->at("ESC") = false;
+    _keys->at("ENTER") = false;
     if (key == KEY_UP) {
         if (_keys->find("UP") != _keys->end())
             _keys->at("UP") = true;
@@ -81,10 +83,13 @@ void graphic::Ncurses::updateKeybinds()
             _keys->at("LEFT") = true;
     } else if (key == KEY_RIGHT) {
         if (_keys->find("RIGHT") != _keys->end())
-                _keys->at("RIGHT") = true;
+            _keys->at("RIGHT") = true;
     } else if (key == 27) {
         if (_keys->find("ESC") != _keys->end())
             _keys->at("ESC") = true;
+    } else if (key == 10) {
+        if (_keys->find("ENTER") != _keys->end())
+            _keys->at("ENTER") = true;
     }
 }
 

@@ -26,7 +26,7 @@ namespace game {
             void checkFood();
             void generateFood();
             std::string determine_body_orientation(int i);
-            std::string determine_tail_orientation(int i);
+            static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
             std::queue<std::tuple<std::size_t, std::variant<std::nullopt_t, std::string, std::size_t, double, bool>>> transform_map_to_events_te(std::vector<std::string> map);
 

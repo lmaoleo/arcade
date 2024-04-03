@@ -17,15 +17,19 @@ namespace game {
             ~Menu();
             std::queue<std::tuple<EventType, eventData>> tick();
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
-            void changeGame();
+            void selectNext(int type);
+            void selectPrev(int type);
+            void selectFirstGraphic();
+            void selectFirstGame();
+            void send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events);
             void display_menu(std::queue<std::tuple<EventType, eventData>> &events);
             void handle_key_events(std::queue<std::tuple<EventType, eventData>> &events);
-            std::queue<std::tuple<EventType, eventData>> transform_libs_to_events(std::vector<std::string> map);
 
         private:
             std::shared_ptr<std::map<std::string, bool>> _keys;
+            std::vector<std::tuple<std::string, bool, int>> _libs;
             std::vector<std::string> _lib_files;
-            std::vector<std::string> _game_files;
+            int _typeSelected;
             std::size_t _ticks;
             std::string _selected_game;
             std::string _selected_graphic;

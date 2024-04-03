@@ -199,6 +199,8 @@ void graphic::Sdl::updateKeybinds() {
     _keys->at("LEFT") = false;
     _keys->at("RIGHT") = false;
     _keys->at("ESC") = false;
+    _keys->at("ESC") = false;
+    _keys->at("ENTER") = false;
 
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
@@ -222,6 +224,14 @@ void graphic::Sdl::updateKeybinds() {
                 case SDLK_RIGHT:
                     if (_keys->find("RIGHT") != _keys->end())
                         _keys->at("RIGHT") = true;
+                    break;
+                case SDLK_ESCAPE:
+                    if (_keys->find("ESC") != _keys->end())
+                        _keys->at("ESC") = true;
+                    break;
+                case SDLK_RETURN:
+                    if (_keys->find("ENTER") != _keys->end())
+                        _keys->at("ENTER") = true;
                     break;
             }
         }

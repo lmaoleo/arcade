@@ -28,6 +28,18 @@ static std::vector<std::string> map = {
     "##################################"
 };
 
+
+    // {"horizontal_snake_body", L'🟩'},
+    // {"vertical_snake_body", L'🟩'},
+    // {"angle_left_down_snake_body", L'🟩'},
+    // {"angle_right_down_snake_body", L'🟩'},
+    // {"angle_left_up_snake_body", L'🟩'},
+    // {"angle_right_up_snake_body", L'🟩'},
+    // {"snake_tail_down", L'🟩'},
+    // {"snake_tail_up", L'🟩'},
+    // {"snake_tail_left", L'🟩'},
+    // {"snake_tail_right", L'🟩'},
+
 static const std::map<char, std::string> charmap = {
     {'#', "wall"},
     {'d', "snake_head_down"},
@@ -37,7 +49,39 @@ static const std::map<char, std::string> charmap = {
     {'b', "snake_body"},
     {'f', "food"},
     {' ', "empty"},
+    {'h', "horizontal_snake_body"},
+    {'v', "vertical_snake_body"},
+    {'a', "angle_left_down_snake_body"},
+    {'c', "angle_right_down_snake_body"},
+    {'e', "angle_left_up_snake_body"},
+    {'g', "angle_right_up_snake_body"},
+    {'t', "snake_tail_down"},
+    {'y', "snake_tail_up"},
+    {'r', "snake_tail_left"},
+    {'o', "snake_tail_right"},
 };
+
+static const std::map<std::string, char> reverseCharMap = {
+    {"wall", '#'},
+    {"snake_head_down", 'd'},
+    {"snake_head_up", 'u'},
+    {"snake_head_left", 'l'},
+    {"snake_head_right", '>'},
+    {"snake_body", 'b'},
+    {"food", 'f'},
+    {"empty", ' '},
+    {"horizontal_snake_body", 'h'},
+    {"vertical_snake_body", 'v'},
+    {"angle_left_down_snake_body", 'a'},
+    {"angle_right_down_snake_body", 'c'},
+    {"angle_left_up_snake_body", 'e'},
+    {"angle_right_up_snake_body", 'g'},
+    {"snake_tail_down", 't'},
+    {"snake_tail_up", 'y'},
+    {"snake_tail_left", 'r'},
+    {"snake_tail_right", 'o'},
+};
+
 
 game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
 {
@@ -62,27 +106,73 @@ extern "C" {
     }
 }
 
-// static void print_map(std::vector<std::string> map)
-// {
-//     for (std::size_t i = 0; i < map.size(); i++) {
-//         std::cout << map[i] << std::endl;
-//     }
-// }
-
-static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake)
-{
-    for (std::size_t i = 0; i < snake.size(); i++) {
-        std::size_t x = std::get<0>(snake[i]);
-        std::size_t y = std::get<1>(snake[i]);
-        map[y][x] = 'b';
-    }
-}
-
 static void add_food_to_map(std::vector<std::string> &map, std::tuple<std::size_t, std::size_t> food)
 {
     std::size_t x = std::get<0>(food);
     std::size_t y = std::get<1>(food);
     map[y][x] = 'f';
+}
+
+static std::string determine_body_orientations(int i, std::vector<std::tuple<std::size_t, std::size_t>> snake)
+{
+    std::tuple<std::size_t, std::size_t> past_snake = snake[i + 1];
+    std::tuple<std::size_t, std::size_t> current_snake = snake[i];
+    std::tuple<std::size_t, std::size_t> next_snake = snake[i - 1];
+
+    std::size_t past_x = std::get<0>(past_snake);
+    std::size_t past_y = std::get<1>(past_snake);
+    std::size_t current_x = std::get<0>(current_snake);
+    std::size_t current_y = std::get<1>(current_snake);
+    std::size_t next_x = std::get<0>(next_snake);
+    std::size_t next_y = std::get<1>(next_snake);
+
+    if ((past_x < current_x && current_x < next_x) || (past_x > current_x && current_x > next_x)) {
+        return "horizontal_snake_body";
+    } else if ((past_y < current_y && current_y < next_y) || (past_y > current_y && current_y > next_y)) {
+        return "vertical_snake_body";
+    } else if ((past_x < current_x && current_y < next_y) || (next_x < current_x && current_y < past_y)) {
+        return "angle_left_down_snake_body";
+    } else if ((past_x < current_x && current_y > next_y) || (next_x < current_x && current_y > past_y)) {
+        return "angle_left_up_snake_body";
+    } else if ((past_x > current_x && current_y < next_y) || (next_x > current_x && current_y < past_y)) {
+        return "angle_right_down_snake_body";
+    } else if ((past_x > current_x && current_y > next_y) || (next_x > current_x && current_y > past_y)) {
+        return "angle_right_up_snake_body";
+    }
+    return "snake_body";
+}
+
+static std::string determine_tail_orientation(int i, std::vector<std::tuple<std::size_t, std::size_t>> snake)
+{
+    std::tuple<std::size_t, std::size_t> past_snake = snake[i + 1];
+    std::tuple<std::size_t, std::size_t> current_snake = snake[i];
+
+    std::size_t past_x = std::get<0>(past_snake);
+    std::size_t past_y = std::get<1>(past_snake);
+    std::size_t current_x = std::get<0>(current_snake);
+    std::size_t current_y = std::get<1>(current_snake);
+
+    if (past_y > current_y) {
+        return "snake_tail_up";
+    } else if (past_y < current_y) {
+        return "snake_tail_down";
+    } else if (past_x > current_x) {
+        return "snake_tail_left";
+    } else if (past_x < current_x) {
+        return "snake_tail_right";
+    }
+    return "snake_body";
+}
+
+void game::Snake::add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake)
+{
+    std::tuple<std::size_t, std::size_t> tail = snake[snake.size() - 1];
+    for (std::size_t i = 0; i < snake.size(); i++) {
+        std::size_t x = std::get<0>(snake[i]);
+        std::size_t y = std::get<1>(snake[i]);
+        map[y][x] = reverseCharMap.at(determine_body_orientations(i, snake));
+    }
+    map[std::get<1>(tail)][std::get<0>(tail)] = reverseCharMap.at(determine_tail_orientation(snake.size() - 1, snake));
 }
 
 static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string type)
@@ -156,6 +246,8 @@ void game::Snake::changeDirection()
     _keys->at("DOWN") = false;
     _keys->at("LEFT") = false;
     _keys->at("RIGHT") = false;
+    _keys->at("ESC") = false;
+    _keys->at("ENTER") = false;
 }
 
 void game::Snake::generateFood()
@@ -200,70 +292,6 @@ std::vector<std::tuple<std::size_t, std::size_t>> game::Snake::changeSnakePos()
     return _snake;
 }
 
-std::string game::Snake::determine_body_orientation(int i)
-{
-    std::tuple<std::size_t, std::size_t> past_snake = _snake[i + 1];
-    std::tuple<std::size_t, std::size_t> current_snake = _snake[i];
-    std::tuple<std::size_t, std::size_t> next_snake = _snake[i - 1];
-
-    std::size_t past_x = std::get<0>(past_snake);
-    std::size_t past_y = std::get<1>(past_snake);
-    std::size_t current_x = std::get<0>(current_snake);
-    std::size_t current_y = std::get<1>(current_snake);
-    std::size_t next_x = std::get<0>(next_snake);
-    std::size_t next_y = std::get<1>(next_snake);
-
-    if ((past_x < current_x && current_x < next_x) || (past_x > current_x && current_x > next_x)) {
-        return "horizontal_snake_body";
-    } else if ((past_y < current_y && current_y < next_y) || (past_y > current_y && current_y > next_y)) {
-        return "vertical_snake_body";
-    } else if ((past_x < current_x && current_y < next_y) || (next_x < current_x && current_y < past_y)) {
-        return "angle_left_down_snake_body";
-    } else if ((past_x < current_x && current_y > next_y) || (next_x < current_x && current_y > past_y)) {
-        return "angle_left_up_snake_body";
-    } else if ((past_x > current_x && current_y < next_y) || (next_x > current_x && current_y < past_y)) {
-        return "angle_right_down_snake_body";
-    } else if ((past_x > current_x && current_y > next_y) || (next_x > current_x && current_y > past_y)) {
-        return "angle_right_up_snake_body";
-    }
-    return "snake_body";
-}
-
-std::string game::Snake::determine_tail_orientation(int i)
-{
-    std::tuple<std::size_t, std::size_t> past_snake = _snake[i + 1];
-    std::tuple<std::size_t, std::size_t> current_snake = _snake[i];
-
-    std::size_t past_x = std::get<0>(past_snake);
-    std::size_t past_y = std::get<1>(past_snake);
-    std::size_t current_x = std::get<0>(current_snake);
-    std::size_t current_y = std::get<1>(current_snake);
-
-    if (past_x < current_x) {
-        return "snake_tail_right";
-    } else if (past_x > current_x) {
-        return "snake_tail_left";
-    } else if (past_y < current_y) {
-        return "snake_tail_down";
-    } else if (past_y > current_y) {
-        return "snake_tail_up";
-    }
-    return "snake_body";
-}
-
-void game::Snake::add_snake_to_events(std::queue<std::tuple<EventType, eventData>> &event)
-{
-    std::string body_orientation;
-    std::string tail_orientation = determine_tail_orientation(_snake.size() - 1);
-
-    create_draw_event(event, std::get<0>(_snake[0]), std::get<1>(_snake[0]), _headDirection);
-    for (std::size_t i = 1; i < _snake.size() - 1; i++) {
-        body_orientation = determine_body_orientation(i);
-        create_draw_event(event, std::get<0>(_snake[i]), std::get<1>(_snake[i]), body_orientation);
-    }
-    create_draw_event(event, std::get<0>(_snake[_snake.size() - 1]), std::get<1>(_snake[_snake.size() - 1]), tail_orientation);
-}
-
 void game::Snake::add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
     std::string score = "Score: " + std::to_string(_score);
@@ -282,6 +310,7 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
     if (_lose != true) {
         changeSnakePos();
     }
+    add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);
     std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
     if (checkCollision()) {
@@ -295,7 +324,6 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
         _lose = true;
         return events;
     }
-    add_snake_to_events(events);
     add_score_to_events(events);
     checkFood();
     _ticks++;

@@ -128,6 +128,8 @@ void graphic::Sfml::updateKeybinds()
     _keys->at("LEFT") = false;
     _keys->at("RIGHT") = false;
     _keys->at("ESC") = false;
+    _keys->at("ESC") = false;
+    _keys->at("ENTER") = false;
 
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::KeyPressed) {
@@ -146,6 +148,9 @@ void graphic::Sfml::updateKeybinds()
                 break;
             case sf::Keyboard::Escape :
                 _keys->at("ESC") = true;
+                break;
+            case sf::Keyboard::Return :
+                _keys->at("ENTER") = true;
                 break;
             default:
                 break;
