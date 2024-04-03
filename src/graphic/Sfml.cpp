@@ -33,22 +33,21 @@ graphic::Sfml::~Sfml()
 
 void graphic::Sfml::updateKeybinds()
 {
-    sf::Event event;
-
-    while (_window->pollEvent(event)) {
-        if (event.type == sf::Event::KeyPressed) {
-            for (auto &key : _keys.get()->_binds /* <- domage :( */ ) { // sans accès à _binds, on peut pas check les touches sans hardcoder
-                if (event.key.code == key.second) {
-                    _keys.get()->keyPressed(key.first, true);
-                }
-            }
-        }
-        if (event.type == sf::Event::KeyReleased) {
-            for (auto &key : _keys.get()->_binds) {
-                if (event.key.code == key.second) {
-                    _keys.get()->keyPressed(key.first, false);
-                }
-            }
-        }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        _keys.get()->keyPressed("UP", true);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        _keys.get()->keyPressed("DOWN", true);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        _keys.get()->keyPressed("LEFT", true);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        _keys.get()->keyPressed("RIGHT", true);
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        _keys.get()->keyPressed("ESCAPE", true);
+    else {
+        _keys.get()->keyPressed("UP", false);
+        _keys.get()->keyPressed("DOWN", false);
+        _keys.get()->keyPressed("LEFT", false);
+        _keys.get()->keyPressed("RIGHT", false);
+        _keys.get()->keyPressed("ESCAPE", false);
     }
 }
