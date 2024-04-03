@@ -35,13 +35,13 @@ std::map<std::string, sf::Color> colorMap = {
 };
 
 extern "C" {
-    graphic::Sfml *createGraphic(std::shared_ptr<state::Keybinds> &keybinds)
+    graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
         return new graphic::Sfml(keybinds);
     }
 };
 
-graphic::Sfml::Sfml(std::shared_ptr<state::Keybinds> &key) : _keys(key)
+graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key)
 {
     _keys = key;
     _window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Arcade DE ZINZIN");
@@ -52,11 +52,6 @@ graphic::Sfml::Sfml(std::shared_ptr<state::Keybinds> &key) : _keys(key)
     if (!_window->isOpen()) {
         std::cerr << "Failed to create window!" << std::endl;
     }
-    _keys.get()->bindKey("UP", sf::Keyboard::Up);
-    _keys.get()->bindKey("DOWN", sf::Keyboard::Down);
-    _keys.get()->bindKey("LEFT", sf::Keyboard::Left);
-    _keys.get()->bindKey("RIGHT", sf::Keyboard::Right);
-    _keys.get()->bindKey("ESCAPE", sf::Keyboard::Escape);
 }
 
 graphic::Sfml::~Sfml()
@@ -68,22 +63,35 @@ graphic::Sfml::~Sfml()
 
 void graphic::Sfml::updateKeybinds()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        _keys.get()->keyPressed("UP", true);
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        _keys.get()->keyPressed("DOWN", true);
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        _keys.get()->keyPressed("LEFT", true);
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        _keys.get()->keyPressed("RIGHT", true);
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-        _keys.get()->keyPressed("ESCAPE", true);
-    else {
-        _keys.get()->keyPressed("UP", false);
-        _keys.get()->keyPressed("DOWN", false);
-        _keys.get()->keyPressed("LEFT", false);
-        _keys.get()->keyPressed("RIGHT", false);
-        _keys.get()->keyPressed("ESCAPE", false);
+    sf::Event event;
+    _keys->at("UP") = false;
+    _keys->at("DOWN") = false;
+    _keys->at("LEFT") = false;
+    _keys->at("RIGHT") = false;
+    _keys->at("ESC") = false;
+
+    while (_window->pollEvent(event)) {
+        if (event.type == sf::Event::KeyPressed) {
+            switch (event.key.code) {
+            case sf::Keyboard::Up :
+                _keys->at("UP") = true;
+                break;
+            case sf::Keyboard::Down :
+                _keys->at("DOWN") = true;
+                break;
+            case sf::Keyboard::Left :
+                _keys->at("LEFT") = true;
+                break;
+            case sf::Keyboard::Right :
+                _keys->at("RIGHT") = true;
+                break;
+            case sf::Keyboard::Escape :
+                _keys->at("ESC") = true;
+                break;
+            default:
+                break;
+            }
+        }
     }
 }
 
@@ -104,14 +112,14 @@ void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y
 {
     sf::Text textToDraw = sf::Text(text, *_font, 24);
 
-    textToDraw.setPosition(x, y);
+    textToDraw.setPosition(x * 40, y * 40);
     if (selected) {
         textToDraw.setFillColor(sf::Color::Red);
     }
     _window->draw(textToDraw);
 }
 
-std::queue<state::Event> graphic::Sfml::draw()
+std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
 {
     std::size_t x, y = 0;
     std::string type = "";
@@ -134,5 +142,5 @@ std::queue<state::Event> graphic::Sfml::draw()
     _window->display();
     _draw.clear();
     _draw_str.clear();
-    return std::queue<state::Event>();
+    return std::queue<std::tuple<EventType, eventData>>();
 }

@@ -20,15 +20,15 @@
 namespace graphic {
     class Sfml : public graphic::AGraphic {
     public:
-        Sfml(std::shared_ptr<state::Keybinds> &key);
+        Sfml(std::shared_ptr<std::map<std::string, bool>> &key);
         ~Sfml();
         void updateKeybinds() final;
         void drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType);
         void drawText(const std::string &text, const int &x, const int &y, bool selected);
-        std::queue<state::Event> draw() final;
+        std::queue<std::tuple<EventType, eventData>> draw() final;
 
     private:
-        std::shared_ptr<state::Keybinds> _keys;
+        std::shared_ptr<std::map<std::string, bool>> _keys;
         sf::RenderWindow *_window;
         sf::Font *_font;
     };
