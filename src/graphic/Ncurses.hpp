@@ -19,6 +19,7 @@ namespace graphic {
         Ncurses(std::shared_ptr<std::map<std::string, bool>> &key);
         ~Ncurses();
         void updateKeybinds() final;
+        void flushscreen() final;
         std::queue<std::tuple<EventType, eventData>> draw() final;
 
     private:

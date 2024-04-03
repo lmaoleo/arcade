@@ -24,6 +24,7 @@ namespace graphic {
         Sfml(std::shared_ptr<std::map<std::string, bool>> &key);
         ~Sfml();
         void updateKeybinds() final;
+        void flushscreen() final;
         void drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType);
         sf::Texture *loadSprite(const std::string &filePath);
         void loadSprites();

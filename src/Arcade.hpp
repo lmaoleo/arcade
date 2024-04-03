@@ -21,6 +21,8 @@ namespace arcade {
             int &getScore();
             void loadGame(const std::string& game);
             void loadGraphic(const std::string& graphic);
+            void loadMenu();
+            bool checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events);
             int loop(void);
 
         private:

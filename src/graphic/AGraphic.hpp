@@ -19,6 +19,7 @@ namespace graphic {
             public:
                 virtual void updateKeybinds() = 0;
                 virtual std::queue<std::tuple<EventType, eventData>> draw() = 0;
+                virtual void flushscreen() = 0;
 
                 virtual void readEvent(std::queue<std::tuple<EventType, eventData>> &event) final;
                 virtual void readWin(std::queue<std::tuple<EventType, eventData>> &event) final;
@@ -28,6 +29,7 @@ namespace graphic {
                 virtual void readDrawString(std::queue<std::tuple<EventType, eventData>> &event) final;
                 virtual void readSound(std::queue<std::tuple<EventType, eventData>> &event) final;
                 virtual void readTime(std::queue<std::tuple<EventType, eventData>> &event) final;
+                virtual void readSetElm(std::queue<std::tuple<EventType, eventData>> &event) final;
                 virtual void packetError(std::queue<std::tuple<EventType, eventData>> &event) final;
 
             protected:

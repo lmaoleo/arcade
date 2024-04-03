@@ -100,15 +100,48 @@ std::shared_ptr<T> loadComponent(const std::string& path, const std::string& cre
 }
 
 void arcade::CoreProgram::loadGame(const std::string& game) {
+    if (_game != nullptr) {
+        _game.reset();
+    }
     _game = loadComponent<game::AGame>(game, "createGame", _keys);
 }
 
 void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
+    if (_graphic != nullptr) {
+        _graphic.reset();
+    }
     _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys);
 }
+
+void arcade::CoreProgram::loadMenu()
+{
+    _game = loadComponent<game::AGame>("lib/arcade_menu.so", "createGame", _keys);
+}
+
+bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events)
+{
+    while (!events.empty()) {
+        if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
+            events.pop();
+            loadGame(std::get<std::string>(std::get<1>(events.front())));
+            _events = _game->tick();
+            _graphic->flushscreen();
+            return true;
+        } else if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
+            events.pop();
+            loadGraphic(std::get<std::string>(std::get<1>(events.front())));
+            _events = _game->tick();
+            _graphic->flushscreen();
+            return true;
+        }
+        events.pop();
+    }
+    return false;
+}
+
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_snake.so");
+    loadGame("lib/arcade_menu.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
@@ -121,9 +154,10 @@ int arcade::CoreProgram::loop()
     while (1) {
         _graphic->updateKeybinds();
         _events = _game->tick();
-        std::cout << _events.size() << std::endl;
-        _graphic->readEvent(_events);
-        _events = _graphic->draw();
+        if (!checkForEventChangeThing(_events)) {
+            _graphic->readEvent(_events);
+            _events = _graphic->draw();
+        }
         std::this_thread::sleep_until(next_tick);
         next_tick += timestep;
     }

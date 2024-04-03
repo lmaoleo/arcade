@@ -16,7 +16,9 @@ static const std::map<EventType, void (graphic::AGraphic::*)(std::queue<std::tup
     {DRAW, &graphic::AGraphic::readDraw},
     {DRAW_STRING, &graphic::AGraphic::readDrawString},
     {PLAY_SOUND, &graphic::AGraphic::readSound},
-    {DELTA_TIME, &graphic::AGraphic::readTime}
+    {DELTA_TIME, &graphic::AGraphic::readTime},
+    {SET_GAME, &graphic::AGraphic::readSetElm},
+    {SET_GRAPHIC, &graphic::AGraphic::readSetElm},
 };
 
 void graphic::AGraphic::readEvent(std::queue<std::tuple<EventType, eventData>> &event)
@@ -130,6 +132,16 @@ void graphic::AGraphic::readTime(std::queue<std::tuple<EventType, eventData>> &e
         return packetError(event);
     double packetDecimalPtr = std::get<double>(std::get<1>(event.front()));
     _time = packetDecimalPtr;
+    event.pop();
+    event.pop();
+}
+
+void graphic::AGraphic::readSetElm(std::queue<std::tuple<EventType, eventData>> &event)
+{
+    event.pop();
+    if (std::get<EventType>(event.front()) != DATA)
+        return packetError(event);
+    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
     event.pop();
     event.pop();
 }

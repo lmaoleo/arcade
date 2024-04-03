@@ -93,6 +93,12 @@ void graphic::Ncurses::updateKeybinds()
     }
 }
 
+void graphic::Ncurses::flushscreen()
+{
+    clear();
+    refresh();
+}
+
 std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     clear();
 

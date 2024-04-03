@@ -238,6 +238,10 @@ void graphic::Sdl::updateKeybinds() {
     }
 }
 
+void graphic::Sdl::flushscreen() {
+    SDL_RenderClear(_renderer);
+}
+
 std::queue<std::tuple<EventType, eventData>> graphic::Sdl::draw() {
     SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     SDL_RenderClear(_renderer);

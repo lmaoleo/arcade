@@ -192,6 +192,11 @@ void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y
     _window->draw(textToDraw);
 }
 
+void graphic::Sfml::flushscreen()
+{
+    _window->clear();
+}
+
 std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
 {
     std::size_t x, y = 0;
