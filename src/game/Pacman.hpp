@@ -10,6 +10,7 @@
 
 #include "AGame.hpp"
 #include <queue>
+#include <chrono>
 
 namespace game {
     class Pacman : public AGame {
@@ -23,6 +24,9 @@ namespace game {
             void changeDirection();
             bool checkCollision(std::tuple<std::size_t, std::size_t> pos);
             void checkFood();
+            void movesGhostsRandomDirections();
+            double getElapsedTime();
+            bool isGameOver();
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
 
         private:
@@ -34,6 +38,8 @@ namespace game {
             std::tuple<std::size_t, std::size_t> _Pacman;
             std::vector<std::tuple<std::size_t, std::size_t, bool>> _food;
             std::vector<std::tuple<std::size_t, std::size_t>> _ghosts;
+            std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
+            std::chrono::high_resolution_clock::time_point _startTime;
     };
 };
 

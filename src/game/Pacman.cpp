@@ -40,9 +40,9 @@ static std::vector<std::string> PacManMap = {
     "#    #   #   #    #",
     "#### ### # ### ####",
     "   # #       # #   ",
-    "#### # ##### # ####",
+    "#### # ## ## # ####",
     "       #   #       ",
-    "#### # ##### # ####",
+    "#### # ## ## # ####",
     "   # #       # #   ",
     "#### # ##### # ####",
     "#        #        #",
@@ -64,6 +64,7 @@ static const std::map<char, std::string> charmap = {
     {'G', "ghost"},
     {'P', "pacman"},
     {'.', "pac_food"},
+    {' ', "empty"},
     {' ', "empty"},
 };
 
@@ -97,11 +98,19 @@ game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key)
     _Pacman = std::make_tuple(9, 15);
     generateFood();
     _ticks = 0;
-    _ghosts = {{8, 9}, {9, 9}, {10, 9}};
+    _ghosts = {{8, 9}, {9, 9}, {9, 9}, {10, 9}};
+    _ghostsOrigins = {{8, 9}, {9, 9}, {9, 9}, {10, 9}};
+    _startTime = std::chrono::high_resolution_clock::now();
 }
 
 game::Pacman::~Pacman()
 {
+}
+
+double game::Pacman::getElapsedTime() {
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedTime = currentTime - _startTime;
+    return elapsedTime.count();
 }
 
 void game::Pacman::changeDirection()
@@ -122,6 +131,18 @@ void game::Pacman::changeDirection()
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
+}
+
+bool game::Pacman::isGameOver()
+{
+    for (std::size_t i = 0; i < _ghosts.size(); i++) {
+        if (_Pacman == _ghosts[i]) {
+            while (1)
+                printf("Game Over\n");
+            return true;
+        }
+    }
+    return false;
 }
 
 bool game::Pacman::checkCollision(std::tuple<std::size_t, std::size_t> pos)
@@ -235,16 +256,44 @@ void game::Pacman::add_score_to_events(std::queue<std::tuple<EventType, eventDat
     create_draw_string_event(events, 0, 22, score);
 }
 
+void game::Pacman::movesGhostsRandomDirections()
+{
+    for (std::size_t i = 0; i < _ghosts.size(); i++) {
+        std::size_t random = rand() % 4;
+        if (random == 0) {
+            if (checkCollision(std::make_tuple(std::get<0>(_ghosts[i]) + 1, std::get<1>(_ghosts[i])))) {
+                _ghosts[i] = std::make_tuple(std::get<0>(_ghosts[i]) + 1, std::get<1>(_ghosts[i]));
+            }
+        } else if (random == 1) {
+            if (checkCollision(std::make_tuple(std::get<0>(_ghosts[i]) - 1, std::get<1>(_ghosts[i])))) {
+                _ghosts[i] = std::make_tuple(std::get<0>(_ghosts[i]) - 1, std::get<1>(_ghosts[i]));
+            }
+        } else if (random == 2) {
+            if (checkCollision(std::make_tuple(std::get<0>(_ghosts[i]), std::get<1>(_ghosts[i]) + 1))) {
+                _ghosts[i] = std::make_tuple(std::get<0>(_ghosts[i]), std::get<1>(_ghosts[i]) + 1);
+            }
+        } else if (random == 3) {
+            if (checkCollision(std::make_tuple(std::get<0>(_ghosts[i]), std::get<1>(_ghosts[i]) - 1))) {
+                _ghosts[i] = std::make_tuple(std::get<0>(_ghosts[i]), std::get<1>(_ghosts[i]) - 1);
+            }
+        }
+    }
+
+}
+
 std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
 {
+    isGameOver();
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
     changePacmanPos();
+    movesGhostsRandomDirections();
     add_food_to_map(newMap, _food);
     add_ghosts_to_map(newMap, _ghosts);
     add_Pacman_to_map(newMap, _Pacman);
     std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
     add_score_to_events(events);
+    printf("Time: %f\n", getElapsedTime());
     checkFood();
     _ticks++;
     return events;
