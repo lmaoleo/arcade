@@ -15,7 +15,10 @@ NAMES = core \
 		sdl \
 		sfml \
 		snake \
-		menu \
+		pacman \
+		menu
+
+NAME = arcade
 
 CORE_FILES = Arcade.cpp \
 
@@ -55,7 +58,7 @@ PUT_LIB = ./lib/
 all: $(NAMES)
 
 core: $(CORE_FILES)
-	$(CC) $(ERRORS_FLAGS) -o $@ $(CORE_FILES)
+	$(CC) $(ERRORS_FLAGS) -o $(NAME) $(CORE_FILES)
 
 graphicals: ncurses sdl sfml
 
@@ -81,7 +84,8 @@ clean:
 	rm -f $(addsuffix .o, $(NAMES))
 
 fclean: clean
-	rm -f $(addsuffix .so, $(NAMES))
+	rm -f $(addsuffix *, $(PUT_LIB))
+	rm -f $(NAME)
 
 re: fclean all
 
