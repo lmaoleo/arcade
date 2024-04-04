@@ -7,7 +7,6 @@
 
 #include "AGraphic.hpp"
 
-
 static const std::map<EventType, void (graphic::AGraphic::*)(std::queue<std::tuple<EventType, eventData>> &)> eventFuncs = {
     {DATA, &graphic::AGraphic::packetError},
     {WIN, &graphic::AGraphic::readWin},
@@ -15,7 +14,6 @@ static const std::map<EventType, void (graphic::AGraphic::*)(std::queue<std::tup
     {PAUSE, &graphic::AGraphic::readPause},
     {DRAW, &graphic::AGraphic::readDraw},
     {DRAW_STRING, &graphic::AGraphic::readDrawString},
-    {PLAY_SOUND, &graphic::AGraphic::readSound},
     {DELTA_TIME, &graphic::AGraphic::readTime},
     {SET_GAME, &graphic::AGraphic::readSetElm},
     {SET_GRAPHIC, &graphic::AGraphic::readSetElm},
@@ -75,10 +73,10 @@ void graphic::AGraphic::readDraw(std::queue<std::tuple<EventType, eventData>> &e
 
     if (std::get<0>(event.front()) != DATA)
         return packetError(event);
-    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
+    short packetStr = std::get<short>(std::get<1>(event.front()));
     event.pop();
 
-    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr);
+    std::tuple draw = std::make_tuple(packetNb, packetNb2, packetStr, _color);
     _draw.push_back(draw);
     event.pop();
 }
@@ -114,17 +112,6 @@ void graphic::AGraphic::readDrawString(std::queue<std::tuple<EventType, eventDat
     event.pop();
 }
 
-void graphic::AGraphic::readSound(std::queue<std::tuple<EventType, eventData>> &event)
-{
-    event.pop();
-    if (std::get<EventType>(event.front()) != DATA)
-        return packetError(event);
-    std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
-    _sound.push_back(packetStr);
-    event.pop();
-    event.pop();
-}
-
 void graphic::AGraphic::readTime(std::queue<std::tuple<EventType, eventData>> &event)
 {
     event.pop();
@@ -142,6 +129,17 @@ void graphic::AGraphic::readSetElm(std::queue<std::tuple<EventType, eventData>> 
     if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
     std::string packetStr = std::get<std::string>(std::get<1>(event.front()));
+    event.pop();
+    event.pop();
+}
+
+void graphic::AGraphic::readColor(std::queue<std::tuple<EventType, eventData>> &event)
+{
+    event.pop();
+    if (std::get<EventType>(event.front()) != DATA)
+        return packetError(event);
+    short packetColor = std::get<short>(std::get<1>(event.front()));
+    _color = packetColor;
     event.pop();
     event.pop();
 }

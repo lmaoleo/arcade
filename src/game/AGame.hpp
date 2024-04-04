@@ -17,6 +17,9 @@ namespace game {
         public:
             virtual ~AGame() = default;
             virtual std::queue<std::tuple<EventType, eventData>> tick() = 0;
+            short stringToShort(std::string pattern);
+            short rotateRight(short pixel);
+            short rotateLeft(short pixel);
 
         private:
             std::shared_ptr<std::map<std::string, bool>> _keys;

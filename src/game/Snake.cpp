@@ -28,60 +28,47 @@ static std::vector<std::string> map = {
     "##################################"
 };
 
-
-    // {"horizontal_snake_body", L'🟩'},
-    // {"vertical_snake_body", L'🟩'},
-    // {"angle_left_down_snake_body", L'🟩'},
-    // {"angle_right_down_snake_body", L'🟩'},
-    // {"angle_left_up_snake_body", L'🟩'},
-    // {"angle_right_up_snake_body", L'🟩'},
-    // {"snake_tail_down", L'🟩'},
-    // {"snake_tail_up", L'🟩'},
-    // {"snake_tail_left", L'🟩'},
-    // {"snake_tail_right", L'🟩'},
-
-static const std::map<char, std::string> charmap = {
-    {'#', "wall"},
-    {'d', "snake_head_down"},
-    {'u', "snake_head_up"},
-    {'l', "snake_head_left"},
-    {'>', "snake_head_right"},
-    {'b', "snake_body"},
-    {'f', "food"},
-    {' ', "empty"},
-    {'h', "horizontal_snake_body"},
-    {'v', "vertical_snake_body"},
-    {'a', "angle_left_down_snake_body"},
-    {'c', "angle_right_down_snake_body"},
-    {'e', "angle_left_up_snake_body"},
-    {'g', "angle_right_up_snake_body"},
-    {'t', "snake_tail_down"},
-    {'y', "snake_tail_up"},
-    {'r', "snake_tail_left"},
-    {'o', "snake_tail_right"},
+static const std::string apple = {
+    "#   "\
+    " ## "\
+    "####"\
+    " ## "
 };
 
-static const std::map<std::string, char> reverseCharMap = {
-    {"wall", '#'},
-    {"snake_head_down", 'd'},
-    {"snake_head_up", 'u'},
-    {"snake_head_left", 'l'},
-    {"snake_head_right", '>'},
-    {"snake_body", 'b'},
-    {"food", 'f'},
-    {"empty", ' '},
-    {"horizontal_snake_body", 'h'},
-    {"vertical_snake_body", 'v'},
-    {"angle_left_down_snake_body", 'a'},
-    {"angle_right_down_snake_body", 'c'},
-    {"angle_left_up_snake_body", 'e'},
-    {"angle_right_up_snake_body", 'g'},
-    {"snake_tail_down", 't'},
-    {"snake_tail_up", 'y'},
-    {"snake_tail_left", 'r'},
-    {"snake_tail_right", 'o'},
+static const std::string wall = {
+    "####"\
+    "####"\
+    "####"\
+    "####"
 };
 
+static const std::string snake_head_up = {
+    " ## "\
+    "#  #"\
+    " ## "\
+    " ## "
+};
+
+static const std::string snake_body_vertical = {
+    " ## "\
+    " ## "\
+    " ## "\
+    " ## "
+};
+
+static const std::string snake_body_angle_left_up = {
+    " ## "\
+    "### "\
+    "### "\
+    "    "
+};
+
+static const std::string snake_tail_up = {
+    " ## "\
+    "####"\
+    " ## "\
+    "    "
+};
 
 game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
 {
@@ -127,19 +114,19 @@ static std::string determine_body_orientations(int i, std::vector<std::tuple<std
     std::size_t next_y = std::get<1>(next_snake);
 
     if ((past_x < current_x && current_x < next_x) || (past_x > current_x && current_x > next_x)) {
-        return "horizontal_snake_body";
+        return "snake_body_horizontal";
     } else if ((past_y < current_y && current_y < next_y) || (past_y > current_y && current_y > next_y)) {
-        return "vertical_snake_body";
+        return "snake_body_vertical";
     } else if ((past_x < current_x && current_y < next_y) || (next_x < current_x && current_y < past_y)) {
-        return "angle_left_down_snake_body";
+        return "snake_body_angle_left_down";
     } else if ((past_x < current_x && current_y > next_y) || (next_x < current_x && current_y > past_y)) {
-        return "angle_left_up_snake_body";
+        return "snake_body_angle_left_up";
     } else if ((past_x > current_x && current_y < next_y) || (next_x > current_x && current_y < past_y)) {
-        return "angle_right_down_snake_body";
+        return "snake_body_angle_right_down";
     } else if ((past_x > current_x && current_y > next_y) || (next_x > current_x && current_y > past_y)) {
-        return "angle_right_up_snake_body";
+        return "snake_body_angle_right_up";
     }
-    return "snake_body";
+    return "snake_body_vertical";
 }
 
 static std::string determine_tail_orientation(int i, std::vector<std::tuple<std::size_t, std::size_t>> snake)

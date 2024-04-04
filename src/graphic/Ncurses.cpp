@@ -7,35 +7,6 @@
 
 #include "Ncurses.hpp"
 
-
-static const std::map<std::string, wchar_t> charmap = {
-    {"wall", L'🧱'},
-    {"snake_head_down", L'🦯'},
-    {"snake_head_up", L'🦺'},
-    {"snake_head_left", L'🕺'},
-    {"snake_head_right", L'💃'},
-    {"snake_body", L'🟩'},
-    {"horizontal_snake_body", L'🟩'},
-    {"vertical_snake_body", L'🟩'},
-    {"angle_left_down_snake_body", L'🟩'},
-    {"angle_right_down_snake_body", L'🟩'},
-    {"angle_left_up_snake_body", L'🟩'},
-    {"angle_right_up_snake_body", L'🟩'},
-    {"snake_tail_down", L'🟩'},
-    {"snake_tail_up", L'🟩'},
-    {"snake_tail_left", L'🟩'},
-    {"snake_tail_right", L'🟩'},
-    {"food", L'🍔'},
-    {"pac_wall", L'🧱'},
-    {"pac_down", L'👇'},
-    {"pac_up", L'👆'},
-    {"pac_left", L'👈'},
-    {"pac_right", L'👉'},
-    {"ghost", L'👻'},
-    {"pac_food", L'🍔'},
-    {"empty", L' '},
-};
-
 extern "C" {
     graphic::Ncurses *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
@@ -103,23 +74,13 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     clear();
 
     for (const auto& item : _draw) {
-    std::size_t x, y;
-    std::string type;
-    std::tie(x, y, type) = item;
+        std::size_t x, y;
+        short pixel;
+        unsigned int color;
+        std::tie(x, y, pixel, color) = item;
 
-    auto charIt = charmap.find(type);
-    if (charIt != charmap.end()) {
-        wchar_t symbol = charIt->second;
-        if (type == "empty") {
-            attron(COLOR_PAIR(1));
-            mvaddch(y, x * 2, ' ');
-            mvaddch(y, x * 2 + 1, ' ');
-            attroff(COLOR_PAIR(1));
-        } else {
-            mvaddwstr(y, x * 2, &symbol);
-        }
+        printCube(x, y, pixel, color);
     }
-}
     for (const auto& item : _draw_str) {
         std::size_t x, y;
         std::string str;
@@ -138,4 +99,24 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     refresh();
     _draw.clear();
     return std::queue<std::tuple<EventType, eventData>>();
+}
+
+static void printPixel(std::size_t x, std::size_t y, unsigned int color)
+{
+    attron(COLOR_PAIR(color));
+    mvprintw(y, x, " ");
+    attroff(COLOR_PAIR(color));
+}
+
+static void printCube(std::size_t gx, std::size_t gy, short pattern, unsigned int color)
+{
+    // gx and gy are the grid coordinates, sx and sy are the screen (normal) coordinates
+    int sx = gx * 4;
+    int sy = gy * 4;
+    // Grid is 4x4 so 16 characters
+    for (int i = 0; i < 16; i++) {
+        if (pattern & (1 << i)) {
+            printPixel(sx + i % 4, sy + i / 4, color);
+        }
+    }
 }
