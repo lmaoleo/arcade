@@ -139,7 +139,7 @@ static const std::tuple<std::string, unsigned int> ghost = {
     "#  #"\
     "#  #"\
     "#  #",
-    rgbToInt(255, 255, 255, 0)
+    rgbToInt(233, 0, 150, 100)
 };
 
 static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {

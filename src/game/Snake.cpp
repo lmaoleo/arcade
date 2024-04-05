@@ -75,7 +75,7 @@ static const std::tuple<std::string, unsigned int> apple = {
     " ## "\
     "####"\
     " ## ",
-    rgbToInt(255, 255, 0, 0)
+    rgbToInt(233, 0, 150, 100)
 };
 
 static const std::tuple<std::string, unsigned int> wall = {
@@ -94,19 +94,84 @@ static const std::tuple<std::string, unsigned int> snake_head_up = {
     rgbToInt(255, 0, 255, 0)
 };
 
-static const std::tuple<std::string, unsigned int> snake_body_vertical = {
-    "####"\
-    "####"\
-    "####"\
-    "####",
+static const std::tuple<std::string, unsigned int> snake_head_down = {
+    " ## "\
+    " ## "\
+    "#  #"\
+    " ## ",
     rgbToInt(255, 0, 255, 0)
 };
+
+static const std::tuple<std::string, unsigned int> snake_head_left = {
+    " ## "\
+    "##  "\
+    " ## "\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_head_right = {
+    " ## "\
+    "  ##"\
+    " ## "\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body = {
+    " ## "\
+    " ## "\
+    " ## "\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body_vertical = {
+    " ## "\
+    " ## "\
+    " ## "\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body_horisontal = {
+    "    "\
+    "####"\
+    "####"\
+    "    ",
+    rgbToInt(255, 0, 255, 0)
+};
+
 
 static const std::tuple<std::string, unsigned int> snake_body_angle_left_up = {
     " ## "\
     "### "\
     "### "\
     "    ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body_angle_right_up = {
+    " ## "\
+    " ###"\
+    " ###"\
+    "    ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body_angle_left_down = {
+    "    "\
+    "### "\
+    "### "\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> snake_body_angle_right_down = {
+    "    "\
+    " ###"\
+    " ###"\
+    " ## ",
     rgbToInt(255, 0, 255, 0)
 };
 
@@ -117,6 +182,14 @@ static const std::tuple<std::string, unsigned int> snake_tail_up = {
     "    ",
     rgbToInt(255, 0, 255, 0)
 };
+static const std::tuple<std::string, unsigned int> snake_tail_down = {
+    "    "\
+    " ## "\
+    "####"\
+    " ## ",
+    rgbToInt(255, 0, 255, 0)
+};
+
 
 static const std::tuple<std::string, unsigned int> empty = {
     "    "\
@@ -129,21 +202,21 @@ static const std::tuple<std::string, unsigned int> empty = {
 static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
     {"#", wall},
     {"f", apple},
-    {"d", snake_body_vertical},
-    {"u", snake_body_vertical},
-    {"l", snake_body_vertical},
-    {">", snake_body_vertical},
-    {"b", snake_body_vertical},
-    {"h", snake_body_vertical},
+    {"d", snake_head_down},
+    {"u", snake_head_up},
+    {"l", snake_head_left},
+    {">", snake_head_right},
+    {"b", snake_body},
+    {"h", snake_body_horisontal},
     {"v", snake_body_vertical},
-    {"a", snake_body_vertical},
-    {"c", snake_body_vertical},
-    {"e", snake_body_vertical},
-    {"g", snake_body_vertical},
-    {"t", snake_body_vertical},
-    {"y", snake_body_vertical},
-    {"r", snake_body_vertical},
-    {"o", snake_body_vertical},
+    {"a", snake_body_angle_left_down},
+    {"c", snake_body_angle_right_down},
+    {"e", snake_body_angle_left_up},
+    {"g", snake_body_angle_right_up},
+    {"t", snake_tail_down},
+    {"y", snake_tail_up},
+    {"r", snake_tail_up},
+    {"o", snake_tail_up},
     {" ", empty}
 };
 
@@ -373,7 +446,7 @@ std::vector<std::tuple<std::size_t, std::size_t>> game::Snake::changeSnakePos()
 void game::Snake::add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
     std::string score = "Score: " + std::to_string(_score);
-    create_draw_string_event(events, 0, 52, score);
+    create_draw_string_event(events, 0, 25, score);
 }
 
 void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>> &events)
