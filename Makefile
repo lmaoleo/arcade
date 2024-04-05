@@ -25,8 +25,7 @@ CORE_FILES = Arcade.cpp \
 GRAPHIC_FILES = IGraphic.cpp \
 			AGraphic.cpp \
 
-GAME_FILES = IGame.cpp \
-			AGame.cpp \
+GAME_FILES = AGame.cpp \
 
 NCURSES_FILES = Ncurses.cpp \
 
@@ -72,13 +71,13 @@ sfml: $(SFML_FILES)
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lsfml-graphics -lsfml-window -lsfml-system -o $(PUT_LIB)arcade_sfml.so $(GRAPHIC_LIB_FILES) $(SFML_FILES)
 
 snake: $(SNAKE_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(SRC_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(GAME_LIB_FILES)
 
 pacman: $(PACMAN_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_pacman.so -Iinclude $(PACMAN_FILES) $(SRC_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_pacman.so -Iinclude $(PACMAN_FILES) $(GAME_LIB_FILES)
 
 menu: $(MENU_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_menu.so -Iinclude $(MENU_FILES) $(SRC_FILES)
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_menu.so -Iinclude $(MENU_FILES) $(GAME_LIB_FILES)
 
 clean:
 	rm -f $(addsuffix .o, $(NAMES))
