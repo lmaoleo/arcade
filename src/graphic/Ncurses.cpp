@@ -81,7 +81,7 @@ void graphic::Ncurses::createNewColor(unsigned int color, int i)
 
 std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     int color = 0;
-    clear();
+    erase();
     for (const auto& item : _draw) {
         std::size_t x, y;
         short pixel;
@@ -108,6 +108,7 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
 
     refresh();
     _draw.clear();
+    _draw_str.clear();
     return std::queue<std::tuple<EventType, eventData>>();
 }
 

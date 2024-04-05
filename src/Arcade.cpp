@@ -125,13 +125,11 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
             events.pop();
             loadGame(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
-            // _graphic->flushscreen();
             return true;
         } else if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
             events.pop();
             loadGraphic(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
-            // _graphic->flushscreen();
             return true;
         }
         events.pop();
@@ -141,7 +139,7 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
 
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_snake.so");
+    loadGame("lib/arcade_menu.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
