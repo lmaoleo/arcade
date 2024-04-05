@@ -72,16 +72,25 @@ void graphic::Ncurses::flushscreen()
     refresh();
 }
 
-std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
-    clear();
+void graphic::Ncurses::createNewColor(unsigned int color, int i)
+{
+    short a, r, g, b;
+    std::tie(a, r, g, b) = intToRgb(color);
 
+    init_color(8 + i, r, g, b);
+}
+
+std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
+    int color = 0;
+    clear();
     for (const auto& item : _draw) {
         std::size_t x, y;
         short pixel;
-        unsigned int color;
-        std::tie(x, y, pixel, color) = item;
+        unsigned int colora;
+        std::tie(x, y, pixel, colora) = item;
 
-        printTile(x, y, pixel);
+        printTile(x, y, pixel, color);
+        color++;
     }
     for (const auto& item : _draw_str) {
         std::size_t x, y;
@@ -103,31 +112,29 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     return std::queue<std::tuple<EventType, eventData>>();
 }
 
-std::tuple<short, short, short> graphic::Ncurses::intToRgb(unsigned int color)
+std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int color)
 {
-    short r = (color >> 16) & 0xFF;
-    short g = (color >> 8) & 0xFF;
-    short b = color & 0xFF;
+    short a = (color >> 24) & 0;
+    short r = (color >> 16) & 0;
+    short g = (color >> 8) & 0;
+    short b = color & 0;
 
-    return std::make_tuple(r, g, b);
+    return std::make_tuple(a, r, g, b);
 }
 
-void graphic::Ncurses::printPixel(std::size_t x, std::size_t y)
+void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, unsigned int color)
 {
-    attron(COLOR_PAIR(1));
-    mvprintw(y, x, " ");
-    attroff(COLOR_PAIR(1));
+    mvprintw(y, x, "#");
 }
 
-void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern)
+void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, int color)
 {
-    // gx and gy are the grid coordinates, sx and sy are the screen (normal) coordinates
     int sx = gx * 4;
     int sy = gy * 4;
-    // Grid is 4x4 so 16 characters
     for (int i = 0; i < 16; i++) {
         if (pattern & (1 << i)) {
-            printPixel(sx + i % 4, sy + i / 4);
+            std::cout << "x: " << sx + i % 4 << " y: " << sy + i / 4 << std::endl;
+            printPixel(sx + i % 4, sy + i / 4, color);
         }
     }
 }

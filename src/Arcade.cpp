@@ -125,13 +125,13 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
             events.pop();
             loadGame(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
-            _graphic->flushscreen();
+            // _graphic->flushscreen();
             return true;
         } else if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
             events.pop();
             loadGraphic(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
-            _graphic->flushscreen();
+            // _graphic->flushscreen();
             return true;
         }
         events.pop();

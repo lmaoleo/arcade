@@ -22,9 +22,11 @@ namespace graphic {
         void flushscreen() final;
         std::queue<std::tuple<EventType, eventData>> draw() final;
 
-        std::tuple<short, short, short> intToRgb(unsigned int color);
-        void printPixel(std::size_t x, std::size_t y);
-        void printTile(std::size_t gx, std::size_t gy, short pattern);
+        std::tuple<short, short, short, short> intToRgb(unsigned int color);
+        void initialiseAllColors();
+        void printPixel(std::size_t x, std::size_t y, unsigned int color);
+        void printTile(std::size_t gx, std::size_t gy, short pattern, int color);
+        void createNewColor(unsigned int color, int i);
 
     private:
         std::shared_ptr<std::map<std::string, bool>> _keys;

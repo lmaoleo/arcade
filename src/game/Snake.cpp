@@ -75,7 +75,7 @@ static const std::tuple<std::string, unsigned int> apple = {
     " ## "\
     "####"\
     " ## ",
-    rgbToInt(255, 0, 0)
+    rgbToInt(255, 255, 0, 0)
 };
 
 static const std::tuple<std::string, unsigned int> wall = {
@@ -83,7 +83,7 @@ static const std::tuple<std::string, unsigned int> wall = {
     "####"\
     "####"\
     "####",
-    rgbToInt(50, 86, 168)
+    rgbToInt(255, 50, 86, 168)
 };
 
 static const std::tuple<std::string, unsigned int> snake_head_up = {
@@ -91,7 +91,7 @@ static const std::tuple<std::string, unsigned int> snake_head_up = {
     "#  #"\
     " ## "\
     " ## ",
-    rgbToInt(0, 255, 0)
+    rgbToInt(255, 0, 255, 0)
 };
 
 static const std::tuple<std::string, unsigned int> snake_body_vertical = {
@@ -99,7 +99,7 @@ static const std::tuple<std::string, unsigned int> snake_body_vertical = {
     "####"\
     "####"\
     "####",
-    rgbToInt(0, 255, 0)
+    rgbToInt(255, 0, 255, 0)
 };
 
 static const std::tuple<std::string, unsigned int> snake_body_angle_left_up = {
@@ -107,7 +107,7 @@ static const std::tuple<std::string, unsigned int> snake_body_angle_left_up = {
     "### "\
     "### "\
     "    ",
-    rgbToInt(0, 255, 0)
+    rgbToInt(255, 0, 255, 0)
 };
 
 static const std::tuple<std::string, unsigned int> snake_tail_up = {
@@ -115,7 +115,7 @@ static const std::tuple<std::string, unsigned int> snake_tail_up = {
     "####"\
     " ## "\
     "    ",
-    rgbToInt(0, 255, 0)
+    rgbToInt(255, 0, 255, 0)
 };
 
 static const std::tuple<std::string, unsigned int> empty = {
@@ -123,7 +123,7 @@ static const std::tuple<std::string, unsigned int> empty = {
     "    "\
     "    "\
     "    ",
-    rgbToInt(0, 0, 0)
+    rgbToInt(255, 0, 0, 0)
 };
 
 static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
@@ -373,7 +373,7 @@ std::vector<std::tuple<std::size_t, std::size_t>> game::Snake::changeSnakePos()
 void game::Snake::add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
     std::string score = "Score: " + std::to_string(_score);
-    create_draw_string_event(events, 0, 20, score);
+    create_draw_string_event(events, 0, 52, score);
 }
 
 void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>> &events)
