@@ -17,15 +17,17 @@ extern "C" {
 graphic::Ncurses::Ncurses(std::shared_ptr<std::map<std::string, bool>> &key)
 {
     std::string action;
+
     _keys = key;
+
     initscr();
+
     start_color();
+
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
     noecho();
     nodelay(stdscr, TRUE);
-    curs_set(0);
     setlocale(LC_ALL, "");
-    keypad(stdscr, TRUE);
 }
 
 graphic::Ncurses::~Ncurses()
