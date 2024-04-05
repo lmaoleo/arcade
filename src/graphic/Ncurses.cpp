@@ -79,7 +79,7 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
         unsigned int color;
         std::tie(x, y, pixel, color) = item;
 
-        printCube(x, y, pixel, color);
+        printTile(x, y, pixel);
     }
     for (const auto& item : _draw_str) {
         std::size_t x, y;
@@ -101,14 +101,23 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
     return std::queue<std::tuple<EventType, eventData>>();
 }
 
-static void printPixel(std::size_t x, std::size_t y, unsigned int color)
+std::tuple<short, short, short> graphic::Ncurses::intToRgb(unsigned int color)
 {
-    attron(COLOR_PAIR(color));
-    mvprintw(y, x, " ");
-    attroff(COLOR_PAIR(color));
+    short r = (color >> 16) & 0xFF;
+    short g = (color >> 8) & 0xFF;
+    short b = color & 0xFF;
+
+    return std::make_tuple(r, g, b);
 }
 
-static void printCube(std::size_t gx, std::size_t gy, short pattern, unsigned int color)
+void graphic::Ncurses::printPixel(std::size_t x, std::size_t y)
+{
+    attron(COLOR_PAIR(1));
+    mvprintw(y, x, " ");
+    attroff(COLOR_PAIR(1));
+}
+
+void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern)
 {
     // gx and gy are the grid coordinates, sx and sy are the screen (normal) coordinates
     int sx = gx * 4;
@@ -116,7 +125,7 @@ static void printCube(std::size_t gx, std::size_t gy, short pattern, unsigned in
     // Grid is 4x4 so 16 characters
     for (int i = 0; i < 16; i++) {
         if (pattern & (1 << i)) {
-            printPixel(sx + i % 4, sy + i / 4, color);
+            printPixel(sx + i % 4, sy + i / 4);
         }
     }
 }

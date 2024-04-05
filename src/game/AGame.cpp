@@ -19,12 +19,26 @@ short game::AGame::stringToShort(std::string pattern)
     return cube;
 }
 
-short game::AGame::rotateRight(short pixel)
+short game::AGame::rotateRight(short cube)
 {
-    return 0;
+    short rotatedCube = 0;
+
+    for (int i = 0; i < 16; i++) {
+        if (cube & (1 << i)) {
+            rotatedCube |= (1 << ((i + 4) % 16));
+        }
+    }
+    return rotatedCube;
 }
 
-short game::AGame::rotateLeft(short pixel)
+short game::AGame::rotateLeft(short cube)
 {
-    return 0;
+    short rotatedCube = 0;
+
+    for (int i = 0; i < 16; i++) {
+        if (cube & (1 << i)) {
+            rotatedCube |= (1 << ((i + 12) % 16));
+        }
+    }
+    return rotatedCube;
 }

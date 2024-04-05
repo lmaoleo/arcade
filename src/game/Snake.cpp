@@ -28,47 +28,120 @@ static std::vector<std::string> map = {
     "##################################"
 };
 
-static const std::string apple = {
+static const std::map<char, std::string> charmap = {
+    {'#', "wall"},
+    {'d', "snake_head_down"},
+    {'u', "snake_head_up"},
+    {'l', "snake_head_left"},
+    {'>', "snake_head_right"},
+    {'b', "snake_body"},
+    {'f', "food"},
+    {' ', "empty"},
+    {'h', "horizontal_snake_body"},
+    {'v', "vertical_snake_body"},
+    {'a', "angle_left_down_snake_body"},
+    {'c', "angle_right_down_snake_body"},
+    {'e', "angle_left_up_snake_body"},
+    {'g', "angle_right_up_snake_body"},
+    {'t', "snake_tail_down"},
+    {'y', "snake_tail_up"},
+    {'r', "snake_tail_left"},
+    {'o', "snake_tail_right"},
+};
+
+static const std::map<std::string, char> reverseCharMap = {
+    {"wall", '#'},
+    {"snake_head_down", 'd'},
+    {"snake_head_up", 'u'},
+    {"snake_head_left", 'l'},
+    {"snake_head_right", '>'},
+    {"snake_body", 'b'},
+    {"food", 'f'},
+    {"empty", ' '},
+    {"horizontal_snake_body", 'h'},
+    {"vertical_snake_body", 'v'},
+    {"angle_left_down_snake_body", 'a'},
+    {"angle_right_down_snake_body", 'c'},
+    {"angle_left_up_snake_body", 'e'},
+    {"angle_right_up_snake_body", 'g'},
+    {"snake_tail_down", 't'},
+    {"snake_tail_up", 'y'},
+    {"snake_tail_left", 'r'},
+    {"snake_tail_right", 'o'},
+};
+
+static const std::tuple<std::string, unsigned int> apple = {
     "#   "\
     " ## "\
     "####"\
-    " ## "
+    " ## ",
+    rgbToInt(255, 0, 0)
 };
 
-static const std::string wall = {
+static const std::tuple<std::string, unsigned int> wall = {
     "####"\
     "####"\
     "####"\
-    "####"
+    "####",
+    rgbToInt(50, 86, 168)
 };
 
-static const std::string snake_head_up = {
+static const std::tuple<std::string, unsigned int> snake_head_up = {
     " ## "\
     "#  #"\
     " ## "\
-    " ## "
+    " ## ",
+    rgbToInt(0, 255, 0)
 };
 
-static const std::string snake_body_vertical = {
-    " ## "\
-    " ## "\
-    " ## "\
-    " ## "
+static const std::tuple<std::string, unsigned int> snake_body_vertical = {
+    "####"\
+    "####"\
+    "####"\
+    "####",
+    rgbToInt(0, 255, 0)
 };
 
-static const std::string snake_body_angle_left_up = {
+static const std::tuple<std::string, unsigned int> snake_body_angle_left_up = {
     " ## "\
     "### "\
     "### "\
-    "    "
+    "    ",
+    rgbToInt(0, 255, 0)
 };
 
-static const std::string snake_tail_up = {
+static const std::tuple<std::string, unsigned int> snake_tail_up = {
     " ## "\
     "####"\
     " ## "\
-    "    "
+    "    ",
+    rgbToInt(0, 255, 0)
 };
+
+static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
+    {"#", wall},
+    {"f", apple},
+    {"d", snake_body_vertical},
+    {"u", snake_body_vertical},
+    {"l", snake_body_vertical},
+    {">", snake_body_vertical},
+    {"b", snake_body_vertical},
+    {"h", snake_body_vertical},
+    {"v", snake_body_vertical},
+    {"a", snake_body_vertical},
+    {"c", snake_body_vertical},
+    {"e", snake_body_vertical},
+    {"g", snake_body_vertical},
+    {"t", snake_body_vertical},
+    {"y", snake_body_vertical},
+    {"r", snake_body_vertical},
+    {"o", snake_body_vertical},
+};
+
+static unsigned int rgbToInt(unsigned short r, unsigned short g, unsigned short b)
+{
+    return (r << 16) + (g << 8) + b;
+}
 
 game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
 {
@@ -162,18 +235,24 @@ void game::Snake::add_snake_to_map(std::vector<std::string> &map, std::vector<st
     map[std::get<1>(tail)][std::get<0>(tail)] = reverseCharMap.at(determine_tail_orientation(snake.size() - 1, snake));
 }
 
-static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string type)
+static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, short tile, unsigned int color = 0)
 {
-    std::tuple<EventType, eventData> event = {EventType::DRAW, false};
+    std::tuple<EventType, eventData> color_event_start = {EventType::CHANGE_COLOR, false};
+    std::tuple<EventType, eventData> packetColor = {EventType::DATA, color};
+    std::tuple<EventType, eventData> color_event_end = {EventType::CHANGE_COLOR, false};
+    std::tuple<EventType, eventData> draw_event_start = {EventType::DRAW, false};
     std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
     std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
-    std::tuple<EventType, eventData> packetType = {EventType::DATA, type};
-    std::tuple<EventType, eventData> event2 = {EventType::DRAW, false};
-    events.push(event);
+    std::tuple<EventType, eventData> packetType = {EventType::DATA, tile};
+    std::tuple<EventType, eventData> draw_event_end = {EventType::DRAW, false};
+    events.push(color_event_start);
+    events.push(packetColor);
+    events.push(color_event_end);
+    events.push(draw_event_start);
     events.push(packetX);
     events.push(packetY);
     events.push(packetType);
-    events.push(event2);
+    events.push(draw_event_end);
 }
 
 static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string score)
@@ -195,13 +274,16 @@ static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>
 std::queue<std::tuple<EventType, eventData>> game::Snake::transform_map_to_events(std::vector<std::string> map)
 {
     std::queue<std::tuple<EventType, eventData>> events;
+    std::tuple<std::string, unsigned int> drawingTile;
+
     for (std::size_t y = 0; y < map.size(); y++) {
         for (std::size_t x = 0; x < map[y].size(); x++) {
+            drawingTile = charToTile.at(std::string(1, map[y][x]));
             if (std::get<0>(_snake[0]) == x && std::get<1>(_snake[0]) == y) {
-                create_draw_event(events, x, y, _headDirection);
+                create_draw_event(events, x, y, stringToShort(_headDirection), std::get<1>(drawingTile));
                 continue;
             }
-            create_draw_event(events, x, y, charmap.at(map[y][x]));
+            create_draw_event(events, x, y, stringToShort(std::get<0>(drawingTile)), std::get<1>(drawingTile));
         }
     }
     return events;
@@ -287,7 +369,8 @@ void game::Snake::add_score_to_events(std::queue<std::tuple<EventType, eventData
 
 void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>> &events)
 {
-    create_draw_event(events, std::get<0>(_food), std::get<1>(_food), "food");
+    auto foodTile = charToTile.at("f");
+    create_draw_event(events, std::get<0>(_food), std::get<1>(_food), stringToShort(std::get<0>(foodTile)), std::get<1>(foodTile));
 }
 
 std::queue<std::tuple<EventType, eventData>> game::Snake::tick()

@@ -43,4 +43,6 @@ namespace game {
     };
 };
 
+static unsigned int rgbToInt(unsigned short r, unsigned short g, unsigned short b);
+
 #endif /* !SNAKE_HPP_ */
