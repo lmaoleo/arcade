@@ -139,7 +139,7 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
 
 int arcade::CoreProgram::loop()
 {
-    loadGame("lib/arcade_menu.so");
+    loadGame("lib/arcade_pacman.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;

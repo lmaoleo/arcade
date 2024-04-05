@@ -114,10 +114,10 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
 
 std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int color)
 {
-    short a = (color >> 24) & 0;
-    short r = (color >> 16) & 0;
-    short g = (color >> 8) & 0;
-    short b = color & 0;
+    short a = (color >> 24) & 0xFF; // Correctly masks the alpha component
+    short r = (color >> 16) & 0xFF; // Correctly masks the red component
+    short g = (color >> 8) & 0xFF;  // Correctly masks the green component
+    short b = color & 0xFF;         // Correctly masks the blue component
 
     return std::make_tuple(a, r, g, b);
 }

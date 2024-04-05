@@ -24,6 +24,8 @@ namespace graphic {
         void flushscreen() final;
         SDL_Texture* loadSprite(const std::string& filePath);
         void loadSprites();
+        std::tuple<short, short, short, short> intToRgb(unsigned int color);
+        void createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat);
         void drawText(const std::string &text, const int &x, const int &y, bool selected);
         std::queue<std::tuple<EventType, eventData>> draw() final;
 

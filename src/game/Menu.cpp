@@ -209,7 +209,6 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
 {
     if (_keys->at("UP") == true) {
         selectPrev(_typeSelected);
-        std::cout << "UP" << std::endl;
     }
     if (_keys->at("DOWN") == true) {
         selectNext(_typeSelected);
