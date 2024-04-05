@@ -147,9 +147,9 @@ static const std::map<std::string, std::tuple<std::string, unsigned int>> charTo
     {" ", empty}
 };
 
-static unsigned int rgbToInt(unsigned short r, unsigned short g, unsigned short b)
+static unsigned int rgbToInt(unsigned int a, unsigned short r, unsigned short g, unsigned short b)
 {
-    return (r << 16) + (g << 8) + b;
+    return (a << 24) + (r << 16) + (g << 8) + b;
 }
 
 game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
