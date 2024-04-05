@@ -19,15 +19,14 @@ graphic::Ncurses::Ncurses(std::shared_ptr<std::map<std::string, bool>> &key)
     std::string action;
 
     _keys = key;
-
+    setlocale(LC_ALL, "");
     initscr();
-
     start_color();
-
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
     noecho();
     nodelay(stdscr, TRUE);
-    setlocale(LC_ALL, "");
+    curs_set(0);
+    keypad(stdscr, TRUE);
 }
 
 graphic::Ncurses::~Ncurses()
@@ -124,7 +123,7 @@ std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int c
 
 void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, unsigned int color)
 {
-    mvprintw(y, x, "#");
+    mvprintw(y, x, "■");
 }
 
 void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, int color)
@@ -133,7 +132,6 @@ void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, 
     int sy = gy * 4;
     for (int i = 0; i < 16; i++) {
         if (pattern & (1 << i)) {
-            std::cout << "x: " << sx + i % 4 << " y: " << sy + i / 4 << std::endl;
             printPixel(sx + i % 4, sy + i / 4, color);
         }
     }
