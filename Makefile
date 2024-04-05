@@ -88,7 +88,7 @@ fclean: clean
 
 re: fclean all
 
-debug: CFLAGS += -g
+debug: SHARED_FLAGS += -g
 debug: re
 
 .PHONY: all clean

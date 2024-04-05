@@ -17,6 +17,7 @@ static const std::map<EventType, void (graphic::AGraphic::*)(std::queue<std::tup
     {DELTA_TIME, &graphic::AGraphic::readTime},
     {SET_GAME, &graphic::AGraphic::readSetElm},
     {SET_GRAPHIC, &graphic::AGraphic::readSetElm},
+    {CHANGE_COLOR, &graphic::AGraphic::readColor},
 };
 
 void graphic::AGraphic::readEvent(std::queue<std::tuple<EventType, eventData>> &event)
@@ -138,7 +139,7 @@ void graphic::AGraphic::readColor(std::queue<std::tuple<EventType, eventData>> &
     event.pop();
     if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
-    short packetColor = std::get<short>(std::get<1>(event.front()));
+    short packetColor = std::get<unsigned int>(std::get<1>(event.front()));
     _color = packetColor;
     event.pop();
     event.pop();

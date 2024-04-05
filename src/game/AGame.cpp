@@ -11,7 +11,7 @@ short game::AGame::stringToShort(std::string pattern)
 {
     short cube = 0;
 
-    for (int i = 0; i < pattern.size(); i++) {
+    for (std::size_t i = 0; i < pattern.size(); i++) {
         if (pattern[i] == '#') {
             cube |= (1 << i);
         }

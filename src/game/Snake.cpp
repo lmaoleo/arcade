@@ -118,6 +118,14 @@ static const std::tuple<std::string, unsigned int> snake_tail_up = {
     rgbToInt(0, 255, 0)
 };
 
+static const std::tuple<std::string, unsigned int> empty = {
+    "    "\
+    "    "\
+    "    "\
+    "    ",
+    rgbToInt(0, 0, 0)
+};
+
 static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
     {"#", wall},
     {"f", apple},
@@ -136,6 +144,7 @@ static const std::map<std::string, std::tuple<std::string, unsigned int>> charTo
     {"y", snake_body_vertical},
     {"r", snake_body_vertical},
     {"o", snake_body_vertical},
+    {" ", empty}
 };
 
 static unsigned int rgbToInt(unsigned short r, unsigned short g, unsigned short b)
@@ -187,19 +196,19 @@ static std::string determine_body_orientations(int i, std::vector<std::tuple<std
     std::size_t next_y = std::get<1>(next_snake);
 
     if ((past_x < current_x && current_x < next_x) || (past_x > current_x && current_x > next_x)) {
-        return "snake_body_horizontal";
+        return "horizontal_snake_body";
     } else if ((past_y < current_y && current_y < next_y) || (past_y > current_y && current_y > next_y)) {
-        return "snake_body_vertical";
+        return "vertical_snake_body";
     } else if ((past_x < current_x && current_y < next_y) || (next_x < current_x && current_y < past_y)) {
-        return "snake_body_angle_left_down";
+        return "angle_left_down_snake_body";
     } else if ((past_x < current_x && current_y > next_y) || (next_x < current_x && current_y > past_y)) {
-        return "snake_body_angle_left_up";
+        return "angle_left_up_snake_body";
     } else if ((past_x > current_x && current_y < next_y) || (next_x > current_x && current_y < past_y)) {
-        return "snake_body_angle_right_down";
+        return "angle_right_down_snake_body";
     } else if ((past_x > current_x && current_y > next_y) || (next_x > current_x && current_y > past_y)) {
-        return "snake_body_angle_right_up";
+        return "angle_right_up_snake_body";
     }
-    return "snake_body_vertical";
+    return "snake_body";
 }
 
 static std::string determine_tail_orientation(int i, std::vector<std::tuple<std::size_t, std::size_t>> snake)
