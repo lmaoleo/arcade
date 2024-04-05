@@ -41,9 +41,9 @@ static std::vector<std::string> PacManMap = {
     "#    #   #   #    #",
     "#### ### # ### ####",
     "   # #       # #   ",
-    "#### # ## ## # ####",
+    "#### # ##h## # ####",
     "       #   #       ",
-    "#### # ## ## # ####",
+    "#### # ##### # ####",
     "   # #       # #   ",
     "#### # ##### # ####",
     "#        #        #",
@@ -65,6 +65,7 @@ static const std::map<char, std::string> charmap = {
     {'G', "ghost"},
     {'.', "pac_food"},
     {' ', "empty"},
+    {'h', "door"},
 };
 
 static const std::map<std::string, char> reverseCharMap = {
@@ -76,6 +77,7 @@ static const std::map<std::string, char> reverseCharMap = {
     {"ghost", 'G'},
     {"pac_food", '.'},
     {"empty", ' '},
+    {"door", 'h'},
 };
 
 static const std::tuple<std::string, unsigned int> pac_food = {
@@ -91,7 +93,7 @@ static const std::tuple<std::string, unsigned int> pac_wall = {
     "#  #"\
     "#  #"\
     "####",
-    rgbToInt(255, 0, 0, 255)
+    rgbToInt(0, 200, 150, 255)
 };
 
 static const std::tuple<std::string, unsigned int> empty = {
@@ -142,6 +144,14 @@ static const std::tuple<std::string, unsigned int> ghost = {
     rgbToInt(233, 0, 150, 100)
 };
 
+static const std::tuple<std::string, unsigned int> door = {
+    "####"\
+    "#  #"\
+    "####"\
+    "####",
+    rgbToInt(128,128,250,128)
+};
+
 static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
     {".", pac_food},
     {"#", pac_wall},
@@ -150,6 +160,7 @@ static const std::map<std::string, std::tuple<std::string, unsigned int>> charTo
     {"l", pac_left},
     {"u", pac_up},
     {"d", pac_down},
+    {"h", door},
     {"G", ghost},
 };
 
@@ -227,8 +238,7 @@ bool game::Pacman::isGameOver()
 {
     for (std::size_t i = 0; i < _ghosts.size(); i++) {
         if (_Pacman == _ghosts[i]) {
-            while (1)
-                printf("Game Over\n");
+            std::cout << "Game Over" << std::endl;
             return true;
         }
     }
@@ -256,10 +266,18 @@ void game::Pacman::checkFood()
     }
 }
 
+bool checkCollisionPac(std::tuple<std::size_t, std::size_t> pos)
+{
+    if (PacManMap[std::get<1>(pos)][std::get<0>(pos)] == '#' || PacManMap[std::get<1>(pos)][std::get<0>(pos)] == 'h') {
+        return false;
+    }
+    return true;
+}
+
 void game::Pacman::changePacmanPos()
 {
     std::tuple newPacmanPos = std::make_tuple(std::get<0>(_Pacman) + std::get<0>(_direction), std::get<1>(_Pacman) + std::get<1>(_direction));
-    if (checkCollision(newPacmanPos)) {
+    if (checkCollisionPac(newPacmanPos)) {
         if (std::get<0>(newPacmanPos) == 0 && std::get<1>(newPacmanPos) == 9 && std::get<0>(_direction) == static_cast<unsigned long>(-1)) {
             _Pacman = std::make_tuple(19, 9);
             _direction = std::make_tuple(-1, 0);

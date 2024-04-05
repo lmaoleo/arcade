@@ -7,35 +7,6 @@
 
 #include "Sfml.hpp"
 
-std::map<std::string, std::pair<sf::Texture *, sf::IntRect>> spriteMap;
-
-std::map<std::string, sf::Color> colorMap = {
-    {"wall", {255, 0, 0, 255}},
-    {"snake_head_down", {0, 255, 255, 255}},
-    {"snake_head_up", {0, 255, 255, 255}},
-    {"snake_head_left", {0, 255, 255, 255}},
-    {"snake_head_right", {0, 255, 255, 255}},
-    {"snake_body", {0, 255, 0, 255}},
-    {"horizontal_snake_body", {0, 255, 0, 255}},
-    {"vertical_snake_body", {0, 255, 0, 255}},
-    {"angle_left_down_snake_body", {0, 255, 0, 255}},
-    {"angle_right_down_snake_body", {0, 255, 0, 255}},
-    {"angle_left_up_snake_body", {0, 255, 0, 255}},
-    {"angle_right_up_snake_body", {0, 255, 0, 255}},
-    {"snake_tail_down", {0, 255, 255, 255}},
-    {"snake_tail_up", {0, 255, 255, 255}},
-    {"snake_tail_left", {0, 255, 255, 255}},
-    {"snake_tail_right", {0, 255, 255, 255}},
-    {"pac_wall", {15, 46, 215, 255}},
-    {"pac_down", {255, 255, 0, 255}},
-    {"pac_up", {255, 255, 0, 255}},
-    {"pac_left", {255, 255, 0, 255}},
-    {"pac_right", {255, 255, 0, 255}},
-    {"ghost", {255, 0, 0, 255}},
-    {"pac_food", {231, 154, 149, 255}},
-    {"food", {255, 255, 0, 255}}
-};
-
 extern "C" {
     graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
@@ -54,7 +25,6 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     if (!_window->isOpen()) {
         std::cerr << "Failed to create window!" << std::endl;
     }
-    loadSprites();
 }
 
 graphic::Sfml::~Sfml()
@@ -62,62 +32,6 @@ graphic::Sfml::~Sfml()
     _window->close();
     delete _window;
     delete _font;
-}
-
-void graphic::Sfml::loadSprites() {
-    sf::Texture *spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png");
-    sf::Texture *spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png");
-
-    sf::Rect<int> wallRect(26, 219, 21, 20);
-    sf::Rect<int> snakeHeadDownRect(256, 64, 64, 64);
-    sf::Rect<int> snakeHeadUpRect(192, 0, 64, 64);
-    sf::Rect<int> snakeHeadLeftRect(192, 64, 64, 64);
-    sf::Rect<int> snakeHeadRightRect(256, 0, 64, 64);
-    sf::Rect<int> snakeHorizontalRect(64, 0, 64, 64);
-    sf::Rect<int> snakeVerticalRect(128, 64, 64, 64);
-    sf::Rect<int> snakeAngleLeftDownRect(0, 0, 64, 64);
-    sf::Rect<int> snakeAngleRightDownRect(128, 0, 64, 64);
-    sf::Rect<int> snakeAngleLeftUpRect(128, 128, 64, 64);
-    sf::Rect<int> snakeAngleRightUpRect(0, 64, 64, 64);
-    sf::Rect<int> snakeTailDownRect(256, 128, 64, 64);
-    sf::Rect<int> snakeTailUpRect(192, 128, 64, 64);
-    sf::Rect<int> snakeTailLeftRect(192, 192, 64, 64);
-    sf::Rect<int> snakeTailRightRect(256, 128, 64, 64);
-    sf::Rect<int> foodRect(0, 192, 64, 64);
-    sf::Rect<int> pacWallRect(0, 96, 24, 24);
-    sf::Rect<int> pacDownRect(120, 71, 24, 24);
-    sf::Rect<int> pacUpRect(71, 71, 24, 24);
-    sf::Rect<int> pacLeftRect(0, 71, 24, 24);
-    sf::Rect<int> pacRightRect(96, 71, 24, 24);
-    sf::Rect<int> ghostRect(0, 143, 24, 24);
-    sf::Rect<int> pacFoodRect(192, 0, 12, 12);
-    sf::Rect<int> emptyRect(303, 136, 24, 24);
-
-    spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
-    spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
-    spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
-    spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
-    spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-    spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-    spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
-    spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
-    spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
-    spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
-    spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
-    spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
-    spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
-    spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
-    spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
-    spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
-    spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
-    spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
-    spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
-    spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
-    spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
-    spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
-    spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
-    spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
-    spriteMap["wall"] = std::make_pair(spriteSheetTextureSnake, wallRect);
 }
 
 void graphic::Sfml::updateKeybinds()
@@ -159,28 +73,6 @@ void graphic::Sfml::updateKeybinds()
     }
 }
 
-void graphic::Sfml::drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType)
-{
-    auto spriteIt = spriteMap.find(elementType);
-    if (spriteIt != spriteMap.end()) {
-        sf::Texture *spriteTexture = spriteIt->second.first;
-        sf::IntRect &spriteSourceRect = spriteIt->second.second;
-        sf::Sprite sprite(*spriteTexture, spriteSourceRect);
-        sprite.setPosition(rect.left, rect.top);
-        sprite.setScale(rect.width / 64.0, rect.height / 64.0);
-        window.draw(sprite);
-    }
-}
-
-sf::Texture *graphic::Sfml::loadSprite(const std::string &filePath)
-{
-    sf::Texture *texture = new sf::Texture();
-    if (!texture->loadFromFile(filePath)) {
-        std::cerr << "Failed to load sprite!" << std::endl;
-    }
-    return texture;
-}
-
 void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y, bool selected)
 {
     sf::Text textToDraw = sf::Text(text, *_font, 24);
@@ -197,6 +89,43 @@ void graphic::Sfml::flushscreen()
     _window->clear();
 }
 
+std::tuple<short, short, short, short> graphic::Sfml::intToRgb(unsigned int color)
+{
+    short a = (color >> 24) & 0xFF; // Correctly masks the alpha component
+    short r = (color >> 16) & 0xFF; // Correctly masks the red component
+    short g = (color >> 8) & 0xFF;  // Correctly masks the green component
+    short b = color & 0xFF;         // Correctly masks the blue component
+
+    return std::make_tuple(a, r, g, b);
+}
+
+sf::Color graphic::Sfml::intToSfColor(unsigned int colorpat)
+{
+    short a, r, g, b;
+    std::tie(a, r, g, b) = intToRgb(colorpat); // Assume intToRgb returns the correct RGBA values
+    return sf::Color(r, g, b, a); // Create an SFML color from the RGBA components
+}
+
+void graphic::Sfml::createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat)
+{
+    sf::Color color = intToSfColor(colorpat);
+    int scale = 1;
+    int rectSize = 10 * scale;
+
+    for (int i = 0; i < 16; i++) {
+        sf::RectangleShape rectangle(sf::Vector2f(rectSize, rectSize));
+
+        rectangle.setPosition((x * 4 + i % 4) * rectSize, (y * 4 + i / 4) * rectSize);
+
+        if (pixel_form & (1 << i)) {
+            rectangle.setFillColor(color);
+        } else {
+            rectangle.setFillColor(sf::Color::Black);
+        }
+        _window->draw(rectangle);
+    }
+}
+
 std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
 {
     std::size_t x, y = 0;
@@ -204,11 +133,11 @@ std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
 
     _window->clear();
     for (auto &item : _draw) {
-        x = std::get<0>(item);
-        y = std::get<1>(item);
-        type = std::get<2>(item);
-        sf::IntRect rect(x * 40, y * 40, 40, 40);
-        drawGameElement(*_window, rect, type);
+        std::size_t x, y;
+        short pixel;
+        unsigned int color;
+        std::tie(x, y, pixel, color) = item;
+        createPixels(x, y, pixel, color);
     }
     for (auto &item : _draw_str) {
         x = std::get<0>(item);
