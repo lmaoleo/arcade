@@ -86,7 +86,7 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
 game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
 {
     _keys = key;
-    _lib_files = getFilesInDirectory("lib");
+    _lib_files = getFilesInDirectory(".lib");
     _libs = order_libs(_lib_files);
     std::get<1>(_libs[0]) = true;
 }
