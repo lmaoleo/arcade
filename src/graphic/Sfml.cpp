@@ -7,6 +7,8 @@
 
 #include "Sfml.hpp"
 
+std::map<sf::Keyboard::Key, std::string> _keyMap;
+
 extern "C" {
     graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
@@ -25,6 +27,16 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     if (!_window->isOpen()) {
         std::cerr << "Failed to create window!" << std::endl;
     }
+    _keyMap = {
+    {sf::Keyboard::Up, "UP"}, {sf::Keyboard::Down, "DOWN"},{sf::Keyboard::Left, "LEFT"},
+    {sf::Keyboard::Right, "RIGHT"}, {sf::Keyboard::Escape, "ESC"}, {sf::Keyboard::Enter, "ENTER"},
+    {sf::Keyboard::Space, "SPACE"}, {sf::Keyboard::A, "A"}, {sf::Keyboard::Z, "Z"},
+    {sf::Keyboard::E, "E"},{sf::Keyboard::R, "R"},{sf::Keyboard::T, "T"},
+    {sf::Keyboard::Y, "Y"}, {sf::Keyboard::U, "U"}, {sf::Keyboard::I, "I"},
+    {sf::Keyboard::O, "O"}, {sf::Keyboard::P, "P"}, {sf::Keyboard::Q, "Q"},
+    {sf::Keyboard::S, "S"}, {sf::Keyboard::D, "D"}, {sf::Keyboard::F, "F"},
+    {sf::Keyboard::Tab, "TAB"}
+};
 }
 
 graphic::Sfml::~Sfml()
@@ -37,37 +49,17 @@ graphic::Sfml::~Sfml()
 void graphic::Sfml::updateKeybinds()
 {
     sf::Event event;
-    _keys->at("UP") = false;
-    _keys->at("DOWN") = false;
-    _keys->at("LEFT") = false;
-    _keys->at("RIGHT") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ENTER") = false;
+    for (auto& key : *_keys) {
+            key.second = false;
+    }
 
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::KeyPressed) {
-            switch (event.key.code) {
-            case sf::Keyboard::Up :
-                _keys->at("UP") = true;
-                break;
-            case sf::Keyboard::Down :
-                _keys->at("DOWN") = true;
-                break;
-            case sf::Keyboard::Left :
-                _keys->at("LEFT") = true;
-                break;
-            case sf::Keyboard::Right :
-                _keys->at("RIGHT") = true;
-                break;
-            case sf::Keyboard::Escape :
-                _keys->at("ESC") = true;
-                break;
-            case sf::Keyboard::Return :
-                _keys->at("ENTER") = true;
-                break;
-            default:
-                break;
+            auto it = _keyMap.find(event.key.code);
+            if (it != _keyMap.end()) {
+                if (_keys->find(it->second) != _keys->end()) {
+                    _keys->at(it->second) = true;
+                }
             }
         }
     }

@@ -83,7 +83,7 @@ static const std::tuple<std::string, unsigned int> wall = {
     "####"\
     "####"\
     "####",
-    rgbToInt(255, 50, 86, 168)
+    rgbToInt(255, 50, 150, 168)
 };
 
 static const std::tuple<std::string, unsigned int> snake_head_up = {

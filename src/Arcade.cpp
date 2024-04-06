@@ -24,6 +24,7 @@ static const std::map<std::string, bool> keys = {
         {"SPACE", false},
         {"ENTER", false},
         {"ESC", false},
+        {"TAB", false},
         {"A", false},
         {"Z", false},
         {"E", false},

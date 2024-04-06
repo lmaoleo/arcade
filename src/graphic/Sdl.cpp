@@ -8,6 +8,9 @@
 #include "Sdl.hpp"
 #include <iostream>
 
+std::map<SDL_Keycode, std::string> _keyMap;
+
+
 extern "C" {
     graphic::Sdl *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     {
@@ -41,6 +44,14 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
             }
         }
     }
+    _keyMap = {
+            {SDLK_UP, "UP"}, {SDLK_DOWN, "DOWN"}, {SDLK_LEFT, "LEFT"}, {SDLK_RIGHT, "RIGHT"},
+            {SDLK_ESCAPE, "ESC"}, {SDLK_RETURN, "ENTER"}, {SDLK_SPACE, "SPACE"},
+            {SDLK_a, "A"}, {SDLK_z, "Z"}, {SDLK_e, "E"}, {SDLK_r, "R"},
+            {SDLK_t, "T"}, {SDLK_y, "Y"}, {SDLK_u, "U"}, {SDLK_i, "I"},
+            {SDLK_o, "O"}, {SDLK_p, "P"}, {SDLK_q, "Q"}, {SDLK_s, "S"},
+            {SDLK_d, "D"}, {SDLK_f, "F"}, {SDLK_TAB, "TAB"}
+    };
 }
 
 graphic::Sdl::~Sdl() {
@@ -72,48 +83,25 @@ void graphic::Sdl::drawText(const std::string &text, const int &x, const int &y,
 
 void graphic::Sdl::updateKeybinds() {
     SDL_Event e;
-    _keys->at("UP") = false;
-    _keys->at("DOWN") = false;
-    _keys->at("LEFT") = false;
-    _keys->at("RIGHT") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ENTER") = false;
+
+    for (auto& key : *_keys) {
+            key.second = false;
+    }
 
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
-            if (_keys->find("ESC") != _keys->end())
-                _keys->at("ESC") = true;
+            _keys->at("ESC") = true;
         }
         else if (e.type == SDL_KEYDOWN) {
-            switch (e.key.keysym.sym) {
-                case SDLK_UP:
-                    if (_keys->find("UP") != _keys->end())
-                        _keys->at("UP") = true;
-                    break;
-                case SDLK_DOWN:
-                    if (_keys->find("DOWN") != _keys->end())
-                        _keys->at("DOWN") = true;
-                    break;
-                case SDLK_LEFT:
-                    if (_keys->find("LEFT") != _keys->end())
-                        _keys->at("LEFT") = true;
-                    break;
-                case SDLK_RIGHT:
-                    if (_keys->find("RIGHT") != _keys->end())
-                        _keys->at("RIGHT") = true;
-                    break;
-                case SDLK_ESCAPE:
-                    if (_keys->find("ESC") != _keys->end())
-                        _keys->at("ESC") = true;
-                    break;
-                case SDLK_RETURN:
-                    if (_keys->find("ENTER") != _keys->end())
-                        _keys->at("ENTER") = true;
-                    break;
+            auto found = _keyMap.find(e.key.keysym.sym);
+            if (found != _keyMap.end()) {
+                if (_keys->find(found->second) != _keys->end()) {
+                    _keys->at(found->second) = true;
+                }
             }
         }
     }
+
 }
 
 std::tuple<short, short, short, short> graphic::Sdl::intToRgb(unsigned int color)
