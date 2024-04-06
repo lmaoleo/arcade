@@ -50,6 +50,8 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
             {SDLK_a, "A"}, {SDLK_z, "Z"}, {SDLK_e, "E"}, {SDLK_r, "R"},
             {SDLK_t, "T"}, {SDLK_y, "Y"}, {SDLK_u, "U"}, {SDLK_i, "I"},
             {SDLK_o, "O"}, {SDLK_p, "P"}, {SDLK_q, "Q"}, {SDLK_s, "S"},
+            {SDLK_g, "G"}, {SDLK_h, "H"}, {SDLK_j, "J"}, {SDLK_k, "K"},
+            {SDLK_l, "L"}, {SDLK_m, "M"}, {SDLK_w, "W"}, {SDLK_x, "X"},
             {SDLK_d, "D"}, {SDLK_f, "F"}, {SDLK_TAB, "TAB"}
     };
 }

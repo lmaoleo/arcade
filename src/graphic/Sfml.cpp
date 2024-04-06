@@ -35,6 +35,10 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     {sf::Keyboard::Y, "Y"}, {sf::Keyboard::U, "U"}, {sf::Keyboard::I, "I"},
     {sf::Keyboard::O, "O"}, {sf::Keyboard::P, "P"}, {sf::Keyboard::Q, "Q"},
     {sf::Keyboard::S, "S"}, {sf::Keyboard::D, "D"}, {sf::Keyboard::F, "F"},
+    {sf::Keyboard::G, "G"}, {sf::Keyboard::H, "H"}, {sf::Keyboard::J, "J"},
+    {sf::Keyboard::K, "K"}, {sf::Keyboard::L, "L"}, {sf::Keyboard::M, "M"},
+    {sf::Keyboard::W, "W"}, {sf::Keyboard::X, "X"}, {sf::Keyboard::C, "C"},
+    {sf::Keyboard::V, "V"}, {sf::Keyboard::B, "B"}, {sf::Keyboard::N, "N"},
     {sf::Keyboard::Tab, "TAB"}
 };
 }

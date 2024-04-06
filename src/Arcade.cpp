@@ -15,6 +15,9 @@
 #include <chrono>
 #include <thread>
 #include <dlfcn.h>
+#include <iostream>
+#include <dirent.h>
+#include <algorithm>
 
 static const std::map<std::string, bool> keys = {
         {"UP", false},
@@ -53,16 +56,94 @@ static const std::map<std::string, bool> keys = {
         {"N", false}
     };
 
+static const std::vector<std::string> lib_files = {
+    "arcade_ncurses.so",
+    "arcade_sfml.so",
+    "arcade_sdl2.so",
+    "arcade_allegro.so",
+    "arcade_libcaca.so",
+    "arcade_opengl.so"
+    };
+
+static const std::vector<std::string> game_files = {
+    "arcade_nibbler.so",
+    "arcade_pacman.so",
+    "arcade_snake.so",
+    "arcade_centipede.so",
+    "arcade_solarfox.so",
+    "arcade_qix.so"
+    };
+
+std::vector<std::string> getFilesInDirectory(const std::string &directory)
+{
+    std::vector<std::string> files;
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir(directory.c_str())) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (ent->d_name[0] != '.')
+                files.push_back(ent->d_name);
+        }
+        closedir(dir);
+    } else {
+        perror("");
+    }
+    return files;
+}
+
+std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::string> &libs)
+{
+    std::vector<std::tuple<std::string, bool, int>> ordered_libs;
+    for (std::size_t i = 0; i < libs.size(); i++) {
+        if (std::find(lib_files.begin(), lib_files.end(), libs[i]) != lib_files.end()) {
+            ordered_libs.push_back({libs[i], false, 0});
+        } else if (std::find(game_files.begin(), game_files.end(), libs[i]) != game_files.end()) {
+            ordered_libs.push_back({libs[i], false, 1});
+        }
+    }
+    for (std::size_t i = 0; i < ordered_libs.size(); i++) {
+        std::cout << std::get<0>(ordered_libs[i]) << std::endl;
+    }
+    return ordered_libs;
+}
+
 arcade::CoreProgram::CoreProgram()
 {
     _score = 0;
     _keys = std::make_shared<std::map<std::string, bool>>(keys);
     _game = nullptr;
     _graphic = nullptr;
+    _lib_files = getFilesInDirectory("lib");
+    _libs = order_libs(_lib_files);
 }
 
 arcade::CoreProgram::~CoreProgram()
 {
+}
+
+void arcade::CoreProgram::selectNext(int type) {
+    if (_libs.empty()) return;
+
+    int currentIndex = -1;
+    for (int i = 0; i < static_cast<int>(_libs.size()); i++) {
+        if (std::get<2>(_libs[i]) == type && std::get<1>(_libs[i])) {
+            std::get<1>(_libs[i]) = false;
+            currentIndex = i;
+            break;
+        }
+    }
+
+    if (currentIndex == -1) return;
+
+    int startIndex = (currentIndex + 1) % _libs.size();
+    for (int i = startIndex; ; i = (i + 1) % _libs.size()) {
+        if (i == currentIndex) break;
+
+        if (std::get<2>(_libs[i]) == type) {
+            std::get<1>(_libs[i]) = true;
+            break;
+        }
+    }
 }
 
 int &arcade::CoreProgram::getScore()
@@ -104,14 +185,35 @@ void arcade::CoreProgram::loadGame(const std::string& game) {
     if (_game != nullptr) {
         _game.reset();
     }
+
+    std::cout << "Loading game: " << game << std::endl;
     _game = loadComponent<game::AGame>(game, "createGame", _keys);
+
+    for (auto &lib : _libs) {
+        if ("lib/" + std::get<0>(lib) == game) {
+            std::get<1>(lib) = true;
+        } else {
+            std::get<1>(lib) = false;
+        }
+    }
 }
 
 void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
     if (_graphic != nullptr) {
         _graphic.reset();
     }
+
+    std::cout << "Loading graphic: " << graphic << std::endl;
+
     _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys);
+
+    for (auto &lib : _libs) {
+        if ("lib/" + std::get<0>(lib) == graphic) {
+            std::get<1>(lib) = true;
+        } else {
+            std::get<1>(lib) = false;
+        }
+    }
 }
 
 void arcade::CoreProgram::loadMenu()
@@ -124,12 +226,33 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
     while (!events.empty()) {
         if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
             events.pop();
-            loadGame(std::get<std::string>(std::get<1>(events.front())));
+            if (std::get<std::string>(std::get<1>(events.front())) == "next") {
+                selectNext(1);
+                for (auto &lib : _libs) {
+                    if (std::get<1>(lib) && std::get<2>(lib) == 1){
+                        loadGame("lib/" + std::get<std::string>(lib));
+                        break;
+                    }
+                }
+            } else {
+                loadGame(std::get<std::string>(std::get<1>(events.front())));
+            }
             _events = _game->tick();
             return true;
         } else if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
             events.pop();
-            loadGraphic(std::get<std::string>(std::get<1>(events.front())));
+            if (std::get<std::string>(std::get<1>(events.front())) == "next") {
+                selectNext(0);
+                for (auto &lib : _libs) {
+                    std::cout << std::get<0>(lib) << std::endl;
+                    if (std::get<1>(lib) && std::get<2>(lib) == 0) {
+                        loadGraphic("lib/" + std::get<std::string>(lib));
+                        break;
+                    }
+                }
+            } else {
+                loadGraphic(std::get<std::string>(std::get<1>(events.front())));
+            }
             _events = _game->tick();
             return true;
         }
@@ -145,7 +268,6 @@ int arcade::CoreProgram::loop()
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
     }
-
     using clock = std::chrono::steady_clock;
     std::chrono::milliseconds timestep(1000 / 8);
     auto next_tick = clock::now() + timestep;

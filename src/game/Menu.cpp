@@ -91,9 +91,6 @@ game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
     _keys = key;
     _lib_files = getFilesInDirectory("lib");
     _libs = order_libs(_lib_files);
-    for (std::size_t i = 0; i < _lib_files.size(); i++) {
-        std::cout << _lib_files[i] << std::endl;
-    }
     std::get<1>(_libs[0]) = true;
 }
 
@@ -247,6 +244,9 @@ void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &even
     create_draw_string_event(events, 12, 5, "DOWN: 'V'", false);
     create_draw_string_event(events, 12, 6, "LEFT: '<'", false);
     create_draw_string_event(events, 12, 7, "RIGHT: '>'", false);
+    create_draw_string_event(events, 12, 8, "L: change lib graphique", false);
+    create_draw_string_event(events, 12, 9, "G: change lib game", false);
+    create_draw_string_event(events, 12, 10, "ESC: exit/menu", false);
 
     create_draw_string_event(events, 10, 10, "Games", false);
     create_draw_string_event(events, 30, 10, "Graphics", false);
