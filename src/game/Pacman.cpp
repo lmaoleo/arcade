@@ -470,7 +470,7 @@ std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
     isGameOver();
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
-    if (_moveTime > 0.5) {
+    if (_moveTime > 0.35) {
         changePacmanPos();
         movesGhostsRandomDirections();
         _moveTime = 0;

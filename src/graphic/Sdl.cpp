@@ -55,6 +55,7 @@ graphic::Sdl::Sdl(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(key
             {SDLK_d, "D"}, {SDLK_f, "F"}, {SDLK_TAB, "TAB"},
             {SDLK_c, "C"}, {SDLK_v, "V"}, {SDLK_b, "B"}, {SDLK_n, "N"},
             {SDLK_F1, "F1"}, {SDLK_F2, "F2"}, {SDLK_F3, "F3"}, {SDLK_F4, "F4"},
+            {SDLK_BACKSPACE, "BACKSPACE"}
     };
 }
 

@@ -39,7 +39,7 @@ graphic::Ncurses::Ncurses(std::shared_ptr<std::map<std::string, bool>> &key)
             {103, "G"}, {104, "H"}, {106, "J"}, {107, "K"},
             {108, "L"}, {109, "M"}, {119, "W"}, {120, "X"},
             {99, "C"}, {118, "V"}, {98, "B"}, {110, "N"},
-            {KEY_F(1), "F1"}, {KEY_F(2), "F2"}, {KEY_F(3), "F3"}, {KEY_F(4), "F4"},
+            {KEY_F(1), "F1"}, {KEY_F(2), "F2"}, {KEY_F(3), "F3"}, {KEY_F(4), "F4"}, {KEY_BACKSPACE, "BACKSPACE"}
     };
 }
 

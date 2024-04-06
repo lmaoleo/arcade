@@ -486,7 +486,7 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
     changeDirection();
     std::vector<std::string> newMap = map;
     if (_lose != true) {
-        if (_moveTime > 0.5) {
+        if (_moveTime > 0.35) {
             changeSnakePos();
             _moveTime = 0;
         }

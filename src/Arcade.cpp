@@ -29,35 +29,36 @@ static const std::map<std::string, bool> keys = {
         {"ESC", false},
         {"TAB", false},
         {"A", false},
-        {"Z", false},
-        {"E", false},
-        {"R", false},
-        {"T", false},
-        {"Y", false},
-        {"U", false},
-        {"I", false},
-        {"O", false},
-        {"P", false},
-        {"Q", false},
-        {"S", false},
+        {"B", false},
+        {"C", false},
         {"D", false},
+        {"E", false},
         {"F", false},
         {"G", false},
         {"H", false},
+        {"I", false},
         {"J", false},
         {"K", false},
         {"L", false},
         {"M", false},
+        {"N", false},
+        {"O", false},
+        {"P", false},
+        {"Q", false},
+        {"R", false},
+        {"S", false},
+        {"T", false},
+        {"U", false},
+        {"V", false},
         {"W", false},
         {"X", false},
-        {"C", false},
-        {"V", false},
-        {"B", false},
-        {"N", false},
+        {"Y", false},
+        {"Z", false},
         {"F1", false},
         {"F2", false},
         {"F3", false},
-        {"F4", false}
+        {"F4", false},
+        {"BACKSPACE", false}
     };
 
 static const std::vector<std::string> lib_files = {
@@ -284,7 +285,7 @@ int arcade::CoreProgram::loop()
 
     while (1) {
         _graphic->updateKeybinds();
-        _events = _game->tick(static_cast<double>(std::clock() - cl) / CLOCKS_PER_SEC * 10);
+        _events = _game->tick(static_cast<double>(std::clock() - cl) / CLOCKS_PER_SEC);
         cl = std::clock();
         if (!checkForEventChangeThing(_events)) {
             _graphic->readEvent(_events);

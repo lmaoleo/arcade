@@ -40,7 +40,7 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     {sf::Keyboard::W, "W"}, {sf::Keyboard::X, "X"}, {sf::Keyboard::C, "C"},
     {sf::Keyboard::V, "V"}, {sf::Keyboard::B, "B"}, {sf::Keyboard::N, "N"},
     {sf::Keyboard::Tab, "TAB"}, {sf::Keyboard::F1, "F1"}, {sf::Keyboard::F2, "F2"},
-    {sf::Keyboard::F3, "F3"}, {sf::Keyboard::F4, "F4"}
+    {sf::Keyboard::F3, "F3"}, {sf::Keyboard::F4, "F4"}, {sf::Keyboard::BackSpace, "BACKSPACE"}
 };
 }
 

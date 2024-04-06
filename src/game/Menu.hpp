@@ -36,6 +36,8 @@ namespace game {
             std::size_t _ticks;
             std::string _selected_game;
             std::string _selected_graphic;
+            bool _user_input = false;
+            std::string _user_input_text;
     };
 };
 

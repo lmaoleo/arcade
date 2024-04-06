@@ -89,6 +89,7 @@ game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
     _lib_files = getFilesInDirectory(".lib");
     _libs = order_libs(_lib_files);
     std::get<1>(_libs[0]) = true;
+    _user_input_text = "";
 }
 
 game::Menu::~Menu()
@@ -216,8 +217,101 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
         _typeSelected = 0;
     }
     if (_keys->at("ENTER") == true) {
-        send_packet(_typeSelected, _libs, events);
-        _typeSelected = 0;
+        if (_user_input == false) {
+            send_packet(_typeSelected, _libs, events);
+            _typeSelected = 0;
+        }
+    }
+    if (_keys->at("TAB") == true) {
+        _user_input = !_user_input;
+    }
+    if (_user_input == true) {
+        if (_keys->at("A") == true) {
+            _user_input_text += "A";
+        }
+        if (_keys->at("B") == true) {
+            _user_input_text += "B";
+        }
+        if (_keys->at("C") == true) {
+            _user_input_text += "C";
+        }
+        if (_keys->at("D") == true) {
+            _user_input_text += "D";
+        }
+        if (_keys->at("E") == true) {
+            _user_input_text += "E";
+        }
+        if (_keys->at("F") == true) {
+            _user_input_text += "F";
+        }
+        if (_keys->at("G") == true) {
+            _user_input_text += "G";
+        }
+        if (_keys->at("H") == true) {
+            _user_input_text += "H";
+        }
+        if (_keys->at("I") == true) {
+            _user_input_text += "I";
+        }
+        if (_keys->at("J") == true) {
+            _user_input_text += "J";
+        }
+        if (_keys->at("K") == true) {
+            _user_input_text += "K";
+        }
+        if (_keys->at("L") == true) {
+            _user_input_text += "L";
+        }
+        if (_keys->at("M") == true) {
+            _user_input_text += "M";
+        }
+        if (_keys->at("N") == true) {
+            _user_input_text += "N";
+        }
+        if (_keys->at("O") == true) {
+            _user_input_text += "O";
+        }
+        if (_keys->at("P") == true) {
+            _user_input_text += "P";
+        }
+        if (_keys->at("Q") == true) {
+            _user_input_text += "Q";
+        }
+        if (_keys->at("R") == true) {
+            _user_input_text += "R";
+        }
+        if (_keys->at("S") == true) {
+            _user_input_text += "S";
+        }
+        if (_keys->at("T") == true) {
+            _user_input_text += "T";
+        }
+        if (_keys->at("U") == true) {
+            _user_input_text += "U";
+        }
+        if (_keys->at("V") == true) {
+            _user_input_text += "V";
+        }
+        if (_keys->at("W") == true) {
+            _user_input_text += "W";
+        }
+        if (_keys->at("X") == true) {
+            _user_input_text += "X";
+        }
+        if (_keys->at("Y") == true) {
+            _user_input_text += "Y";
+        }
+        if (_keys->at("Z") == true) {
+            _user_input_text += "Z";
+        }
+        if (_keys->at("SPACE") == true) {
+            _user_input_text += " ";
+        }
+        if (_keys->at("BACKSPACE") == true) {
+            if (_user_input_text.size() > 0) {
+                _user_input_text.pop_back();
+            }
+        }
     }
     if (_keys->at("ESC") == true) {
         exit(0);
@@ -232,18 +326,28 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
 
 void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &events)
 {
+    std::string to_print = "";
+    if (_user_input_text == "") {
+        to_print = "No name";
+    } else {
+        to_print = _user_input_text;
+    }
     create_draw_string_event(events, 0, 0, "Menu", false);
-    create_draw_string_event(events, 12, 0, "To select top of game press '>'", false);
-    create_draw_string_event(events, 12, 1, "To select top of graphic press '<'", false);
-    create_draw_string_event(events, 12, 2, "To select next press 'V'", false);
-    create_draw_string_event(events, 12, 3, "In the games to move the keybinds are:", false);
-    create_draw_string_event(events, 12, 4, "UP: '^'", false);
-    create_draw_string_event(events, 12, 5, "DOWN: 'V'", false);
-    create_draw_string_event(events, 12, 6, "LEFT: '<'", false);
-    create_draw_string_event(events, 12, 7, "RIGHT: '>'", false);
-    create_draw_string_event(events, 12, 8, "L: change lib graphique", false);
-    create_draw_string_event(events, 12, 9, "G: change lib game", false);
-    create_draw_string_event(events, 12, 10, "ESC: exit/menu", false);
+    create_draw_string_event(events, 0, 1, "Select a game and a graphic", false);
+    create_draw_string_event(events, 0, 2, "Press 'TAB' to enter a name", false);
+    create_draw_string_event(events, 0, 3, "NAME:", _user_input);
+    create_draw_string_event(events, 0, 4, to_print, _user_input);
+    create_draw_string_event(events, 20, 0, "To select top of game press '>'", false);
+    create_draw_string_event(events, 20, 1, "To select top of graphic press '<'", false);
+    create_draw_string_event(events, 20, 2, "To select next press 'V'", false);
+    create_draw_string_event(events, 20, 3, "In the games to move the keybinds are:", false);
+    create_draw_string_event(events, 20, 4, "UP: '^'", false);
+    create_draw_string_event(events, 20, 5, "DOWN: 'V'", false);
+    create_draw_string_event(events, 20, 6, "LEFT: '<'", false);
+    create_draw_string_event(events, 20, 7, "RIGHT: '>'", false);
+    create_draw_string_event(events, 20, 8, "L: change lib graphique", false);
+    create_draw_string_event(events, 20, 9, "G: change lib game", false);
+    create_draw_string_event(events, 20, 10, "ESC: exit/menu", false);
 
     create_draw_string_event(events, 10, 12, "Games", false);
     create_draw_string_event(events, 30, 12, "Graphics", false);
