@@ -44,7 +44,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
             std::chrono::high_resolution_clock::time_point _startTime;
             std::queue<std::tuple<EventType, eventData>> _events;
-            clock_t _moveTime;
+            double _moveTime;
     };
 };
 

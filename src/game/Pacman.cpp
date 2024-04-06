@@ -250,9 +250,6 @@ void game::Pacman::changeDirection()
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
-    if (_keys->at("ESC") == true) {
-        exit(0);
-    }
 }
 
 bool game::Pacman::isGameOver()
@@ -430,7 +427,30 @@ void game::Pacman::checkChange()
         std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
         std::tuple<EventType, eventData> event2 = {EventType::SET_GRAPHIC, false};
         _events.push(event);
+        _events.push(packet);if (_keys->at("ESC") == true) {
+        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
+        _events.push(event);
         _events.push(packet);
+        _events.push(event2);
+    }
+    if (_keys->at("L") == true) {
+        std::tuple<EventType, eventData> event = {EventType::SET_GRAPHIC, false};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
+        std::tuple<EventType, eventData> event2 = {EventType::SET_GRAPHIC, false};
+        _events.push(event);
+        _events.push(packet);
+        _events.push(event2);
+    }
+    if (_keys->at("G") == true) {
+        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
+        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
+        _events.push(event);
+        _events.push(packet);
+        _events.push(event2);
+    }
         _events.push(event2);
     }
     if (_keys->at("G") == true) {
@@ -447,17 +467,14 @@ std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
 {
     _moveTime += delta;
 
-    clock_t current = std::clock();
-    clock_t diff = current - _moveTime;
-
-    if (diff > 20) {
-        return _events;
-    }
     isGameOver();
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
-    changePacmanPos();
-    movesGhostsRandomDirections();
+    if (_moveTime > 0.5) {
+        changePacmanPos();
+        movesGhostsRandomDirections();
+        _moveTime = 0;
+    }
     add_food_to_map(newMap, _food);
     add_ghosts_to_map(newMap, _ghosts);
     add_Pacman_to_map(newMap, _Pacman);

@@ -39,7 +39,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _snake;
             std::tuple<std::size_t, std::size_t> _food;
             std::queue<std::tuple<EventType, eventData>> _events;
-            clock_t _moveTime;
+            double _moveTime;
             bool _lose = false;
     };
 };

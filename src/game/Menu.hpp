@@ -29,7 +29,7 @@ namespace game {
         private:
             std::shared_ptr<std::map<std::string, bool>> _keys;
             std::queue<std::tuple<EventType, eventData>> _events;
-            clock_t _moveTime;
+            double _moveTime;
             std::vector<std::tuple<std::string, bool, int>> _libs;
             std::vector<std::string> _lib_files;
             int _typeSelected;

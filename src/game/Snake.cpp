@@ -235,6 +235,7 @@ game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
     _lastTailPos = {2, 7};
     _headDirection = "snake_head_right";
     _keys = keybinds;
+    _moveTime = 0;
 }
 
 game::Snake::~Snake()
@@ -481,28 +482,19 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
 {
     _moveTime += delta;
 
-    clock_t current = std::clock();
-    clock_t diff = current - _moveTime;
-
-    if (diff < 20) {
-        return _events;
-    }
     _events = std::queue<std::tuple<EventType, eventData>>();
     changeDirection();
     std::vector<std::string> newMap = map;
     if (_lose != true) {
-        changeSnakePos();
+        if (_moveTime > 0.5) {
+            changeSnakePos();
+            _moveTime = 0;
+        }
     }
     add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);
     _events = transform_map_to_events(newMap);
     if (checkCollision()) {
-        std::tuple<EventType, eventData> event = {EventType::LOSE, false};
-        _events.push(event);
-        std::tuple<EventType, eventData> event2 = {EventType::DATA, true};
-        _events.push(event2);
-        std::tuple<EventType, eventData> event3 = {EventType::LOSE, false};
-        _events.push(event3);
         std::cout << "You lost" << std::endl;
         _lose = true;
         return _events;

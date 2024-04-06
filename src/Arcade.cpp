@@ -281,11 +281,11 @@ int arcade::CoreProgram::loop()
     while (1) {
         _graphic->updateKeybinds();
         _events = _game->tick(static_cast<double>(std::clock() - cl) / CLOCKS_PER_SEC * 10);
+        cl = std::clock();
         if (!checkForEventChangeThing(_events)) {
             _graphic->readEvent(_events);
             _events = _graphic->draw();
         }
-        cl = std::clock();
     }
     return 0;
 }

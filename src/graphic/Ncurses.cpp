@@ -89,8 +89,8 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
         short pixel;
         unsigned int colora;
         std::tie(x, y, pixel, colora) = item;
-        createNewColor(colora, color);
-        init_pair(color + 1, 8 + color, COLOR_BLACK);
+        // createNewColor(colora, color);
+        // init_pair(color + 1, 8 + color, COLOR_BLACK);
         printTile(x, y, pixel, color);
         color++;
     }
@@ -127,9 +127,9 @@ std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int c
 
 void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, int color)
 {
-    attron(COLOR_PAIR(color + 1));
+    // attron(COLOR_PAIR(color + 1));
     mvprintw(y, x, "■");
-    attroff(COLOR_PAIR(color + 1));
+    // attroff(COLOR_PAIR(color + 1));
 }
 
 void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, int color)

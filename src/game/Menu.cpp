@@ -126,7 +126,7 @@ void game::Menu::selectPrev(int type) {
     int currentIndex = -1;
     for (int i = 0; i < static_cast<int>(_libs.size()); i++) {
         if (std::get<2>(_libs[i]) == type && std::get<1>(_libs[i])) {
-            std::get<1>(_libs[i]) = false; // Deselect it.
+            std::get<1>(_libs[i]) = false;
             currentIndex = i;
             break;
         }
@@ -265,12 +265,8 @@ std::queue<std::tuple<EventType, eventData>> game::Menu::tick(double delta)
 {
     _moveTime += delta;
 
-    clock_t current = std::clock();
-    clock_t diff = current - _moveTime;
+    _events = std::queue<std::tuple<EventType, eventData>>();
 
-    if (diff < 2) {
-        return _events;
-    }
     handle_key_events(_events);
     display_menu(_events);
     return _events;
