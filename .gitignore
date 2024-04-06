@@ -2,4 +2,5 @@
 arcade
 main_test.cpp
 lib
+.lib
 core
