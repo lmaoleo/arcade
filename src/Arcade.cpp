@@ -241,13 +241,11 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
                 for (auto &lib : _libs) {
                     if (std::get<1>(lib) && std::get<2>(lib) == 1) {
                         loadGame("lib/" + std::get<std::string>(lib));
-                        _events = _game->tick();
                         return true;
                     }
                 }
             } else {
                 loadGame(std::get<std::string>(std::get<1>(events.front())));
-                _events = _game->tick();
                 return true;
             }
         } else if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
@@ -257,16 +255,13 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
                 for (auto &lib : _libs) {
                     if (std::get<1>(lib) && std::get<2>(lib) == 0) {
                         loadGraphic("lib/" + std::get<std::string>(lib));
-                        _events = _game->tick();
                         return true;
                     }
                 }
             } else {
                 loadGraphic(std::get<std::string>(std::get<1>(events.front())));
-                _events = _game->tick();
                 return true;
             }
-            _events = _game->tick();
             return true;
         }
         events.pop();
@@ -281,19 +276,16 @@ int arcade::CoreProgram::loop()
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;
     }
-    using clock = std::chrono::steady_clock;
-    std::chrono::milliseconds timestep(1000 / 8);
-    auto next_tick = clock::now() + timestep;
+    clock_t cl = std::clock();
 
     while (1) {
         _graphic->updateKeybinds();
-        _events = _game->tick();
+        _events = _game->tick(static_cast<double>(std::clock() - cl) / CLOCKS_PER_SEC * 10);
         if (!checkForEventChangeThing(_events)) {
             _graphic->readEvent(_events);
             _events = _graphic->draw();
         }
-        std::this_thread::sleep_until(next_tick);
-        next_tick += timestep;
+        cl = std::clock();
     }
     return 0;
 }

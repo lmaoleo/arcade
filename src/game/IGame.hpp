@@ -16,7 +16,7 @@ namespace game {
     class IGame {
         public:
             virtual ~IGame() = default;
-            virtual std::queue<std::tuple<EventType, eventData>> tick() = 0;
+            virtual std::queue<std::tuple<EventType, eventData>> tick(double delta) = 0;
     };
 }
 

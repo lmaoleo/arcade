@@ -261,10 +261,17 @@ void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &even
     }
 }
 
-std::queue<std::tuple<EventType, eventData>> game::Menu::tick()
+std::queue<std::tuple<EventType, eventData>> game::Menu::tick(double delta)
 {
-    std::queue<std::tuple<EventType, eventData>> events;
-    handle_key_events(events);
-    display_menu(events);
-    return events;
+    _moveTime += delta;
+
+    clock_t current = std::clock();
+    clock_t diff = current - _moveTime;
+
+    if (diff < 2) {
+        return _events;
+    }
+    handle_key_events(_events);
+    display_menu(_events);
+    return _events;
 }

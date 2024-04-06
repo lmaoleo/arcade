@@ -477,8 +477,16 @@ void game::Snake::checkChange()
     }
 }
 
-std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
+std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
 {
+    _moveTime += delta;
+
+    clock_t current = std::clock();
+    clock_t diff = current - _moveTime;
+
+    if (diff < 20) {
+        return _events;
+    }
     _events = std::queue<std::tuple<EventType, eventData>>();
     changeDirection();
     std::vector<std::string> newMap = map;

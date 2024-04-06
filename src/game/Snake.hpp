@@ -10,13 +10,14 @@
 
 #include "AGame.hpp"
 #include <queue>
+#include <chrono>
 
 namespace game {
     class Snake : public AGame {
         public:
             Snake(std::shared_ptr<std::map<std::string, bool>> &key);
             ~Snake();
-            std::queue<std::tuple<EventType, eventData>> tick();
+            std::queue<std::tuple<EventType, eventData>> tick(double delta);
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
             void add_food_to_events(std::queue<std::tuple<EventType, eventData>> &events);
             void add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events);
@@ -38,6 +39,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _snake;
             std::tuple<std::size_t, std::size_t> _food;
             std::queue<std::tuple<EventType, eventData>> _events;
+            clock_t _moveTime;
             bool _lose = false;
     };
 };

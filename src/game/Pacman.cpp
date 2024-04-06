@@ -443,8 +443,16 @@ void game::Pacman::checkChange()
     }
 }
 
-std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
+std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
 {
+    _moveTime += delta;
+
+    clock_t current = std::clock();
+    clock_t diff = current - _moveTime;
+
+    if (diff > 20) {
+        return _events;
+    }
     isGameOver();
     changeDirection();
     std::vector<std::string> newMap = PacManMap;

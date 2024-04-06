@@ -17,7 +17,7 @@ namespace game {
         public:
             Pacman(std::shared_ptr<std::map<std::string, bool>> &key);
             ~Pacman();
-            std::queue<std::tuple<EventType, eventData>> tick();
+            std::queue<std::tuple<EventType, eventData>> tick(double delta);
             void changePacmanPos();
             std::vector<std::tuple<std::size_t, std::size_t, bool>> generateFood();
             void add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events);
@@ -44,6 +44,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
             std::chrono::high_resolution_clock::time_point _startTime;
             std::queue<std::tuple<EventType, eventData>> _events;
+            clock_t _moveTime;
     };
 };
 
