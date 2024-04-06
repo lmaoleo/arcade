@@ -101,9 +101,6 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
             ordered_libs.push_back({libs[i], false, 1});
         }
     }
-    for (std::size_t i = 0; i < ordered_libs.size(); i++) {
-        std::cout << std::get<0>(ordered_libs[i]) << std::endl;
-    }
     return ordered_libs;
 }
 
@@ -119,6 +116,20 @@ arcade::CoreProgram::CoreProgram()
 
 arcade::CoreProgram::~CoreProgram()
 {
+}
+
+void printLibs(std::vector<std::tuple<std::string, bool, int>> &libs)
+{
+    std::string selected;
+
+    for (auto &lib : libs) {
+        if (std::get<1>(lib)) {
+            selected = "true";
+        } else {
+            selected = "false";
+        }
+        std::cout << std::get<0>(lib) << " " << selected << " " << std::get<2>(lib) << std::endl;
+    }
 }
 
 void arcade::CoreProgram::selectNext(int type) {
@@ -186,14 +197,14 @@ void arcade::CoreProgram::loadGame(const std::string& game) {
         _game.reset();
     }
 
-    std::cout << "Loading game: " << game << std::endl;
     _game = loadComponent<game::AGame>(game, "createGame", _keys);
 
     for (auto &lib : _libs) {
+        if (std::get<2>(lib) == 1) {
+            std::get<1>(lib) = false;
+        }
         if ("lib/" + std::get<0>(lib) == game) {
             std::get<1>(lib) = true;
-        } else {
-            std::get<1>(lib) = false;
         }
     }
 }
@@ -203,15 +214,14 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
         _graphic.reset();
     }
 
-    std::cout << "Loading graphic: " << graphic << std::endl;
-
     _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys);
 
     for (auto &lib : _libs) {
+        if (std::get<2>(lib) == 0) {
+            std::get<1>(lib) = false;
+        }
         if ("lib/" + std::get<0>(lib) == graphic) {
             std::get<1>(lib) = true;
-        } else {
-            std::get<1>(lib) = false;
         }
     }
 }
@@ -229,29 +239,32 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
             if (std::get<std::string>(std::get<1>(events.front())) == "next") {
                 selectNext(1);
                 for (auto &lib : _libs) {
-                    if (std::get<1>(lib) && std::get<2>(lib) == 1){
+                    if (std::get<1>(lib) && std::get<2>(lib) == 1) {
                         loadGame("lib/" + std::get<std::string>(lib));
-                        break;
+                        _events = _game->tick();
+                        return true;
                     }
                 }
             } else {
                 loadGame(std::get<std::string>(std::get<1>(events.front())));
+                _events = _game->tick();
+                return true;
             }
-            _events = _game->tick();
-            return true;
         } else if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
             events.pop();
             if (std::get<std::string>(std::get<1>(events.front())) == "next") {
                 selectNext(0);
                 for (auto &lib : _libs) {
-                    std::cout << std::get<0>(lib) << std::endl;
                     if (std::get<1>(lib) && std::get<2>(lib) == 0) {
                         loadGraphic("lib/" + std::get<std::string>(lib));
-                        break;
+                        _events = _game->tick();
+                        return true;
                     }
                 }
             } else {
                 loadGraphic(std::get<std::string>(std::get<1>(events.front())));
+                _events = _game->tick();
+                return true;
             }
             _events = _game->tick();
             return true;
@@ -295,6 +308,5 @@ int main(int ac, char **av)
     core.loadGraphic(av[1]);
     if (core.loop() == -1)
         return 84;
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }

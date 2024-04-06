@@ -80,9 +80,6 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
             ordered_libs.push_back({libs[i], false, 1});
         }
     }
-    for (std::size_t i = 0; i < ordered_libs.size(); i++) {
-        std::cout << std::get<0>(ordered_libs[i]) << std::endl;
-    }
     return ordered_libs;
 }
 
@@ -248,17 +245,17 @@ void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &even
     create_draw_string_event(events, 12, 9, "G: change lib game", false);
     create_draw_string_event(events, 12, 10, "ESC: exit/menu", false);
 
-    create_draw_string_event(events, 10, 10, "Games", false);
-    create_draw_string_event(events, 30, 10, "Graphics", false);
+    create_draw_string_event(events, 10, 12, "Games", false);
+    create_draw_string_event(events, 30, 12, "Graphics", false);
     int i_games = 1;
     int i_graphics = 1;
 
     for (std::size_t i = 0; i < _libs.size(); i++) {
         if (std::get<2>(_libs[i]) == 1) {
-            create_draw_string_event(events, 10, 10 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 10, 12 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_games++;
         } else {
-            create_draw_string_event(events, 30, 10 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 30, 12 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_graphics++;
         }
     }
