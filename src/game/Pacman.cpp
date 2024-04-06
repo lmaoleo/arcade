@@ -223,7 +223,7 @@ void game::Pacman::send_packet(int type, std::vector<std::tuple<std::string, boo
     for (std::size_t i = 0; i < libs.size(); i++) {
         if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
             std::tuple<EventType, eventData> event = {to_send, false};
-            std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/" + std::get<0>(libs[i])};
             std::tuple<EventType, eventData> event2 = {to_send, false};
             events.push(event);
             events.push(packet);
@@ -415,7 +415,7 @@ void game::Pacman::checkChange()
 {
     if (_keys->at("ESC") == true) {
         std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
         std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
         _events.push(event);
         _events.push(packet);
@@ -429,7 +429,7 @@ void game::Pacman::checkChange()
         _events.push(event);
         _events.push(packet);if (_keys->at("ESC") == true) {
         std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
         std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
         _events.push(event);
         _events.push(packet);

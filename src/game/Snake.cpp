@@ -454,7 +454,7 @@ void game::Snake::checkChange()
 {
     if (_keys->at("ESC") == true) {
         std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
         std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
         _events.push(event);
         _events.push(packet);

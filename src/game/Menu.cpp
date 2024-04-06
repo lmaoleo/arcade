@@ -190,7 +190,7 @@ void game::Menu::send_packet(int type, std::vector<std::tuple<std::string, bool,
     for (std::size_t i = 0; i < libs.size(); i++) {
         if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
             std::tuple<EventType, eventData> event = {to_send, false};
-            std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/" + std::get<0>(libs[i])};
             std::tuple<EventType, eventData> event2 = {to_send, false};
             events.push(event);
             events.push(packet);
