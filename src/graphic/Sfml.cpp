@@ -81,11 +81,6 @@ void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y
     _window->draw(textToDraw);
 }
 
-void graphic::Sfml::flushscreen()
-{
-    _window->clear();
-}
-
 std::tuple<short, short, short, short> graphic::Sfml::intToRgb(unsigned int color)
 {
     short a = (color >> 24) & 0xFF; // Correctly masks the alpha component

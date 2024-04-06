@@ -64,12 +64,6 @@ void graphic::Ncurses::updateKeybinds()
     }
 }
 
-void graphic::Ncurses::flushscreen()
-{
-    clear();
-    refresh();
-}
-
 void graphic::Ncurses::createNewColor(unsigned int color, int i)
 {
     short a, r, g, b;

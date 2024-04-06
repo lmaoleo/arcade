@@ -19,7 +19,6 @@ namespace graphic {
             public:
                 virtual void updateKeybinds() = 0;
                 virtual std::queue<std::tuple<EventType, eventData>> draw() = 0;
-                virtual void flushscreen() = 0;
 
                 virtual void readEvent(std::queue<std::tuple<EventType, eventData>> &event) final;
                 virtual void readDraw(std::queue<std::tuple<EventType, eventData>> &event) final;

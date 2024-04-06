@@ -24,7 +24,6 @@ namespace graphic {
         Sfml(std::shared_ptr<std::map<std::string, bool>> &key);
         ~Sfml();
         void updateKeybinds() final;
-        void flushscreen() final;
         std::tuple<short, short, short, short> intToRgb(unsigned int color);
         sf::Color intToSfColor(unsigned int colorpat);
         void createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat);

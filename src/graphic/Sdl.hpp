@@ -21,7 +21,6 @@ namespace graphic {
         ~Sdl();
         void updateKeybinds() final;
         void drawGameElement(SDL_Renderer* renderer, const SDL_Rect& rect, const std::string& elementType);
-        void flushscreen() final;
         SDL_Texture* loadSprite(const std::string& filePath);
         void loadSprites();
         std::tuple<short, short, short, short> intToRgb(unsigned int color);

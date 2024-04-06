@@ -147,10 +147,6 @@ void graphic::Sdl::createPixels(std::size_t x, std::size_t y, short pixel_form, 
     }
 }
 
-void graphic::Sdl::flushscreen() {
-    SDL_RenderClear(_renderer);
-}
-
 std::queue<std::tuple<EventType, eventData>> graphic::Sdl::draw() {
     SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     SDL_RenderClear(_renderer);
