@@ -53,7 +53,11 @@ static const std::map<std::string, bool> keys = {
         {"C", false},
         {"V", false},
         {"B", false},
-        {"N", false}
+        {"N", false},
+        {"F1", false},
+        {"F2", false},
+        {"F3", false},
+        {"F4", false}
     };
 
 static const std::vector<std::string> lib_files = {
