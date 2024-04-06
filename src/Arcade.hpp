@@ -23,6 +23,8 @@ namespace arcade {
             void loadGraphic(const std::string& graphic);
             void loadMenu();
             void selectNext(int type);
+            void selectNextGame();
+            void selectNextGraphic();
             bool checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events);
             int loop(void);
 

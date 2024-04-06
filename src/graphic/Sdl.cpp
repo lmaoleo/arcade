@@ -112,26 +112,25 @@ void graphic::Sdl::updateKeybinds() {
 std::tuple<short, short, short, short> graphic::Sdl::intToRgb(unsigned int color)
 {
     short a = (color >> 24) & 0xFF; // Correctly masks the alpha component
-    short r = (color >> 16) & 0xFF; // Correctly masks the red component
-    short g = (color >> 8) & 0xFF;  // Correctly masks the green component
-    short b = color & 0xFF;         // Correctly masks the blue component
+    short r = (color & 0xff0000) >> 16; // Correctly masks the red component
+    short g = (color & 0xff00) >> 8;  // Correctly masks the green component
+    short b = color & 0x0000FF;         // Correctly masks the blue component
 
     return std::make_tuple(a, r, g, b);
 }
 
 void graphic::Sdl::createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat)
 {
+    std::cout << colorpat << std::endl;
     std::vector<SDL_Rect> pixel;
     std::tuple<short, short, short, short> cw = intToRgb(colorpat);
-    int scale = 10;
+    int scale = 1;
     int rectSize = 10 * scale;
-    int sx = x * 4 * scale;
-    int sy = y * 4 * scale;
 
     for (int i = 0; i < 16; i++) {
         SDL_Rect rect = {
-            static_cast<int>(sx + (i % 4) * scale),
-            static_cast<int>(sy + (i / 4) * scale),
+            static_cast<int>((x * 4 + i % 4) * rectSize),
+            static_cast<int>((y * 4 + i / 4) * rectSize),
             rectSize,
             rectSize
         };

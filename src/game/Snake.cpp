@@ -450,34 +450,6 @@ void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>
     create_draw_event(events, std::get<0>(_food), std::get<1>(_food), stringToShort(std::get<0>(foodTile)), std::get<1>(foodTile));
 }
 
-void game::Snake::checkChange()
-{
-    if (_keys->at("ESC") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-    if (_keys->at("L") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GRAPHIC, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GRAPHIC, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-    if (_keys->at("G") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-}
-
 std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
 {
     _moveTime += delta;
@@ -501,7 +473,6 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
     }
     add_score_to_events(_events);
     checkFood();
-    checkChange();
     _ticks++;
     return _events;
 }

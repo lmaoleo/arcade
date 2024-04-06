@@ -411,58 +411,6 @@ void game::Pacman::movesGhostsRandomDirections()
     }
 }
 
-void game::Pacman::checkChange()
-{
-    if (_keys->at("ESC") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-
-    if (_keys->at("L") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GRAPHIC, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GRAPHIC, false};
-        _events.push(event);
-        _events.push(packet);if (_keys->at("ESC") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/arcade_menu.so"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-    if (_keys->at("L") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GRAPHIC, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GRAPHIC, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-    if (_keys->at("G") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-        _events.push(event2);
-    }
-    if (_keys->at("G") == true) {
-        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
-        std::tuple<EventType, eventData> packet = {EventType::DATA, "next"};
-        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
-        _events.push(event);
-        _events.push(packet);
-        _events.push(event2);
-    }
-}
-
 std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
 {
     _moveTime += delta;
@@ -481,7 +429,6 @@ std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
     _events = transform_map_to_events(newMap);
     add_score_to_events(_events);
     checkFood();
-    checkChange();
     _ticks++;
     return _events;
 }

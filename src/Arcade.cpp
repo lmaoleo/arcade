@@ -241,37 +241,38 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
     while (!events.empty()) {
         if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
             events.pop();
-            if (std::get<std::string>(std::get<1>(events.front())) == "next") {
-                selectNext(1);
-                for (auto &lib : _libs) {
-                    if (std::get<1>(lib) && std::get<2>(lib) == 1) {
-                        loadGame(".lib/" + std::get<std::string>(lib));
-                        return true;
-                    }
-                }
-            } else {
-                loadGame(std::get<std::string>(std::get<1>(events.front())));
-                return true;
-            }
+            loadGame(std::get<std::string>(std::get<1>(events.front())));
+            return true;
         } else if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
             events.pop();
-            if (std::get<std::string>(std::get<1>(events.front())) == "next") {
-                selectNext(0);
-                for (auto &lib : _libs) {
-                    if (std::get<1>(lib) && std::get<2>(lib) == 0) {
-                        loadGraphic(".lib/" + std::get<std::string>(lib));
-                        return true;
-                    }
-                }
-            } else {
-                loadGraphic(std::get<std::string>(std::get<1>(events.front())));
-                return true;
-            }
+            loadGraphic(std::get<std::string>(std::get<1>(events.front())));
             return true;
         }
         events.pop();
     }
     return false;
+}
+
+void arcade::CoreProgram::selectNextGame()
+{
+    selectNext(1);
+    for (auto &lib : _libs) {
+        if (std::get<1>(lib) && std::get<2>(lib) == 1) {
+            loadGame(".lib/" + std::get<std::string>(lib));
+            return;
+        }
+    }
+}
+
+void arcade::CoreProgram::selectNextGraphic()
+{
+    selectNext(0);
+    for (auto &lib : _libs) {
+        if (std::get<1>(lib) && std::get<2>(lib) == 0) {
+            loadGraphic(".lib/" + std::get<std::string>(lib));
+            return;
+        }
+    }
 }
 
 int arcade::CoreProgram::loop()
@@ -285,6 +286,18 @@ int arcade::CoreProgram::loop()
 
     while (1) {
         _graphic->updateKeybinds();
+        if (_keys.get()->at("ESC")) {
+            return 0;
+        }
+        if (_keys.get()->at("F1")) {
+            loadMenu();
+        }
+        if (_keys.get()->at("F2")) {
+            selectNextGame();
+        }
+        if (_keys.get()->at("F3")) {
+            selectNextGraphic();
+        }
         _events = _game->tick(static_cast<double>(std::clock() - cl) / CLOCKS_PER_SEC);
         cl = std::clock();
         if (!checkForEventChangeThing(_events)) {

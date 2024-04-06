@@ -28,7 +28,6 @@ namespace game {
             void movesGhostsRandomDirections();
             double getElapsedTime();
             bool isGameOver();
-            void checkChange();
             void send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
 

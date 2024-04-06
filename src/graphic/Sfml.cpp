@@ -84,8 +84,8 @@ void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y
 std::tuple<short, short, short, short> graphic::Sfml::intToRgb(unsigned int color)
 {
     short a = (color >> 24) & 0xFF; // Correctly masks the alpha component
-    short r = (color >> 16) & 0xFF; // Correctly masks the red component
-    short g = (color >> 8) & 0xFF;  // Correctly masks the green component
+    short r = (color & 0xff0000) >> 16; // Correctly masks the red component
+    short g = (color & 0xff00) >> 8;  // Correctly masks the green component
     short b = color & 0xFF;         // Correctly masks the blue component
 
     return std::make_tuple(a, r, g, b);

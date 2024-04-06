@@ -32,7 +32,6 @@ void graphic::AGraphic::readDraw(std::queue<std::tuple<EventType, eventData>> &e
 {
     std::tuple<size_t, size_t, short, unsigned int> tmp;
 
-    std::cout << "readDraw" << std::endl;
     event.pop();
     for (std::size_t i = 0; i < 3; i++) {
         if (event.empty() == true)
@@ -54,16 +53,13 @@ void graphic::AGraphic::readDraw(std::queue<std::tuple<EventType, eventData>> &e
     _draw.push_back(tmp);
     event.pop();
 
-    std::cout << "readDraw end" << std::endl;
 }
 
 void graphic::AGraphic::readDrawString(std::queue<std::tuple<EventType, eventData>> &event)
 {
 
-    // std::cout << "readDrawString" << std::endl;
     std::tuple<size_t, size_t, std::string, bool> tmp;
 
-    // std::cout << "draw str" << std::endl;
     event.pop();
     for (std::size_t i = 0; i < 4; i++) {
         if (event.empty() == true)
@@ -86,8 +82,6 @@ void graphic::AGraphic::readDrawString(std::queue<std::tuple<EventType, eventDat
     }
     _draw_str.push_back(tmp);
     event.pop();
-    // std::cout << "succes" << std::endl;
-    // std::cout << "readDrawString end" << std::endl;
 }
 
 void graphic::AGraphic::readSetGame(std::queue<std::tuple<EventType, eventData>> &event)
@@ -106,7 +100,6 @@ void graphic::AGraphic::readSetGraphic(std::queue<std::tuple<EventType, eventDat
 
 void graphic::AGraphic::readColor(std::queue<std::tuple<EventType, eventData>> &event)
 {
-    std::cout << "readColor" << std::endl;
     event.pop();
     if (std::get<EventType>(event.front()) != DATA)
         return packetError(event);
@@ -114,7 +107,6 @@ void graphic::AGraphic::readColor(std::queue<std::tuple<EventType, eventData>> &
     _color = packetColor;
     event.pop();
     event.pop();
-    std::cout << "readColor end" << std::endl;
 }
 
 void graphic::AGraphic::packetError(std::queue<std::tuple<EventType, eventData>> &event)

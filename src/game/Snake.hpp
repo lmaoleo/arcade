@@ -27,7 +27,6 @@ namespace game {
             void generateFood();
             static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
-            void checkChange();
 
         private:
             std::shared_ptr<std::map<std::string, bool>> _keys;
