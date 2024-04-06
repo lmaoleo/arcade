@@ -412,7 +412,18 @@ void game::Pacman::movesGhostsRandomDirections()
             }
         }
     }
+}
 
+void game::Pacman::checkChange()
+{
+    if (_keys->at("ESC") == true) {
+        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
+        _events.push(event);
+        _events.push(packet);
+        _events.push(event2);
+    }
 }
 
 std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
@@ -425,9 +436,10 @@ std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
     add_food_to_map(newMap, _food);
     add_ghosts_to_map(newMap, _ghosts);
     add_Pacman_to_map(newMap, _Pacman);
-    std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
-    add_score_to_events(events);
+    _events = transform_map_to_events(newMap);
+    add_score_to_events(_events);
     checkFood();
+    checkChange();
     _ticks++;
-    return events;
+    return _events;
 }

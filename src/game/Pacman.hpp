@@ -28,6 +28,7 @@ namespace game {
             void movesGhostsRandomDirections();
             double getElapsedTime();
             bool isGameOver();
+            void checkChange();
             void send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
 
@@ -42,6 +43,7 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _ghosts;
             std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
             std::chrono::high_resolution_clock::time_point _startTime;
+            std::queue<std::tuple<EventType, eventData>> _events;
     };
 };
 
