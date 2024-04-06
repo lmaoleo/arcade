@@ -159,16 +159,16 @@ std::queue<std::tuple<EventType, eventData>> graphic::Sdl::draw() {
         std::tie(x, y, pixel, color) = item;
         createPixels(x, y, pixel, color);
     }
-        for (const auto& item : _draw_str) {
-            std::size_t x, y;
-            std::string str;
-            bool selected;
-            x = std::get<0>(item);
-            y = std::get<1>(item);
-            str = std::get<2>(item);
-            selected = std::get<3>(item);
-            drawText(str, static_cast<int>(x * 40), static_cast<int>(y * 40), selected);
-        }
+    for (const auto& item : _draw_str) {
+        std::size_t x, y;
+        std::string str;
+        bool selected;
+        x = std::get<0>(item);
+        y = std::get<1>(item);
+        str = std::get<2>(item);
+        selected = std::get<3>(item);
+        drawText(str, static_cast<int>(x * 40), static_cast<int>(y * 40), selected);
+    }
     SDL_RenderPresent(_renderer);
 
     _draw_str.clear();
