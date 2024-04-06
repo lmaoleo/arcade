@@ -19,16 +19,14 @@ namespace game {
             std::queue<std::tuple<EventType, eventData>> tick();
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
             void add_food_to_events(std::queue<std::tuple<EventType, eventData>> &events);
-            void add_snake_to_events(std::queue<std::tuple<EventType, eventData>> &event);
             void add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events);
             void changeDirection();
             bool checkCollision();
             void checkFood();
             void generateFood();
-            std::string determine_body_orientation(int i);
             static void add_snake_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> snake);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
-            std::queue<std::tuple<std::size_t, std::variant<std::nullopt_t, std::string, std::size_t, double, bool>>> transform_map_to_events_te(std::vector<std::string> map);
+            void checkChange();
 
         private:
             std::shared_ptr<std::map<std::string, bool>> _keys;
@@ -39,6 +37,7 @@ namespace game {
             std::string _headDirection;
             std::vector<std::tuple<std::size_t, std::size_t>> _snake;
             std::tuple<std::size_t, std::size_t> _food;
+            std::queue<std::tuple<EventType, eventData>> _events;
             bool _lose = false;
     };
 };

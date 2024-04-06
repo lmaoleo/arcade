@@ -393,12 +393,6 @@ void game::Snake::changeDirection()
         _headDirection = "snake_head_right";
         _keys->at("RIGHT") = false;
     }
-    _keys->at("UP") = false;
-    _keys->at("DOWN") = false;
-    _keys->at("LEFT") = false;
-    _keys->at("RIGHT") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ENTER") = false;
 }
 
 void game::Snake::generateFood()
@@ -455,8 +449,21 @@ void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>
     create_draw_event(events, std::get<0>(_food), std::get<1>(_food), stringToShort(std::get<0>(foodTile)), std::get<1>(foodTile));
 }
 
+void game::Snake::checkChange()
+{
+    if (_keys->at("ESC") == true) {
+        std::tuple<EventType, eventData> event = {EventType::SET_GAME, false};
+        std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/arcade_menu.so"};
+        std::tuple<EventType, eventData> event2 = {EventType::SET_GAME, false};
+        _events.push(event);
+        _events.push(packet);
+        _events.push(event2);
+    }
+}
+
 std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
 {
+    _events = std::queue<std::tuple<EventType, eventData>>();
     changeDirection();
     std::vector<std::string> newMap = map;
     if (_lose != true) {
@@ -464,20 +471,21 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick()
     }
     add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);
-    std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
+    _events = transform_map_to_events(newMap);
     if (checkCollision()) {
         std::tuple<EventType, eventData> event = {EventType::LOSE, false};
-        events.push(event);
+        _events.push(event);
         std::tuple<EventType, eventData> event2 = {EventType::DATA, true};
-        events.push(event2);
+        _events.push(event2);
         std::tuple<EventType, eventData> event3 = {EventType::LOSE, false};
-        events.push(event3);
+        _events.push(event3);
         std::cout << "You lost" << std::endl;
         _lose = true;
-        return events;
+        return _events;
     }
-    add_score_to_events(events);
+    add_score_to_events(_events);
     checkFood();
+    checkChange();
     _ticks++;
-    return events;
+    return _events;
 }

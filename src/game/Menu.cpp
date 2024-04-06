@@ -189,9 +189,9 @@ void game::Menu::selectFirstGraphic()
 
 void game::Menu::send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events)
 {
-    EventType to_send = EventType::SET_GAME;
+    EventType to_send = EventType::SET_GRAPHIC;
     if (type == 1) {
-        to_send = EventType::SET_GRAPHIC;
+        to_send = EventType::SET_GAME;
     }
     for (std::size_t i = 0; i < libs.size(); i++) {
         if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
@@ -224,6 +224,9 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
     if (_keys->at("ENTER") == true) {
         send_packet(_typeSelected, _libs, events);
         _typeSelected = 0;
+    }
+    if (_keys->at("ESC") == true) {
+        exit(0);
     }
     _keys->at("UP") = false;
     _keys->at("DOWN") = false;

@@ -214,6 +214,24 @@ double game::Pacman::getElapsedTime() {
     return elapsedTime.count();
 }
 
+void game::Pacman::send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events)
+{
+    EventType to_send = EventType::SET_GAME;
+    if (type == 1) {
+        to_send = EventType::SET_GRAPHIC;
+    }
+    for (std::size_t i = 0; i < libs.size(); i++) {
+        if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
+            std::tuple<EventType, eventData> event = {to_send, false};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> event2 = {to_send, false};
+            events.push(event);
+            events.push(packet);
+            events.push(event2);
+        }
+    }
+}
+
 void game::Pacman::changeDirection()
 {
     if (_keys->at("UP") == true) {
@@ -231,6 +249,9 @@ void game::Pacman::changeDirection()
     if (_keys->at("RIGHT") == true) {
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
+    }
+    if (_keys->at("ESC") == true) {
+        exit(0);
     }
 }
 

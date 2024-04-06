@@ -122,12 +122,12 @@ void arcade::CoreProgram::loadMenu()
 bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events)
 {
     while (!events.empty()) {
-        if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
+        if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
             events.pop();
             loadGame(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
             return true;
-        } else if (std::get<EventType>(events.front()) == EventType::SET_GAME) {
+        } else if (std::get<EventType>(events.front()) == EventType::SET_GRAPHIC) {
             events.pop();
             loadGraphic(std::get<std::string>(std::get<1>(events.front())));
             _events = _game->tick();
