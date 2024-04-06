@@ -76,7 +76,13 @@ void graphic::Ncurses::createNewColor(unsigned int color, int i)
     short a, r, g, b;
     std::tie(a, r, g, b) = intToRgb(color);
 
-    init_color(8 + i, r, g, b);
+    // Scale RGB from 0-255 to 0-1000 for NCurses
+    int nc_r = r * 1000 / 255;
+    int nc_g = g * 1000 / 255;
+    int nc_b = b * 1000 / 255;
+
+    // Assuming 8 + i is within the allowed range of color IDs
+    init_color(8 + i, nc_r, nc_g, nc_b);
 }
 
 std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
@@ -87,7 +93,8 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
         short pixel;
         unsigned int colora;
         std::tie(x, y, pixel, colora) = item;
-
+        createNewColor(colora, color);
+        init_pair(color + 1, 8 + color, COLOR_BLACK);
         printTile(x, y, pixel, color);
         color++;
     }
@@ -122,9 +129,11 @@ std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int c
     return std::make_tuple(a, r, g, b);
 }
 
-void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, unsigned int color)
+void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, int color)
 {
+    attron(COLOR_PAIR(color + 1));
     mvprintw(y, x, "■");
+    attroff(COLOR_PAIR(color + 1));
 }
 
 void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, int color)
