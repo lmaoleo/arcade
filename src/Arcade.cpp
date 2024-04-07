@@ -114,7 +114,7 @@ arcade::CoreProgram::CoreProgram()
     _keys = std::make_shared<std::map<std::string, bool>>(keys);
     _game = nullptr;
     _graphic = nullptr;
-    _lib_files = getFilesInDirectory(".lib");
+    _lib_files = getFilesInDirectory("lib");
     _libs = order_libs(_lib_files);
     _score = 0;
     _username = "Player";
@@ -209,7 +209,7 @@ void arcade::CoreProgram::loadGame(const std::string& game) {
         if (std::get<2>(lib) == 1) {
             std::get<1>(lib) = false;
         }
-        if (".lib/" + std::get<0>(lib) == game) {
+        if ("lib/" + std::get<0>(lib) == game) {
             std::get<1>(lib) = true;
         }
     }
@@ -226,7 +226,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
         if (std::get<2>(lib) == 0) {
             std::get<1>(lib) = false;
         }
-        if (".lib/" + std::get<0>(lib) == graphic) {
+        if ("lib/" + std::get<0>(lib) == graphic) {
             std::get<1>(lib) = true;
         }
     }
@@ -234,7 +234,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 
 void arcade::CoreProgram::loadMenu()
 {
-    _game = loadComponent<game::AGame>(".lib/arcade_menu.so", "createGame", _keys, _score, _username);
+    _game = loadComponent<game::AGame>("lib/arcade_menu.so", "createGame", _keys, _score, _username);
 }
 
 bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events)
@@ -261,7 +261,7 @@ void arcade::CoreProgram::selectNextGame()
     printLibs(_libs);
     for (auto &lib : _libs) {
         if (std::get<1>(lib) && std::get<2>(lib) == 1) {
-            loadGame(".lib/" + std::get<std::string>(lib));
+            loadGame("lib/" + std::get<std::string>(lib));
             return;
         }
     }
@@ -272,7 +272,7 @@ void arcade::CoreProgram::selectNextGraphic()
     selectNext(0);
     for (auto &lib : _libs) {
         if (std::get<1>(lib) && std::get<2>(lib) == 0) {
-            loadGraphic(".lib/" + std::get<std::string>(lib));
+            loadGraphic("lib/" + std::get<std::string>(lib));
             return;
         }
     }
@@ -280,7 +280,7 @@ void arcade::CoreProgram::selectNextGraphic()
 
 int arcade::CoreProgram::loop()
 {
-    loadGame(".lib/arcade_menu.so");
+    loadGame("lib/arcade_menu.so");
     if (!_game || !_graphic) {
         std::cerr << "Failed to load game or graphic" << std::endl;
         return -1;

@@ -86,7 +86,7 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
 game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username) : _user_input_text(username) , _iscore(score)
 {
     _keys = key;
-    _lib_files = getFilesInDirectory(".lib");
+    _lib_files = getFilesInDirectory("lib");
     _libs = order_libs(_lib_files);
     std::get<1>(_libs[0]) = true;
 }
@@ -190,7 +190,7 @@ void game::Menu::send_packet(int type, std::vector<std::tuple<std::string, bool,
     for (std::size_t i = 0; i < libs.size(); i++) {
         if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
             std::tuple<EventType, eventData> event = {to_send, false};
-            std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/" + std::get<0>(libs[i])};
             std::tuple<EventType, eventData> event2 = {to_send, false};
             events.push(event);
             events.push(packet);

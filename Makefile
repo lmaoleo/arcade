@@ -52,7 +52,7 @@ MENU_FILES := $(addprefix src/game/, $(MENU_FILES))
 
 GRAPHIC_LIB_FILES = $(SRC_FILES) $(GRAPHIC_FILES)
 GAME_LIB_FILES = $(SRC_FILES) $(GAME_FILES)
-PUT_LIB = ./.lib/
+PUT_LIB = ./lib/
 
 all: $(NAMES)
 
