@@ -228,8 +228,11 @@ game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key, int &sco
     _ghosts = {{8, 9}, {9, 9}, {9, 9}, {10, 9}};
     _ghostsOrigins = {{8, 9}, {9, 9}, {9, 9}, {10, 9}};
     _startTime = std::chrono::high_resolution_clock::now();
-    _pacmanMoveTime = 0.08;
-    _ghostMoveTime = 0.08;
+    _pacmanDelay = 0.08;
+    _ghostDelay = 0.08;
+    _pacmanMoveTime = 0;
+    _ghostMoveTime = 0;
+    _gumstate = 0;
 }
 
 game::Pacman::~Pacman()
@@ -299,7 +302,12 @@ bool game::Pacman::isGameOver()
 {
     for (std::size_t i = 0; i < _ghosts.size(); i++) {
         if (_Pacman == _ghosts[i]) {
-            return true;
+            if (_gumstate > 0) {
+                _ghosts[i] = _ghostsOrigins[i];
+                return false;
+            } else {
+                return true;
+            }
         }
     }
     return false;
@@ -308,6 +316,9 @@ bool game::Pacman::isGameOver()
 bool game::Pacman::checkCollision(std::tuple<std::size_t, std::size_t> pos)
 {
     if (PacManMap[std::get<1>(pos)][std::get<0>(pos)] == '#') {
+        return false;
+    }
+    if (PacManMap[std::get<1>(pos)][std::get<0>(pos)] == 'X') {
         return false;
     }
     return true;
@@ -324,6 +335,8 @@ void game::Pacman::checkFood()
         if (_Pacman == std::make_tuple(std::get<0>(_pacgums[i]), std::get<1>(_pacgums[i])) && std::get<2>(_pacgums[i]) == false) {
             _score += 1;
             _iscore = _score;
+            _gumstate = 0.02;
+            _moveTime = 0;
             _pacgums[i] = std::make_tuple(std::get<0>(_pacgums[i]), std::get<1>(_pacgums[i]), true);
         }
     }
@@ -480,7 +493,12 @@ std::queue<std::tuple<EventType, eventData>> displayLoseScreen(int score, std::s
 
 std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
 {
-    _moveTime += delta;
+    if (_gumstate != 0) {
+        _moveTime += delta;
+    }
+    _beforeMoveTime += delta;
+    _pacmanMoveTime += delta;
+    _ghostMoveTime += delta;
 
     changeDirection();
     _lose = isGameOver();
@@ -488,10 +506,19 @@ std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
         return displayLoseScreen(_score, _username);
     }
     std::vector<std::string> newMap = PacManMap;
-    if (_moveTime > 0.08) {
-        changePacmanPos();
-        movesGhostsRandomDirections();
+    if (_moveTime > 5) {
+        _gumstate = 0;
         _moveTime = 0;
+    }
+    if (_pacmanMoveTime > _pacmanDelay - _gumstate) {
+        changePacmanPos();
+        _pacmanMoveTime = 0;
+    }
+    if (_beforeMoveTime > 10) {
+        if (_ghostMoveTime > _ghostDelay + _gumstate) {
+            movesGhostsRandomDirections();
+            _ghostMoveTime = 0;
+        }
     }
     add_food_to_map(newMap, _food);
     add_pacgums_to_map(newMap, _pacgums);

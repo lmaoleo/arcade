@@ -47,6 +47,10 @@ namespace game {
             double _pacmanMoveTime;
             double _ghostMoveTime;
             double _moveTime;
+            double _pacmanDelay;
+            double _ghostDelay;
+            double _gumstate;
+            double _beforeMoveTime;
             int &_iscore;
             std::string &_username;
             bool _lose = false;
