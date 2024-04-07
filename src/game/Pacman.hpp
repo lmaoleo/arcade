@@ -39,10 +39,13 @@ namespace game {
             std::string _headDirection;
             std::tuple<std::size_t, std::size_t> _Pacman;
             std::vector<std::tuple<std::size_t, std::size_t, bool>> _food;
+            std::vector<std::tuple<std::size_t, std::size_t, bool>> _pacgums;
             std::vector<std::tuple<std::size_t, std::size_t>> _ghosts;
             std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
             std::chrono::high_resolution_clock::time_point _startTime;
             std::queue<std::tuple<EventType, eventData>> _events;
+            double _pacmanMoveTime;
+            double _ghostMoveTime;
             double _moveTime;
             int &_iscore;
             std::string &_username;
