@@ -66,7 +66,7 @@ void graphic::Ncurses::updateKeybinds()
     }
 }
 
-void graphic::Ncurses::createNewColor(unsigned int color, int i)
+int graphic::Ncurses::getNewColor(unsigned int color)
 {
     short a, r, g, b;
     std::tie(a, r, g, b) = intToRgb(color);
@@ -75,7 +75,17 @@ void graphic::Ncurses::createNewColor(unsigned int color, int i)
     int nc_g = g * 1000 / 255;
     int nc_b = b * 1000 / 255;
 
-    init_color(8 + i, nc_r, nc_g, nc_b);
+    int colorID = _freeColorId;
+    auto it = _registredColors.find(color);
+    if (it == _registredColors.end()) {
+        init_color(colorID, nc_r, nc_g, nc_b);
+        init_pair(colorID, colorID, COLOR_BLACK);
+        _registredColors[color] = colorID;
+        _freeColorId++;
+    } else {
+        colorID = it->second;
+    }
+    return colorID;
 }
 
 std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
@@ -86,10 +96,8 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
         short pixel;
         unsigned int colora;
         std::tie(x, y, pixel, colora) = item;
-        // createNewColor(colora, color);
-        // init_pair(color + 1, 8 + color, COLOR_BLACK);
+        color = getNewColor(colora);
         printTile(x, y, pixel, color);
-        color++;
     }
     for (const auto& item : _draw_str) {
         std::size_t x, y;
@@ -97,6 +105,8 @@ std::queue<std::tuple<EventType, eventData>> graphic::Ncurses::draw() {
         bool selected;
         std::tie(x, y, str, selected) = item;
 
+        x *= 4;
+        y *= 4;
         if (selected) {
             attron(A_REVERSE);
             mvprintw(y, x, str.c_str());
@@ -124,9 +134,9 @@ std::tuple<short, short, short, short> graphic::Ncurses::intToRgb(unsigned int c
 
 void graphic::Ncurses::printPixel(std::size_t x, std::size_t y, int color)
 {
-    // attron(COLOR_PAIR(color + 1));
+    attron(COLOR_PAIR(color));
     mvprintw(y, x, "■");
-    // attroff(COLOR_PAIR(color + 1));
+    attroff(COLOR_PAIR(color));
 }
 
 void graphic::Ncurses::printTile(std::size_t gx, std::size_t gy, short pattern, int color)
