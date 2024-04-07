@@ -225,7 +225,7 @@ static unsigned int rgbToInt(unsigned int a, unsigned short r, unsigned short g,
     return (a << 24) + (r << 16) + (g << 8) + b;
 }
 
-game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+game::Snake::Snake(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username) : _iscore(score), _username(username)
 {
     _ticks = 0;
     _score = 0;
@@ -243,9 +243,11 @@ game::Snake::~Snake()
 }
 
 extern "C" {
-    game::Snake *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    game::Snake *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
-        return new game::Snake(keybinds);
+        (void)score;
+        (void)username;
+        return new game::Snake(keybinds, score, username);
     }
 }
 
@@ -394,6 +396,16 @@ void game::Snake::changeDirection()
         _headDirection = "snake_head_right";
         _keys->at("RIGHT") = false;
     }
+    if (_keys->at("R")) {
+        _lose = false;
+        _score = 0;
+        _snake = {{5, 7}, {4, 7}, {3, 7}};
+        _food = {15, 7};
+        _lastTailPos = {2, 7};
+        _headDirection = "snake_head_right";
+        _direction = {1, 0};
+        _keys->at("R") = false;
+    }
 }
 
 void game::Snake::generateFood()
@@ -422,6 +434,7 @@ void game::Snake::checkFood()
     std::tuple<std::size_t, std::size_t> head = _snake[0];
     if (head == _food) {
         _score++;
+        _iscore = _score;
         _snake.push_back(_lastTailPos);
         generateFood();
     }
@@ -450,6 +463,16 @@ void game::Snake::add_food_to_events(std::queue<std::tuple<EventType, eventData>
     create_draw_event(events, std::get<0>(_food), std::get<1>(_food), stringToShort(std::get<0>(foodTile)), std::get<1>(foodTile));
 }
 
+std::queue<std::tuple<EventType, eventData>> displayLoseScreen(int score, std::string username)
+{
+    std::queue<std::tuple<EventType, eventData>> events;
+
+    create_draw_string_event(events, 10, 10, username + " You lost...");
+    create_draw_string_event(events, 10, 11, "Press R to restart");
+    create_draw_string_event(events, 10, 12, "Score: " + std::to_string(score));
+    return events;
+}
+
 std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
 {
     _moveTime += delta;
@@ -458,10 +481,12 @@ std::queue<std::tuple<EventType, eventData>> game::Snake::tick(double delta)
     changeDirection();
     std::vector<std::string> newMap = map;
     if (_lose != true) {
-        if (_moveTime > 0.35) {
+        if (_moveTime > 0.08) {
             changeSnakePos();
             _moveTime = 0;
         }
+    } else {
+        return displayLoseScreen(_score, _username);
     }
     add_snake_to_map(newMap, _snake);
     add_food_to_map(newMap, _food);

@@ -15,7 +15,7 @@
 namespace game {
     class Snake : public AGame {
         public:
-            Snake(std::shared_ptr<std::map<std::string, bool>> &key);
+            Snake(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username);
             ~Snake();
             std::queue<std::tuple<EventType, eventData>> tick(double delta);
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
@@ -32,6 +32,8 @@ namespace game {
             std::shared_ptr<std::map<std::string, bool>> _keys;
             std::size_t _ticks;
             std::size_t _score;
+            int &_iscore;
+            std::string &_username;
             std::tuple<std::size_t, std::size_t> _lastTailPos;
             std::tuple<std::size_t, std::size_t> _direction;
             std::string _headDirection;

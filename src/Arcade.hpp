@@ -30,6 +30,7 @@ namespace arcade {
 
         private:
             int _score;
+            std::string _username;
             std::queue<std::tuple<EventType, eventData>> _events;
             std::shared_ptr<std::map<std::string, bool>> _keys;
             std::vector<std::tuple<std::string, bool, int>> _libs;

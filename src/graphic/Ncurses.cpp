@@ -10,8 +10,10 @@
 std::map<int, std::string> _keyMap;
 
 extern "C" {
-    graphic::Ncurses *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    graphic::Ncurses *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
+        (void)score;
+        (void)username;
         return new graphic::Ncurses(keybinds);
     }
 };

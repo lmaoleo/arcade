@@ -111,5 +111,6 @@ void graphic::AGraphic::readColor(std::queue<std::tuple<EventType, eventData>> &
 
 void graphic::AGraphic::packetError(std::queue<std::tuple<EventType, eventData>> &event)
 {
+    (void)event;
     std::cerr << "Packet error" << std::endl;
 }

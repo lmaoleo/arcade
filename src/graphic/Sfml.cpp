@@ -10,8 +10,11 @@
 std::map<sf::Keyboard::Key, std::string> _keyMap;
 
 extern "C" {
-    graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
+
+        (void)score;
+        (void)username;
         return new graphic::Sfml(keybinds);
     }
 };

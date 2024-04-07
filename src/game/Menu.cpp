@@ -31,9 +31,9 @@ static const std::vector<std::string> game_files = {
     };
 
 extern "C" {
-    game::Menu *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    game::Menu *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
-        return new game::Menu(keybinds);
+        return new game::Menu(keybinds, score, username);
     }
 }
 
@@ -83,13 +83,12 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
     return ordered_libs;
 }
 
-game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
+game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username) : _user_input_text(username) , _iscore(score)
 {
     _keys = key;
     _lib_files = getFilesInDirectory(".lib");
     _libs = order_libs(_lib_files);
     std::get<1>(_libs[0]) = true;
-    _user_input_text = "";
 }
 
 game::Menu::~Menu()
@@ -337,6 +336,7 @@ void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &even
     create_draw_string_event(events, 0, 2, "Press 'TAB' to enter a name", false);
     create_draw_string_event(events, 0, 3, "NAME:", _user_input);
     create_draw_string_event(events, 0, 4, to_print, _user_input);
+    create_draw_string_event(events, 0, 5, "Last score: " + std::to_string(_iscore), false);
     create_draw_string_event(events, 20, 0, "To select top of game press '>'", false);
     create_draw_string_event(events, 20, 1, "To select top of graphic press '<'", false);
     create_draw_string_event(events, 20, 2, "To select next press 'V'", false);
@@ -345,21 +345,22 @@ void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &even
     create_draw_string_event(events, 20, 5, "DOWN: 'V'", false);
     create_draw_string_event(events, 20, 6, "LEFT: '<'", false);
     create_draw_string_event(events, 20, 7, "RIGHT: '>'", false);
-    create_draw_string_event(events, 20, 8, "L: change lib graphique", false);
-    create_draw_string_event(events, 20, 9, "G: change lib game", false);
-    create_draw_string_event(events, 20, 10, "ESC: exit/menu", false);
+    create_draw_string_event(events, 20, 8, "F3: change lib graphique", false);
+    create_draw_string_event(events, 20, 9, "F2: change lib game", false);
+    create_draw_string_event(events, 20, 10, "ESC: exit", false);
+    create_draw_string_event(events, 20, 11, "R: reload game", false);
 
-    create_draw_string_event(events, 10, 12, "Games", false);
-    create_draw_string_event(events, 30, 12, "Graphics", false);
+    create_draw_string_event(events, 10, 13, "Games", false);
+    create_draw_string_event(events, 30, 13, "Graphics", false);
     int i_games = 1;
     int i_graphics = 1;
 
     for (std::size_t i = 0; i < _libs.size(); i++) {
         if (std::get<2>(_libs[i]) == 1) {
-            create_draw_string_event(events, 10, 12 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 10, 13 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_games++;
         } else {
-            create_draw_string_event(events, 30, 12 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 30, 13 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_graphics++;
         }
     }

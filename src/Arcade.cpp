@@ -111,12 +111,13 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
 
 arcade::CoreProgram::CoreProgram()
 {
-    _score = 0;
     _keys = std::make_shared<std::map<std::string, bool>>(keys);
     _game = nullptr;
     _graphic = nullptr;
-    _lib_files = getFilesInDirectory("lib");
+    _lib_files = getFilesInDirectory(".lib");
     _libs = order_libs(_lib_files);
+    _score = 0;
+    _username = "Player";
 }
 
 arcade::CoreProgram::~CoreProgram()
@@ -169,7 +170,7 @@ int &arcade::CoreProgram::getScore()
 
 
 template<typename T>
-std::shared_ptr<T> loadComponent(const std::string& path, const std::string& creatorFunction, std::shared_ptr<std::map<std::string, bool>>& keybinds) {
+std::shared_ptr<T> loadComponent(const std::string& path, const std::string& creatorFunction, std::shared_ptr<std::map<std::string, bool>>& keybinds, int &score, std::string &username) {
     void* handle = dlopen(path.c_str(), RTLD_LAZY);
     if (!handle) {
         std::cerr << dlerror() << std::endl;
@@ -177,7 +178,7 @@ std::shared_ptr<T> loadComponent(const std::string& path, const std::string& cre
     }
 
     dlerror();
-    using CreatorFunc = T* (*)(std::shared_ptr<std::map<std::string, bool>>&);
+    using CreatorFunc = T* (*)(std::shared_ptr<std::map<std::string, bool>>&, int&, std::string&);
     CreatorFunc create = (CreatorFunc)dlsym(handle, creatorFunction.c_str());
 
     const char* dlsym_error = dlerror();
@@ -193,7 +194,7 @@ std::shared_ptr<T> loadComponent(const std::string& path, const std::string& cre
         return nullptr;
     }
 
-    std::shared_ptr<T> component(create(keybinds));
+    std::shared_ptr<T> component(create(keybinds, score, username));
     return component;
 }
 
@@ -202,7 +203,7 @@ void arcade::CoreProgram::loadGame(const std::string& game) {
         _game.reset();
     }
 
-    _game = loadComponent<game::AGame>(game, "createGame", _keys);
+    _game = loadComponent<game::AGame>(game, "createGame", _keys, _score, _username);
 
     for (auto &lib : _libs) {
         if (std::get<2>(lib) == 1) {
@@ -219,7 +220,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
         _graphic.reset();
     }
 
-    _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys);
+    _graphic = loadComponent<graphic::AGraphic>(graphic, "createGraphic", _keys, _score, _username);
 
     for (auto &lib : _libs) {
         if (std::get<2>(lib) == 0) {
@@ -233,7 +234,7 @@ void arcade::CoreProgram::loadGraphic(const std::string& graphic) {
 
 void arcade::CoreProgram::loadMenu()
 {
-    _game = loadComponent<game::AGame>(".lib/arcade_menu.so", "createGame", _keys);
+    _game = loadComponent<game::AGame>(".lib/arcade_menu.so", "createGame", _keys, _score, _username);
 }
 
 bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventType, eventData>> events)
@@ -255,7 +256,9 @@ bool arcade::CoreProgram::checkForEventChangeThing(std::queue<std::tuple<EventTy
 
 void arcade::CoreProgram::selectNextGame()
 {
+    printLibs(_libs);
     selectNext(1);
+    printLibs(_libs);
     for (auto &lib : _libs) {
         if (std::get<1>(lib) && std::get<2>(lib) == 1) {
             loadGame(".lib/" + std::get<std::string>(lib));

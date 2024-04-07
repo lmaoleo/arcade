@@ -14,7 +14,7 @@
 namespace game {
     class Menu : public AGame {
         public:
-            Menu(std::shared_ptr<std::map<std::string, bool>> &key);
+            Menu(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username);
             ~Menu();
             std::queue<std::tuple<EventType, eventData>> tick(double delta);
             std::vector<std::tuple<std::size_t, std::size_t>> changeSnakePos();
@@ -37,7 +37,8 @@ namespace game {
             std::string _selected_game;
             std::string _selected_graphic;
             bool _user_input = false;
-            std::string _user_input_text;
+            std::string &_user_input_text;
+            int &_iscore;
     };
 };
 

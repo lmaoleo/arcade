@@ -62,6 +62,8 @@ make_folder:
 core: $(CORE_FILES)
 	$(CC) $(ERRORS_FLAGS) -o $(NAME) $(CORE_FILES)
 
+games: snake pacman menu
+
 graphicals: ncurses sdl sfml
 
 ncurses: $(NCURSES_FILES) make_folder

@@ -15,7 +15,7 @@
 namespace game {
     class Pacman : public AGame {
         public:
-            Pacman(std::shared_ptr<std::map<std::string, bool>> &key);
+            Pacman(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username);
             ~Pacman();
             std::queue<std::tuple<EventType, eventData>> tick(double delta);
             void changePacmanPos();
@@ -44,6 +44,9 @@ namespace game {
             std::chrono::high_resolution_clock::time_point _startTime;
             std::queue<std::tuple<EventType, eventData>> _events;
             double _moveTime;
+            int &_iscore;
+            std::string &_username;
+            bool _lose = false;
     };
 };
 

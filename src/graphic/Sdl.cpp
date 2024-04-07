@@ -12,8 +12,11 @@ std::map<SDL_Keycode, std::string> _keyMap;
 
 
 extern "C" {
-    graphic::Sdl *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    graphic::Sdl *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
+
+        (void)score;
+        (void)username;
         return new graphic::Sdl(keybinds);
     }
 };
@@ -121,7 +124,6 @@ std::tuple<short, short, short, short> graphic::Sdl::intToRgb(unsigned int color
 
 void graphic::Sdl::createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat)
 {
-    std::cout << colorpat << std::endl;
     std::vector<SDL_Rect> pixel;
     std::tuple<short, short, short, short> cw = intToRgb(colorpat);
     int scale = 1;

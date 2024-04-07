@@ -170,9 +170,10 @@ static unsigned int rgbToInt(unsigned int a, unsigned short r, unsigned short g,
 }
 
 extern "C" {
-    game::Pacman *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    game::Pacman *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
-        return new game::Pacman(keybinds);
+        (void)username;
+        return new game::Pacman(keybinds, score, username);
     }
 }
 
@@ -190,7 +191,7 @@ std::vector<std::tuple<std::size_t, std::size_t, bool>> game::Pacman::generateFo
     return food;
 }
 
-game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key)
+game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username) : _iscore(score), _username(username)
 {
     _keys = key;
     _score = 0;
@@ -250,6 +251,15 @@ void game::Pacman::changeDirection()
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
+    if (_keys->at("R") == true) {
+        _score = 0;
+        _iscore = 0;
+        _Pacman = std::make_tuple(9, 15);
+        _direction = std::make_tuple(1, 0);
+        _headDirection = "pac_right";
+        _food = generateFood();
+        _ghosts = _ghostsOrigins;
+    }
 }
 
 bool game::Pacman::isGameOver()
@@ -276,6 +286,7 @@ void game::Pacman::checkFood()
     for (std::size_t i = 0; i < _food.size(); i++) {
         if (_Pacman == std::make_tuple(std::get<0>(_food[i]), std::get<1>(_food[i])) && std::get<2>(_food[i]) == false) {
             _score++;
+            _iscore = _score;
             _food[i] = std::make_tuple(std::get<0>(_food[i]), std::get<1>(_food[i]), true);
         }
     }
@@ -411,14 +422,27 @@ void game::Pacman::movesGhostsRandomDirections()
     }
 }
 
+std::queue<std::tuple<EventType, eventData>> displayLoseScreen(int score, std::string username)
+{
+    std::queue<std::tuple<EventType, eventData>> events;
+
+    create_draw_string_event(events, 10, 10, username + " You lost...");
+    create_draw_string_event(events, 10, 11, "Press R to restart");
+    create_draw_string_event(events, 10, 12, "Score: " + std::to_string(score));
+    return events;
+}
+
 std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
 {
     _moveTime += delta;
 
-    isGameOver();
+    _lose = isGameOver();
+    if (_lose == true) {
+        return displayLoseScreen(_score, _username);
+    }
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
-    if (_moveTime > 0.35) {
+    if (_moveTime > 0.15) {
         changePacmanPos();
         movesGhostsRandomDirections();
         _moveTime = 0;
