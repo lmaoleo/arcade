@@ -31,9 +31,9 @@ static const std::vector<std::string> game_files = {
     };
 
 extern "C" {
-    game::Menu *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    game::Menu *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
-        return new game::Menu(keybinds);
+        return new game::Menu(keybinds, score, username);
     }
 }
 
@@ -80,20 +80,14 @@ std::vector<std::tuple<std::string, bool, int>> order_libs(std::vector<std::stri
             ordered_libs.push_back({libs[i], false, 1});
         }
     }
-    for (std::size_t i = 0; i < ordered_libs.size(); i++) {
-        std::cout << std::get<0>(ordered_libs[i]) << std::endl;
-    }
     return ordered_libs;
 }
 
-game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key)
+game::Menu::Menu(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username) : _user_input_text(username) , _iscore(score)
 {
     _keys = key;
-    _lib_files = getFilesInDirectory("lib");
+    _lib_files = getFilesInDirectory(".lib");
     _libs = order_libs(_lib_files);
-    for (std::size_t i = 0; i < _lib_files.size(); i++) {
-        std::cout << _lib_files[i] << std::endl;
-    }
     std::get<1>(_libs[0]) = true;
 }
 
@@ -132,7 +126,7 @@ void game::Menu::selectPrev(int type) {
     int currentIndex = -1;
     for (int i = 0; i < static_cast<int>(_libs.size()); i++) {
         if (std::get<2>(_libs[i]) == type && std::get<1>(_libs[i])) {
-            std::get<1>(_libs[i]) = false; // Deselect it.
+            std::get<1>(_libs[i]) = false;
             currentIndex = i;
             break;
         }
@@ -189,14 +183,14 @@ void game::Menu::selectFirstGraphic()
 
 void game::Menu::send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events)
 {
-    EventType to_send = EventType::SET_GAME;
+    EventType to_send = EventType::SET_GRAPHIC;
     if (type == 1) {
-        to_send = EventType::SET_GRAPHIC;
+        to_send = EventType::SET_GAME;
     }
     for (std::size_t i = 0; i < libs.size(); i++) {
         if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
             std::tuple<EventType, eventData> event = {to_send, false};
-            std::tuple<EventType, eventData> packet = {EventType::DATA, "lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/" + std::get<0>(libs[i])};
             std::tuple<EventType, eventData> event2 = {to_send, false};
             events.push(event);
             events.push(packet);
@@ -209,7 +203,6 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
 {
     if (_keys->at("UP") == true) {
         selectPrev(_typeSelected);
-        std::cout << "UP" << std::endl;
     }
     if (_keys->at("DOWN") == true) {
         selectNext(_typeSelected);
@@ -223,8 +216,104 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
         _typeSelected = 0;
     }
     if (_keys->at("ENTER") == true) {
-        send_packet(_typeSelected, _libs, events);
-        _typeSelected = 0;
+        if (_user_input == false) {
+            send_packet(_typeSelected, _libs, events);
+            _typeSelected = 0;
+        }
+    }
+    if (_keys->at("TAB") == true) {
+        _user_input = !_user_input;
+    }
+    if (_user_input == true) {
+        if (_keys->at("A") == true) {
+            _user_input_text += "A";
+        }
+        if (_keys->at("B") == true) {
+            _user_input_text += "B";
+        }
+        if (_keys->at("C") == true) {
+            _user_input_text += "C";
+        }
+        if (_keys->at("D") == true) {
+            _user_input_text += "D";
+        }
+        if (_keys->at("E") == true) {
+            _user_input_text += "E";
+        }
+        if (_keys->at("F") == true) {
+            _user_input_text += "F";
+        }
+        if (_keys->at("G") == true) {
+            _user_input_text += "G";
+        }
+        if (_keys->at("H") == true) {
+            _user_input_text += "H";
+        }
+        if (_keys->at("I") == true) {
+            _user_input_text += "I";
+        }
+        if (_keys->at("J") == true) {
+            _user_input_text += "J";
+        }
+        if (_keys->at("K") == true) {
+            _user_input_text += "K";
+        }
+        if (_keys->at("L") == true) {
+            _user_input_text += "L";
+        }
+        if (_keys->at("M") == true) {
+            _user_input_text += "M";
+        }
+        if (_keys->at("N") == true) {
+            _user_input_text += "N";
+        }
+        if (_keys->at("O") == true) {
+            _user_input_text += "O";
+        }
+        if (_keys->at("P") == true) {
+            _user_input_text += "P";
+        }
+        if (_keys->at("Q") == true) {
+            _user_input_text += "Q";
+        }
+        if (_keys->at("R") == true) {
+            _user_input_text += "R";
+        }
+        if (_keys->at("S") == true) {
+            _user_input_text += "S";
+        }
+        if (_keys->at("T") == true) {
+            _user_input_text += "T";
+        }
+        if (_keys->at("U") == true) {
+            _user_input_text += "U";
+        }
+        if (_keys->at("V") == true) {
+            _user_input_text += "V";
+        }
+        if (_keys->at("W") == true) {
+            _user_input_text += "W";
+        }
+        if (_keys->at("X") == true) {
+            _user_input_text += "X";
+        }
+        if (_keys->at("Y") == true) {
+            _user_input_text += "Y";
+        }
+        if (_keys->at("Z") == true) {
+            _user_input_text += "Z";
+        }
+        if (_keys->at("SPACE") == true) {
+            _user_input_text += " ";
+        }
+        if (_keys->at("BACKSPACE") == true) {
+            if (_user_input_text.size() > 0) {
+                _user_input_text.pop_back();
+            }
+        }
+    }
+    if (_keys->at("ESC") == true) {
+        exit(0);
     }
     _keys->at("UP") = false;
     _keys->at("DOWN") = false;
@@ -236,36 +325,54 @@ void game::Menu::handle_key_events(std::queue<std::tuple<EventType, eventData>> 
 
 void game::Menu::display_menu(std::queue<std::tuple<EventType, eventData>> &events)
 {
+    std::string to_print = "";
+    if (_user_input_text == "") {
+        to_print = "No name";
+    } else {
+        to_print = _user_input_text;
+    }
     create_draw_string_event(events, 0, 0, "Menu", false);
-    create_draw_string_event(events, 12, 0, "To select top of game press '>'", false);
-    create_draw_string_event(events, 12, 1, "To select top of graphic press '<'", false);
-    create_draw_string_event(events, 12, 2, "To select next press 'V'", false);
-    create_draw_string_event(events, 12, 3, "In the games to move the keybinds are:", false);
-    create_draw_string_event(events, 12, 4, "UP: '^'", false);
-    create_draw_string_event(events, 12, 5, "DOWN: 'V'", false);
-    create_draw_string_event(events, 12, 6, "LEFT: '<'", false);
-    create_draw_string_event(events, 12, 7, "RIGHT: '>'", false);
+    create_draw_string_event(events, 0, 1, "Select a game and a graphic", false);
+    create_draw_string_event(events, 0, 2, "Press 'TAB' to enter a name", false);
+    create_draw_string_event(events, 0, 3, "NAME:", _user_input);
+    create_draw_string_event(events, 0, 4, to_print, _user_input);
+    create_draw_string_event(events, 0, 5, "Last score: " + std::to_string(_iscore), false);
+    create_draw_string_event(events, 20, 0, "To select top of game press '>'", false);
+    create_draw_string_event(events, 20, 1, "To select top of graphic press '<'", false);
+    create_draw_string_event(events, 20, 2, "To select next press 'V'", false);
+    create_draw_string_event(events, 20, 3, "In the games to move the keybinds are:", false);
+    create_draw_string_event(events, 20, 4, "UP: '^'", false);
+    create_draw_string_event(events, 20, 5, "DOWN: 'V'", false);
+    create_draw_string_event(events, 20, 6, "LEFT: '<'", false);
+    create_draw_string_event(events, 20, 7, "RIGHT: '>'", false);
+    create_draw_string_event(events, 20, 8, "F3: change lib graphique", false);
+    create_draw_string_event(events, 20, 9, "F2: change lib game", false);
+    create_draw_string_event(events, 20, 10, "ESC: exit", false);
+    create_draw_string_event(events, 20, 11, "R: reload game", false);
 
-    create_draw_string_event(events, 10, 10, "Games", false);
-    create_draw_string_event(events, 30, 10, "Graphics", false);
+    create_draw_string_event(events, 10, 13, "Games", false);
+    create_draw_string_event(events, 30, 13, "Graphics", false);
     int i_games = 1;
     int i_graphics = 1;
 
     for (std::size_t i = 0; i < _libs.size(); i++) {
         if (std::get<2>(_libs[i]) == 1) {
-            create_draw_string_event(events, 10, 10 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 10, 13 + i_games, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_games++;
         } else {
-            create_draw_string_event(events, 30, 10 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
+            create_draw_string_event(events, 30, 13 + i_graphics, std::get<0>(_libs[i]), std::get<1>(_libs[i]));
             i_graphics++;
         }
     }
 }
 
-std::queue<std::tuple<EventType, eventData>> game::Menu::tick()
+std::queue<std::tuple<EventType, eventData>> game::Menu::tick(double delta)
 {
-    std::queue<std::tuple<EventType, eventData>> events;
-    handle_key_events(events);
-    display_menu(events);
-    return events;
+    _moveTime += delta;
+
+    _events = std::queue<std::tuple<EventType, eventData>>();
+
+    handle_key_events(_events);
+    display_menu(_events);
+    return _events;
 }

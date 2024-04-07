@@ -7,38 +7,14 @@
 
 #include "Sfml.hpp"
 
-std::map<std::string, std::pair<sf::Texture *, sf::IntRect>> spriteMap;
-
-std::map<std::string, sf::Color> colorMap = {
-    {"wall", {255, 0, 0, 255}},
-    {"snake_head_down", {0, 255, 255, 255}},
-    {"snake_head_up", {0, 255, 255, 255}},
-    {"snake_head_left", {0, 255, 255, 255}},
-    {"snake_head_right", {0, 255, 255, 255}},
-    {"snake_body", {0, 255, 0, 255}},
-    {"horizontal_snake_body", {0, 255, 0, 255}},
-    {"vertical_snake_body", {0, 255, 0, 255}},
-    {"angle_left_down_snake_body", {0, 255, 0, 255}},
-    {"angle_right_down_snake_body", {0, 255, 0, 255}},
-    {"angle_left_up_snake_body", {0, 255, 0, 255}},
-    {"angle_right_up_snake_body", {0, 255, 0, 255}},
-    {"snake_tail_down", {0, 255, 255, 255}},
-    {"snake_tail_up", {0, 255, 255, 255}},
-    {"snake_tail_left", {0, 255, 255, 255}},
-    {"snake_tail_right", {0, 255, 255, 255}},
-    {"pac_wall", {15, 46, 215, 255}},
-    {"pac_down", {255, 255, 0, 255}},
-    {"pac_up", {255, 255, 0, 255}},
-    {"pac_left", {255, 255, 0, 255}},
-    {"pac_right", {255, 255, 0, 255}},
-    {"ghost", {255, 0, 0, 255}},
-    {"pac_food", {231, 154, 149, 255}},
-    {"food", {255, 255, 0, 255}}
-};
+std::map<sf::Keyboard::Key, std::string> _keyMap;
 
 extern "C" {
-    graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    graphic::Sfml *createGraphic(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
+
+        (void)score;
+        (void)username;
         return new graphic::Sfml(keybinds);
     }
 };
@@ -54,7 +30,21 @@ graphic::Sfml::Sfml(std::shared_ptr<std::map<std::string, bool>> &key) : _keys(k
     if (!_window->isOpen()) {
         std::cerr << "Failed to create window!" << std::endl;
     }
-    loadSprites();
+    _keyMap = {
+    {sf::Keyboard::Up, "UP"}, {sf::Keyboard::Down, "DOWN"},{sf::Keyboard::Left, "LEFT"},
+    {sf::Keyboard::Right, "RIGHT"}, {sf::Keyboard::Escape, "ESC"}, {sf::Keyboard::Enter, "ENTER"},
+    {sf::Keyboard::Space, "SPACE"}, {sf::Keyboard::A, "A"}, {sf::Keyboard::Z, "Z"},
+    {sf::Keyboard::E, "E"},{sf::Keyboard::R, "R"},{sf::Keyboard::T, "T"},
+    {sf::Keyboard::Y, "Y"}, {sf::Keyboard::U, "U"}, {sf::Keyboard::I, "I"},
+    {sf::Keyboard::O, "O"}, {sf::Keyboard::P, "P"}, {sf::Keyboard::Q, "Q"},
+    {sf::Keyboard::S, "S"}, {sf::Keyboard::D, "D"}, {sf::Keyboard::F, "F"},
+    {sf::Keyboard::G, "G"}, {sf::Keyboard::H, "H"}, {sf::Keyboard::J, "J"},
+    {sf::Keyboard::K, "K"}, {sf::Keyboard::L, "L"}, {sf::Keyboard::M, "M"},
+    {sf::Keyboard::W, "W"}, {sf::Keyboard::X, "X"}, {sf::Keyboard::C, "C"},
+    {sf::Keyboard::V, "V"}, {sf::Keyboard::B, "B"}, {sf::Keyboard::N, "N"},
+    {sf::Keyboard::Tab, "TAB"}, {sf::Keyboard::F1, "F1"}, {sf::Keyboard::F2, "F2"},
+    {sf::Keyboard::F3, "F3"}, {sf::Keyboard::F4, "F4"}, {sf::Keyboard::BackSpace, "BACKSPACE"}
+};
 }
 
 graphic::Sfml::~Sfml()
@@ -64,121 +54,23 @@ graphic::Sfml::~Sfml()
     delete _font;
 }
 
-void graphic::Sfml::loadSprites() {
-    sf::Texture *spriteSheetTextureSnake = loadSprite("assets/snake-graphics.png");
-    sf::Texture *spriteSheetTexturePac = loadSprite("assets/spritemap_pacman.png");
-
-    sf::Rect<int> wallRect(26, 219, 21, 20);
-    sf::Rect<int> snakeHeadDownRect(256, 64, 64, 64);
-    sf::Rect<int> snakeHeadUpRect(192, 0, 64, 64);
-    sf::Rect<int> snakeHeadLeftRect(192, 64, 64, 64);
-    sf::Rect<int> snakeHeadRightRect(256, 0, 64, 64);
-    sf::Rect<int> snakeHorizontalRect(64, 0, 64, 64);
-    sf::Rect<int> snakeVerticalRect(128, 64, 64, 64);
-    sf::Rect<int> snakeAngleLeftDownRect(0, 0, 64, 64);
-    sf::Rect<int> snakeAngleRightDownRect(128, 0, 64, 64);
-    sf::Rect<int> snakeAngleLeftUpRect(128, 128, 64, 64);
-    sf::Rect<int> snakeAngleRightUpRect(0, 64, 64, 64);
-    sf::Rect<int> snakeTailDownRect(256, 128, 64, 64);
-    sf::Rect<int> snakeTailUpRect(192, 128, 64, 64);
-    sf::Rect<int> snakeTailLeftRect(192, 192, 64, 64);
-    sf::Rect<int> snakeTailRightRect(256, 128, 64, 64);
-    sf::Rect<int> foodRect(0, 192, 64, 64);
-    sf::Rect<int> pacWallRect(0, 96, 24, 24);
-    sf::Rect<int> pacDownRect(120, 71, 24, 24);
-    sf::Rect<int> pacUpRect(71, 71, 24, 24);
-    sf::Rect<int> pacLeftRect(0, 71, 24, 24);
-    sf::Rect<int> pacRightRect(96, 71, 24, 24);
-    sf::Rect<int> ghostRect(0, 143, 24, 24);
-    sf::Rect<int> pacFoodRect(192, 0, 12, 12);
-    sf::Rect<int> emptyRect(303, 136, 24, 24);
-
-    spriteMap["snake_head_down"] = std::make_pair(spriteSheetTextureSnake, snakeHeadDownRect);
-    spriteMap["snake_head_up"] = std::make_pair(spriteSheetTextureSnake, snakeHeadUpRect);
-    spriteMap["snake_head_left"] = std::make_pair(spriteSheetTextureSnake, snakeHeadLeftRect);
-    spriteMap["snake_head_right"] = std::make_pair(spriteSheetTextureSnake, snakeHeadRightRect);
-    spriteMap["snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-    spriteMap["horizontal_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeHorizontalRect);
-    spriteMap["vertical_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeVerticalRect);
-    spriteMap["angle_right_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftDownRect);
-    spriteMap["angle_left_down_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightDownRect);
-    spriteMap["angle_left_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleLeftUpRect);
-    spriteMap["angle_right_up_snake_body"] = std::make_pair(spriteSheetTextureSnake, snakeAngleRightUpRect);
-    spriteMap["snake_tail_down"] = std::make_pair(spriteSheetTextureSnake, snakeTailDownRect);
-    spriteMap["snake_tail_up"] = std::make_pair(spriteSheetTextureSnake, snakeTailUpRect);
-    spriteMap["snake_tail_left"] = std::make_pair(spriteSheetTextureSnake, snakeTailLeftRect);
-    spriteMap["snake_tail_right"] = std::make_pair(spriteSheetTextureSnake, snakeTailRightRect);
-    spriteMap["food"] = std::make_pair(spriteSheetTextureSnake, foodRect);
-    spriteMap["pac_wall"] = std::make_pair(spriteSheetTexturePac, pacWallRect);
-    spriteMap["pac_down"] = std::make_pair(spriteSheetTexturePac, pacDownRect);
-    spriteMap["pac_up"] = std::make_pair(spriteSheetTexturePac, pacUpRect);
-    spriteMap["pac_left"] = std::make_pair(spriteSheetTexturePac, pacLeftRect);
-    spriteMap["pac_right"] = std::make_pair(spriteSheetTexturePac, pacRightRect);
-    spriteMap["ghost"] = std::make_pair(spriteSheetTexturePac, ghostRect);
-    spriteMap["pac_food"] = std::make_pair(spriteSheetTexturePac, pacFoodRect);
-    spriteMap["empty"] = std::make_pair(spriteSheetTexturePac, emptyRect);
-    spriteMap["wall"] = std::make_pair(spriteSheetTextureSnake, wallRect);
-}
-
 void graphic::Sfml::updateKeybinds()
 {
     sf::Event event;
-    _keys->at("UP") = false;
-    _keys->at("DOWN") = false;
-    _keys->at("LEFT") = false;
-    _keys->at("RIGHT") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ESC") = false;
-    _keys->at("ENTER") = false;
+    for (auto& key : *_keys) {
+            key.second = false;
+    }
 
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::KeyPressed) {
-            switch (event.key.code) {
-            case sf::Keyboard::Up :
-                _keys->at("UP") = true;
-                break;
-            case sf::Keyboard::Down :
-                _keys->at("DOWN") = true;
-                break;
-            case sf::Keyboard::Left :
-                _keys->at("LEFT") = true;
-                break;
-            case sf::Keyboard::Right :
-                _keys->at("RIGHT") = true;
-                break;
-            case sf::Keyboard::Escape :
-                _keys->at("ESC") = true;
-                break;
-            case sf::Keyboard::Return :
-                _keys->at("ENTER") = true;
-                break;
-            default:
-                break;
+            auto it = _keyMap.find(event.key.code);
+            if (it != _keyMap.end()) {
+                if (_keys->find(it->second) != _keys->end()) {
+                    _keys->at(it->second) = true;
+                }
             }
         }
     }
-}
-
-void graphic::Sfml::drawGameElement(sf::RenderWindow &window, const sf::IntRect &rect, const std::string &elementType)
-{
-    auto spriteIt = spriteMap.find(elementType);
-    if (spriteIt != spriteMap.end()) {
-        sf::Texture *spriteTexture = spriteIt->second.first;
-        sf::IntRect &spriteSourceRect = spriteIt->second.second;
-        sf::Sprite sprite(*spriteTexture, spriteSourceRect);
-        sprite.setPosition(rect.left, rect.top);
-        sprite.setScale(rect.width / 64.0, rect.height / 64.0);
-        window.draw(sprite);
-    }
-}
-
-sf::Texture *graphic::Sfml::loadSprite(const std::string &filePath)
-{
-    sf::Texture *texture = new sf::Texture();
-    if (!texture->loadFromFile(filePath)) {
-        std::cerr << "Failed to load sprite!" << std::endl;
-    }
-    return texture;
 }
 
 void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y, bool selected)
@@ -192,9 +84,41 @@ void graphic::Sfml::drawText(const std::string &text, const int &x, const int &y
     _window->draw(textToDraw);
 }
 
-void graphic::Sfml::flushscreen()
+std::tuple<short, short, short, short> graphic::Sfml::intToRgb(unsigned int color)
 {
-    _window->clear();
+    short a = (color >> 24) & 0xFF; // Correctly masks the alpha component
+    short r = (color & 0xff0000) >> 16; // Correctly masks the red component
+    short g = (color & 0xff00) >> 8;  // Correctly masks the green component
+    short b = color & 0xFF;         // Correctly masks the blue component
+
+    return std::make_tuple(a, r, g, b);
+}
+
+sf::Color graphic::Sfml::intToSfColor(unsigned int colorpat)
+{
+    short a, r, g, b;
+    std::tie(a, r, g, b) = intToRgb(colorpat); // Assume intToRgb returns the correct RGBA values
+    return sf::Color(r, g, b, a); // Create an SFML color from the RGBA components
+}
+
+void graphic::Sfml::createPixels(std::size_t x, std::size_t y, short pixel_form, unsigned int colorpat)
+{
+    sf::Color color = intToSfColor(colorpat);
+    int scale = 1;
+    int rectSize = 10 * scale;
+
+    for (int i = 0; i < 16; i++) {
+        sf::RectangleShape rectangle(sf::Vector2f(rectSize, rectSize));
+
+        rectangle.setPosition((x * 4 + i % 4) * rectSize, (y * 4 + i / 4) * rectSize);
+
+        if (pixel_form & (1 << i)) {
+            rectangle.setFillColor(color);
+        } else {
+            rectangle.setFillColor(sf::Color::Black);
+        }
+        _window->draw(rectangle);
+    }
 }
 
 std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
@@ -204,11 +128,11 @@ std::queue<std::tuple<EventType, eventData>> graphic::Sfml::draw()
 
     _window->clear();
     for (auto &item : _draw) {
-        x = std::get<0>(item);
-        y = std::get<1>(item);
-        type = std::get<2>(item);
-        sf::IntRect rect(x * 40, y * 40, 40, 40);
-        drawGameElement(*_window, rect, type);
+        std::size_t x, y;
+        short pixel;
+        unsigned int color;
+        std::tie(x, y, pixel, color) = item;
+        createPixels(x, y, pixel, color);
     }
     for (auto &item : _draw_str) {
         x = std::get<0>(item);

@@ -48,7 +48,7 @@ make
 Lancez l'application principale, en spécifiant la bibliothèque dynamique (.so) de l'interface graphique que vous souhaitez utiliser :
 
 ```bash
-./arcade lib/arcade_ncurses.so
+./arcade .lib/arcade_ncurses.so
 ```
 
 ## Comment Jouer
@@ -61,7 +61,7 @@ Pour étendre le cadre avec de nouveaux jeux ou interfaces graphiques :
 
 1. **Implémentez le Jeu/Bibliothèque :** Suivez les interfaces abstraites existantes (`IGame` et `IGraphic`) pour la cohérence.
 2. **Compilez votre bibliothèque dynamique :** Assurez-vous qu'elle se conforme au format de sortie attendu (.so).
-3. **Placez le fichier .so :** Déplacez-le dans le répertoire approprié du projet (par exemple, `lib/`).
+3. **Placez le fichier .so :** Déplacez-le dans le répertoire approprié du projet (par exemple, `.lib/`).
 
 ## Contribuer
 

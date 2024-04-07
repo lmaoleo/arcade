@@ -6,6 +6,7 @@
 */
 
 #include "Pacman.hpp"
+#include <iostream>
 
 static std::vector<std::string> PacManFoodMap = {
     "###################",
@@ -40,9 +41,9 @@ static std::vector<std::string> PacManMap = {
     "#    #   #   #    #",
     "#### ### # ### ####",
     "   # #       # #   ",
-    "#### # ## ## # ####",
+    "#### # ##h## # ####",
     "       #   #       ",
-    "#### # ## ## # ####",
+    "#### # ##### # ####",
     "   # #       # #   ",
     "#### # ##### # ####",
     "#        #        #",
@@ -62,16 +63,117 @@ static const std::map<char, std::string> charmap = {
     {'l', "pac_left"},
     {'>', "pac_right"},
     {'G', "ghost"},
-    {'P', "pacman"},
     {'.', "pac_food"},
     {' ', "empty"},
-    {' ', "empty"},
+    {'h', "door"},
 };
 
+static const std::map<std::string, char> reverseCharMap = {
+    {"pac_wall", '#'},
+    {"pac_down", 'd'},
+    {"pac_up", 'u'},
+    {"pac_left", 'l'},
+    {"pac_right", '>'},
+    {"ghost", 'G'},
+    {"pac_food", '.'},
+    {"empty", ' '},
+    {"door", 'h'},
+};
+
+static const std::tuple<std::string, unsigned int> pac_food = {
+    "    "\
+    " ## "\
+    " ## "\
+    "    ",
+    rgbToInt(255, 255, 255, 255)
+};
+
+static const std::tuple<std::string, unsigned int> pac_wall = {
+    "####"\
+    "#  #"\
+    "#  #"\
+    "####",
+    rgbToInt(0, 200, 150, 255)
+};
+
+static const std::tuple<std::string, unsigned int> empty = {
+    "    "\
+    "    "\
+    "    "\
+    "    ",
+    rgbToInt(0, 0, 0, 0)
+};
+
+static const std::tuple<std::string, unsigned int> pac_right = {
+    "####"\
+    "##  "\
+    "##  "\
+    "####",
+    rgbToInt(255, 255, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> pac_left = {
+    "####"\
+    "  ##"\
+    "  ##"\
+    "####",
+    rgbToInt(255, 255, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> pac_up = {
+    "#  #"\
+    "#  #"\
+    "####"\
+    "####",
+    rgbToInt(255, 255, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> pac_down = {
+    "####"\
+    "####"\
+    "#  #"\
+    "#  #",
+    rgbToInt(255, 255, 255, 0)
+};
+
+static const std::tuple<std::string, unsigned int> ghost = {
+    "####"\
+    "#  #"\
+    "#  #"\
+    "#  #",
+    rgbToInt(233, 0, 150, 100)
+};
+
+static const std::tuple<std::string, unsigned int> door = {
+    "####"\
+    "#  #"\
+    "####"\
+    "####",
+    rgbToInt(128,128,250,128)
+};
+
+static const std::map<std::string, std::tuple<std::string, unsigned int>> charToTile = {
+    {".", pac_food},
+    {"#", pac_wall},
+    {" ", empty},
+    {">", pac_right},
+    {"l", pac_left},
+    {"u", pac_up},
+    {"d", pac_down},
+    {"h", door},
+    {"G", ghost},
+};
+
+static unsigned int rgbToInt(unsigned int a, unsigned short r, unsigned short g, unsigned short b)
+{
+    return (a << 24) + (r << 16) + (g << 8) + b;
+}
+
 extern "C" {
-    game::Pacman *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds)
+    game::Pacman *createGame(std::shared_ptr<std::map<std::string, bool>> &keybinds, int &score, std::string &username)
     {
-        return new game::Pacman(keybinds);
+        (void)username;
+        return new game::Pacman(keybinds, score, username);
     }
 }
 
@@ -89,7 +191,7 @@ std::vector<std::tuple<std::size_t, std::size_t, bool>> game::Pacman::generateFo
     return food;
 }
 
-game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key)
+game::Pacman::Pacman(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username) : _iscore(score), _username(username)
 {
     _keys = key;
     _score = 0;
@@ -113,6 +215,24 @@ double game::Pacman::getElapsedTime() {
     return elapsedTime.count();
 }
 
+void game::Pacman::send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events)
+{
+    EventType to_send = EventType::SET_GAME;
+    if (type == 1) {
+        to_send = EventType::SET_GRAPHIC;
+    }
+    for (std::size_t i = 0; i < libs.size(); i++) {
+        if (std::get<1>(libs[i]) == true && std::get<2>(libs[i]) == type) {
+            std::tuple<EventType, eventData> event = {to_send, false};
+            std::tuple<EventType, eventData> packet = {EventType::DATA, ".lib/" + std::get<0>(libs[i])};
+            std::tuple<EventType, eventData> event2 = {to_send, false};
+            events.push(event);
+            events.push(packet);
+            events.push(event2);
+        }
+    }
+}
+
 void game::Pacman::changeDirection()
 {
     if (_keys->at("UP") == true) {
@@ -131,14 +251,22 @@ void game::Pacman::changeDirection()
         _direction = std::make_tuple(1, 0);
         _headDirection = "pac_right";
     }
+    if (_keys->at("R") == true) {
+        _score = 0;
+        _iscore = 0;
+        _Pacman = std::make_tuple(9, 15);
+        _direction = std::make_tuple(1, 0);
+        _headDirection = "pac_right";
+        _food = generateFood();
+        _ghosts = _ghostsOrigins;
+    }
 }
 
 bool game::Pacman::isGameOver()
 {
     for (std::size_t i = 0; i < _ghosts.size(); i++) {
         if (_Pacman == _ghosts[i]) {
-            while (1)
-                printf("Game Over\n");
+            std::cout << "Game Over" << std::endl;
             return true;
         }
     }
@@ -158,6 +286,7 @@ void game::Pacman::checkFood()
     for (std::size_t i = 0; i < _food.size(); i++) {
         if (_Pacman == std::make_tuple(std::get<0>(_food[i]), std::get<1>(_food[i])) && std::get<2>(_food[i]) == false) {
             _score++;
+            _iscore = _score;
             _food[i] = std::make_tuple(std::get<0>(_food[i]), std::get<1>(_food[i]), true);
         }
     }
@@ -166,10 +295,18 @@ void game::Pacman::checkFood()
     }
 }
 
+bool checkCollisionPac(std::tuple<std::size_t, std::size_t> pos)
+{
+    if (PacManMap[std::get<1>(pos)][std::get<0>(pos)] == '#' || PacManMap[std::get<1>(pos)][std::get<0>(pos)] == 'h') {
+        return false;
+    }
+    return true;
+}
+
 void game::Pacman::changePacmanPos()
 {
     std::tuple newPacmanPos = std::make_tuple(std::get<0>(_Pacman) + std::get<0>(_direction), std::get<1>(_Pacman) + std::get<1>(_direction));
-    if (checkCollision(newPacmanPos)) {
+    if (checkCollisionPac(newPacmanPos)) {
         if (std::get<0>(newPacmanPos) == 0 && std::get<1>(newPacmanPos) == 9 && std::get<0>(_direction) == static_cast<unsigned long>(-1)) {
             _Pacman = std::make_tuple(19, 9);
             _direction = std::make_tuple(-1, 0);
@@ -184,9 +321,9 @@ void game::Pacman::changePacmanPos()
     }
 }
 
-void add_Pacman_to_map(std::vector<std::string> &map, std::tuple<std::size_t, std::size_t> Pacman)
+void game::Pacman::add_Pacman_to_map(std::vector<std::string> &map, std::tuple<std::size_t, std::size_t> Pacman)
 {
-    map[std::get<1>(Pacman)][std::get<0>(Pacman)] = 'P';
+    map[std::get<1>(Pacman)][std::get<0>(Pacman)] = reverseCharMap.at(_headDirection);
 }
 
 void add_ghosts_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::size_t, std::size_t>> ghosts)
@@ -205,18 +342,24 @@ void add_food_to_map(std::vector<std::string> &map, std::vector<std::tuple<std::
     }
 }
 
-static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string type)
+static void create_draw_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, short tile, unsigned int color = 0)
 {
-    std::tuple<EventType, eventData> event = {EventType::DRAW, false};
+    std::tuple<EventType, eventData> color_event_start = {EventType::CHANGE_COLOR, false};
+    std::tuple<EventType, eventData> packetColor = {EventType::DATA, color};
+    std::tuple<EventType, eventData> color_event_end = {EventType::CHANGE_COLOR, false};
+    std::tuple<EventType, eventData> draw_event_start = {EventType::DRAW, false};
     std::tuple<EventType, eventData> packetX = {EventType::DATA, x};
     std::tuple<EventType, eventData> packetY = {EventType::DATA, y};
-    std::tuple<EventType, eventData> packetType = {EventType::DATA, type};
-    std::tuple<EventType, eventData> event2 = {EventType::DRAW, false};
-    events.push(event);
+    std::tuple<EventType, eventData> packetType = {EventType::DATA, tile};
+    std::tuple<EventType, eventData> draw_event_end = {EventType::DRAW, false};
+    events.push(color_event_start);
+    events.push(packetColor);
+    events.push(color_event_end);
+    events.push(draw_event_start);
     events.push(packetX);
     events.push(packetY);
     events.push(packetType);
-    events.push(event2);
+    events.push(draw_event_end);
 }
 
 static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>> &events, std::size_t x, std::size_t y, std::string score)
@@ -238,13 +381,12 @@ static void create_draw_string_event(std::queue<std::tuple<EventType, eventData>
 std::queue<std::tuple<EventType, eventData>> game::Pacman::transform_map_to_events(std::vector<std::string> map)
 {
     std::queue<std::tuple<EventType, eventData>> events;
+    std::tuple<std::string, unsigned int> drawingTile;
+
     for (std::size_t y = 0; y < map.size(); y++) {
         for (std::size_t x = 0; x < map[y].size(); x++) {
-            if (std::get<0>(_Pacman) == x && std::get<1>(_Pacman) == y) {
-                create_draw_event(events, x, y, _headDirection);
-                continue;
-            }
-            create_draw_event(events, x, y, charmap.at(map[y][x]));
+            drawingTile = charToTile.at(std::string(1, map[y][x]));
+            create_draw_event(events, x, y, stringToShort(std::get<0>(drawingTile)), std::get<1>(drawingTile));
         }
     }
     return events;
@@ -278,23 +420,39 @@ void game::Pacman::movesGhostsRandomDirections()
             }
         }
     }
-
 }
 
-std::queue<std::tuple<EventType, eventData>> game::Pacman::tick()
+std::queue<std::tuple<EventType, eventData>> displayLoseScreen(int score, std::string username)
 {
-    isGameOver();
+    std::queue<std::tuple<EventType, eventData>> events;
+
+    create_draw_string_event(events, 10, 10, username + " You lost...");
+    create_draw_string_event(events, 10, 11, "Press R to restart");
+    create_draw_string_event(events, 10, 12, "Score: " + std::to_string(score));
+    return events;
+}
+
+std::queue<std::tuple<EventType, eventData>> game::Pacman::tick(double delta)
+{
+    _moveTime += delta;
+
+    _lose = isGameOver();
+    if (_lose == true) {
+        return displayLoseScreen(_score, _username);
+    }
     changeDirection();
     std::vector<std::string> newMap = PacManMap;
-    changePacmanPos();
-    movesGhostsRandomDirections();
+    if (_moveTime > 0.15) {
+        changePacmanPos();
+        movesGhostsRandomDirections();
+        _moveTime = 0;
+    }
     add_food_to_map(newMap, _food);
     add_ghosts_to_map(newMap, _ghosts);
     add_Pacman_to_map(newMap, _Pacman);
-    std::queue<std::tuple<EventType, eventData>> events = transform_map_to_events(newMap);
-    add_score_to_events(events);
-    printf("Time: %f\n", getElapsedTime());
+    _events = transform_map_to_events(newMap);
+    add_score_to_events(_events);
     checkFood();
     _ticks++;
-    return events;
+    return _events;
 }

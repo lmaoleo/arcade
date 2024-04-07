@@ -25,8 +25,7 @@ CORE_FILES = Arcade.cpp \
 GRAPHIC_FILES = IGraphic.cpp \
 			AGraphic.cpp \
 
-GAME_FILES = IGame.cpp \
-			AGame.cpp \
+GAME_FILES = AGame.cpp \
 
 NCURSES_FILES = Ncurses.cpp \
 
@@ -53,32 +52,37 @@ MENU_FILES := $(addprefix src/game/, $(MENU_FILES))
 
 GRAPHIC_LIB_FILES = $(SRC_FILES) $(GRAPHIC_FILES)
 GAME_LIB_FILES = $(SRC_FILES) $(GAME_FILES)
-PUT_LIB = ./lib/
+PUT_LIB = ./.lib/
 
 all: $(NAMES)
+
+make_folder:
+	mkdir -p $(PUT_LIB)
 
 core: $(CORE_FILES)
 	$(CC) $(ERRORS_FLAGS) -o $(NAME) $(CORE_FILES)
 
+games: snake pacman menu
+
 graphicals: ncurses sdl sfml
 
-ncurses: $(NCURSES_FILES)
+ncurses: $(NCURSES_FILES) make_folder
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lncursesw -o $(PUT_LIB)arcade_ncurses.so $(GRAPHIC_LIB_FILES) $(NCURSES_FILES)
 
-sdl: $(SDL_FILES)
+sdl: $(SDL_FILES) make_folder
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) `sdl2-config --ERRORS_FLAGS --libs` -lSDL2 -lSDL2_ttf -lSDL2_image -o $(PUT_LIB)arcade_sdl2.so $(GRAPHIC_LIB_FILES) $(SDL_FILES)
 
-sfml: $(SFML_FILES)
+sfml: $(SFML_FILES) make_folder
 	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -lsfml-graphics -lsfml-window -lsfml-system -o $(PUT_LIB)arcade_sfml.so $(GRAPHIC_LIB_FILES) $(SFML_FILES)
 
-snake: $(SNAKE_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(SRC_FILES)
+snake: $(SNAKE_FILES) make_folder
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_snake.so -Iinclude $(SNAKE_FILES) $(GAME_LIB_FILES)
 
-pacman: $(PACMAN_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_pacman.so -Iinclude $(PACMAN_FILES) $(SRC_FILES)
+pacman: $(PACMAN_FILES) make_folder
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_pacman.so -Iinclude $(PACMAN_FILES) $(GAME_LIB_FILES)
 
-menu: $(MENU_FILES)
-	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_menu.so -Iinclude $(MENU_FILES) $(SRC_FILES)
+menu: $(MENU_FILES) make_folder
+	$(CC) $(ERRORS_FLAGS) $(SHARED_FLAGS) -o $(PUT_LIB)arcade_menu.so -Iinclude $(MENU_FILES) $(GAME_LIB_FILES)
 
 clean:
 	rm -f $(addsuffix .o, $(NAMES))
@@ -88,5 +92,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+debug: SHARED_FLAGS += -g
+debug: re
 
 .PHONY: all clean

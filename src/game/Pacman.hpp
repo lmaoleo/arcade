@@ -15,18 +15,20 @@
 namespace game {
     class Pacman : public AGame {
         public:
-            Pacman(std::shared_ptr<std::map<std::string, bool>> &key);
+            Pacman(std::shared_ptr<std::map<std::string, bool>> &key, int &score, std::string &username);
             ~Pacman();
-            std::queue<std::tuple<EventType, eventData>> tick();
+            std::queue<std::tuple<EventType, eventData>> tick(double delta);
             void changePacmanPos();
             std::vector<std::tuple<std::size_t, std::size_t, bool>> generateFood();
             void add_score_to_events(std::queue<std::tuple<EventType, eventData>> &events);
             void changeDirection();
             bool checkCollision(std::tuple<std::size_t, std::size_t> pos);
+            void add_Pacman_to_map(std::vector<std::string> &map, std::tuple<std::size_t, std::size_t> Pacman);
             void checkFood();
             void movesGhostsRandomDirections();
             double getElapsedTime();
             bool isGameOver();
+            void send_packet(int type, std::vector<std::tuple<std::string, bool, int>> &libs, std::queue<std::tuple<EventType, eventData>> &events);
             std::queue<std::tuple<EventType, eventData>> transform_map_to_events(std::vector<std::string> map);
 
         private:
@@ -40,7 +42,14 @@ namespace game {
             std::vector<std::tuple<std::size_t, std::size_t>> _ghosts;
             std::vector<std::tuple<std::size_t, std::size_t>> _ghostsOrigins;
             std::chrono::high_resolution_clock::time_point _startTime;
+            std::queue<std::tuple<EventType, eventData>> _events;
+            double _moveTime;
+            int &_iscore;
+            std::string &_username;
+            bool _lose = false;
     };
 };
+
+static unsigned int rgbToInt(unsigned int a, unsigned short r, unsigned short g, unsigned short b);
 
 #endif /* !Pacman_HPP_ */
